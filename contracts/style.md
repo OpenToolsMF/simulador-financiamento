@@ -1,0 +1,32 @@
+# Style Guidelines
+
+- Use Bootstrap 5.3.8 as the base UI system and load the project stylesheet after Bootstrap.
+- Use a calm financial visual language with green accents, light backgrounds, white surfaces, subtle borders, and restrained shadows.
+- Primary green: `#176B3A`; dark green: `#14532D`; soft green: `#EAF5EE`; page background: `#F4F8F5`.
+- Main text: `#1F2937`; secondary text: `#667085`; borders: `#D6E2D9`.
+- Use green mainly for primary actions, selected states, important results, and positive financial values.
+- Keep cards, forms, summaries, and tables visually consistent through shared CSS variables and reusable classes.
+- Prefer rounded corners between `8px` and `16px`, clear spacing, readable typography, and strong contrast.
+- Keep tables neutral and highlight rows with extra amortization using a soft green background.
+- Maintain responsive behavior for desktop, tablet, and mobile, including horizontal table scrolling when needed.
+- Do not add isolated visual rules when an existing shared class or token can be reused.
+- Define shared colors, radii, and shadows as CSS custom properties in `:root`; new components must reuse these tokens instead of duplicating literal values.
+- Use `.surface-card` for primary white content surfaces and `.section-heading` with `.section-kicker` for consistent section introductions.
+- Use `.section-actions` for multiple action buttons inside a `.section-heading`; keep actions aligned horizontally and let them share width on mobile.
+- Use `.selection-card` for accessible, full-width radio choices with a soft-green selected state.
+- Use `.financing-config-grid` with Bootstrap `row`/`col` classes for the initial financing configuration form: 1 column on mobile, 2 on tablet, 5 on wide desktop, with `.financing-config-field-wide` reserved for compound fields that need two desktop columns.
+- Use `.field-header` for every field in the financing configuration grid so controls align vertically; use compact `.info-icon-button` `?` buttons for explanatory modals or dense helper text inside configuration grids.
+- Use `.field-header-actions` for secondary field-level actions such as loading local reference data; keep these actions small and outside input groups.
+- Mark only required form labels with `.required-marker` and `*`; do not add optional badges to labels.
+- Use `.language-switcher` in the site header for language selection. Keep it aligned to the header top line on desktop/tablet and collapse it to a compact, label-hidden native select on mobile while preserving an accessible label.
+- Use `.privacy-notice` for the concise privacy summary before the financing fields. Keep it neutral and visually integrated with the soft-green palette; provide an accessible close control and remember dismissal on the current device. Keep the full privacy page accessible through the persistent site footer instead of adding another action to this notice.
+- Use `.site-footer` on public pages for the project name, year, and a persistent privacy link. Keep it quiet, separated by a neutral top border, and stack its content on mobile.
+- Privacy and other institutional content pages use a compact `.site-header`, a constrained `.privacy-page-main`, and one `.surface-card` divided into semantic `.privacy-policy-section` blocks. They must keep the shared language switcher and avoid loading simulator-only scripts.
+- Use `.stat-card` for the main result metrics only. Keep the summary focused on decision indicators, and place secondary/audit metrics in a separate `surface-card` section using the same neutral `.comparison-table` pattern. Detail tables may use repeated indicator/value column pairs to stay compact, as long as indicator columns remain left-aligned and value columns right-aligned. Reserve the dark-green `primary` variant for the leading result and the soft-green `positive` variant for savings or reductions.
+- Use `.empty-state` for areas without configured or calculated content, and `.extra-card` for each user-created amortization rule.
+- Use `.charts-grid`, `.chart-panel`, and `.chart-wrap` for Chart.js visualizations, with stable responsive height, compact panel titles, and the same calm financial palette used by the interface.
+- Tables use tabular numerals, right-aligned monetary columns, a pale-green sticky header, and `.has-extra` to highlight rows containing extra amortization.
+- Use `.estimate-notice` for the final explanatory disclaimer; financial simulations must clearly state they are estimates without legal, contractual, or financial validity. Simulation results update automatically and do not use a dedicated calculation action bar.
+- PDF export uses native browser printing with a dedicated static report container, not the live interface. Print styles must hide the normal UI, show only the generated report, include all installments directly from the calculated data, and use compact print-only tables for parameters and summary. Printed parameter and summary tables use three label/value pairs per row, for six visual columns. Printed reports may use a dedicated first-page header with the project logo on a white rounded background over the green header, followed by a short legal/contractual limitation notice; the full disclaimer must remain at the end. Cronograma print branding and title should live in the table `<thead>` so they repeat reliably without fixed-position headers. Print charts must use static images generated from Chart.js before `window.print()` so mobile exports do not include hover state or viewport-sized canvases.
+- User-facing interface text must be translated through `assets/js/i18n.js`; avoid adding new hardcoded UI strings in `index.html` or `assets/js/app.js` unless they are inert fallback content before JavaScript initializes.
+- Number, percent, currency, date, and month formatting/parsing must go through the i18n layer so `pt-BR`, `en`, and `es` stay consistent. Currency remains `BRL` in every language.

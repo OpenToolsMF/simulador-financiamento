@@ -1,0 +1,8 @@
+{
+  "sourceUrl": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.432/dados/ultimos/1?formato=json",
+  "generatedAt": "2026-07-18T01:44:47.497Z",
+  "latest": {
+    "date": "2026-08-05",
+    "ratePercent": 14.25
+  }
+}

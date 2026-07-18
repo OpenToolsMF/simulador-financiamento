@@ -1,0 +1,46 @@
+'use strict';
+
+const assert = require('node:assert/strict');
+const i18n = require('../assets/js/i18n.js');
+
+const languages = i18n.getSupportedLanguages();
+assert.deepEqual(languages, ['pt-BR', 'en', 'es'], 'expõe os três idiomas suportados');
+
+const referenceKeys = Object.keys(i18n.dictionaries['pt-BR']).sort();
+for (const language of languages) {
+  const keys = Object.keys(i18n.dictionaries[language]).sort();
+  assert.deepEqual(keys, referenceKeys, `${language}: mantém o mesmo conjunto de chaves`);
+}
+
+for (const language of languages) {
+  i18n.setLanguage(language);
+  assert.equal(i18n.getLanguage(), language, `${language}: troca idioma`);
+  assert.notEqual(i18n.t('metadata.title'), 'metadata.title', `${language}: encontra chave crítica`);
+  assert.ok(i18n.t('validation.monthBetween', { term: 360 }).includes('360'), `${language}: interpola parâmetros`);
+  assert.ok(i18n.formatCurrency(123456).includes('1'), `${language}: formata moeda`);
+  assert.ok(i18n.formatDate('2026-07-15').length > 0, `${language}: formata data`);
+  assert.ok(i18n.formatPercent(0.001664).includes('%'), `${language}: formata percentual`);
+  assert.ok(i18n.formatRatePercent(0.1664).length > 0, `${language}: formata taxa de input`);
+}
+
+assert.equal(i18n.normalizeLanguage('pt'), 'pt-BR', 'normaliza português');
+assert.equal(i18n.normalizeLanguage('en-US'), 'en', 'normaliza inglês');
+assert.equal(i18n.normalizeLanguage('es-ES'), 'es', 'normaliza espanhol');
+assert.equal(i18n.normalizeLanguage('fr-FR'), 'pt-BR', 'usa fallback pt-BR');
+assert.equal(i18n.detectLanguage(), 'pt-BR', 'usa pt-BR como idioma inicial quando não há idioma salvo');
+
+const numberCases = [
+  ['1.234,56', 1234.56],
+  ['1,234.56', 1234.56],
+  ['1234,56', 1234.56],
+  ['1234.56', 1234.56],
+  ['1.000', 1000],
+  ['0,1664', 0.1664],
+  ['0.1664', 0.1664],
+  ['R$ 1.000,00', 1000],
+];
+for (const [input, expected] of numberCases) {
+  assert.equal(i18n.parseLocalizedNumber(input), expected, `parse ${input}`);
+}
+
+console.log('Testes de i18n concluídos com sucesso.');
