@@ -26,10 +26,16 @@ O projeto usa HTML, CSS e JavaScript simples, sem etapa de build e sem dependên
   - custos acumulados.
 - Exportação do relatório em PDF usando impressão nativa do navegador.
 - Internacionalização em `pt-BR`, `en` e `es`, mantendo moeda em BRL.
+- URLs públicas próprias por idioma, com `canonical`, `hreflang` e sitemap.
 
 ## Estrutura
 
-- `index.html`: página principal da aplicação.
+- `index.html`: página principal da aplicação em `pt-BR`.
+- `en/index.html`: página principal em inglês.
+- `es/index.html`: página principal em espanhol.
+- `privacidade.html`: política de privacidade em `pt-BR`.
+- `en/privacy.html`: política de privacidade em inglês.
+- `es/privacidad.html`: política de privacidade em espanhol.
 - `assets/css/styles.css`: estilos próprios e estilos de impressão.
 - `assets/js/app.js`: integração da UI, validação, persistência, gráficos, TR/Selic e PDF.
 - `assets/js/finance.js`: motor financeiro SAC/Price.
@@ -59,6 +65,19 @@ http://localhost:8000
 ```
 
 A aplicação não requer instalação de dependências nem etapa de compilação.
+
+Rotas públicas principais:
+
+```text
+http://localhost:8000/
+http://localhost:8000/en/
+http://localhost:8000/es/
+http://localhost:8000/privacidade.html
+http://localhost:8000/en/privacy.html
+http://localhost:8000/es/privacidad.html
+```
+
+O idioma é definido pela URL quando a rota é explícita. A preferência salva em `localStorage` só é usada quando a URL não define idioma, e o seletor de idioma navega para a página equivalente.
 
 ## Validação
 

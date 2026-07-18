@@ -10,6 +10,19 @@
     es: { locale: 'es-ES', htmlLang: 'es', name: 'Español' },
   };
 
+  const publicRoutes = {
+    simulator: {
+      'pt-BR': '/',
+      en: '/en/',
+      es: '/es/',
+    },
+    privacy: {
+      'pt-BR': '/privacidade.html',
+      en: '/en/privacy.html',
+      es: '/es/privacidad.html',
+    },
+  };
+
   const dictionaries = {
     'pt-BR': {
       'metadata.title': 'Mapa das Parcelas - Financiamento',
@@ -883,7 +896,60 @@
     }
   }
 
+  function normalizePathname(pathname) {
+    const value = String(pathname || '/').trim() || '/';
+    return value.startsWith('/') ? value : `/${value}`;
+  }
+
+  function normalizeRouteBase(basePath) {
+    if (!basePath || basePath === '/') return '';
+    return basePath.endsWith('/') ? basePath.slice(0, -1) : basePath;
+  }
+
+  function currentPathname() {
+    return globalScope.location?.pathname || '/';
+  }
+
+  function routeInfoForPathname(pathname = currentPathname()) {
+    const normalizedPathname = normalizePathname(pathname);
+    const lowerPathname = normalizedPathname.toLowerCase();
+    const routePatterns = [
+      { suffix: '/en/privacy.html', language: 'en', page: 'privacy' },
+      { suffix: '/es/privacidad.html', language: 'es', page: 'privacy' },
+      { suffix: '/privacidade.html', language: 'pt-BR', page: 'privacy' },
+      { suffix: '/en/index.html', language: 'en', page: 'simulator' },
+      { suffix: '/es/index.html', language: 'es', page: 'simulator' },
+      { suffix: '/en/', language: 'en', page: 'simulator' },
+      { suffix: '/es/', language: 'es', page: 'simulator' },
+      { suffix: '/en', language: 'en', page: 'simulator' },
+      { suffix: '/es', language: 'es', page: 'simulator' },
+      { suffix: '/index.html', language: 'pt-BR', page: 'simulator' },
+    ];
+
+    const route = routePatterns.find(({ suffix }) => lowerPathname.endsWith(suffix));
+    if (route) {
+      const basePath = normalizedPathname.slice(0, normalizedPathname.length - route.suffix.length);
+      return {
+        language: route.language,
+        page: route.page,
+        basePath: normalizeRouteBase(basePath),
+      };
+    }
+
+    return {
+      language: DEFAULT_LANGUAGE,
+      page: 'simulator',
+      basePath: normalizedPathname.endsWith('/') ? normalizeRouteBase(normalizedPathname.slice(0, -1)) : '',
+    };
+  }
+
+  function detectRouteLanguage() {
+    return globalScope.location ? routeInfoForPathname(globalScope.location.pathname).language : null;
+  }
+
   function detectLanguage() {
+    const routeLanguage = detectRouteLanguage();
+    if (routeLanguage) return normalizeLanguage(routeLanguage);
     const storedLanguage = readStoredLanguage();
     if (storedLanguage) return normalizeLanguage(storedLanguage);
     return DEFAULT_LANGUAGE;
@@ -1015,17 +1081,40 @@
     return Object.keys(languageConfig);
   }
 
+  function getCurrentPageKind() {
+    return routeInfoForPathname(currentPathname()).page;
+  }
+
+  function localizedPathForLanguage(language, page = getCurrentPageKind()) {
+    const normalizedLanguage = normalizeLanguage(language);
+    const routePage = publicRoutes[page] ? page : 'simulator';
+    const route = routeInfoForPathname(currentPathname());
+    const basePath = normalizeRouteBase(route.basePath);
+    return `${basePath}${publicRoutes[routePage][normalizedLanguage]}`;
+  }
+
+  function localizedUrlForLanguage(language, page = getCurrentPageKind()) {
+    const origin = globalScope.location?.origin || 'https://mapadasparcelas.com.br';
+    return `${origin}${localizedPathForLanguage(language, page)}`;
+  }
+
   const api = {
     DEFAULT_LANGUAGE,
     LANGUAGE_STORAGE_KEY,
+    publicRoutes,
     dictionaries,
     languageConfig,
     detectLanguage,
+    detectRouteLanguage,
+    routeInfoForPathname,
     normalizeLanguage,
     setLanguage,
     getLanguage,
     getLocale,
     getSupportedLanguages,
+    getCurrentPageKind,
+    localizedPathForLanguage,
+    localizedUrlForLanguage,
     t,
     formatCurrency,
     formatDate,

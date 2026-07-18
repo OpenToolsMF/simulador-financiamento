@@ -7,8 +7,13 @@
   const TR_CACHE_KEY = 'financing-simulator:tr-cache:v1';
   const SELIC_CACHE_KEY = 'financing-simulator:selic-cache:v1';
   const PRIVACY_NOTICE_STORAGE_KEY = 'financing-simulator:privacy-notice-dismissed:v1';
-  const SELIC_DATA_URL = './assets/data/selic-bcb.json';
-  const CHART_JS_URL = './assets/vendor/chartjs/chart.umd.min.js';
+  const appScriptUrl = document.currentScript?.src || document.querySelector('script[src*="assets/js/app.js"]')?.src;
+  const ASSET_BASE_URL = appScriptUrl ? new URL('../', appScriptUrl).href : new URL('./assets/', document.baseURI).href;
+  const assetUrl = (path) => new URL(path, ASSET_BASE_URL).href;
+  const TR_DATA_URL = assetUrl('data/tr-bacen.json');
+  const SELIC_DATA_URL = assetUrl('data/selic-bcb.json');
+  const CHART_JS_URL = assetUrl('vendor/chartjs/chart.umd.min.js');
+  const LOGO_URL = assetUrl('image/logo.png');
   const CHART_PRELOAD_ROOT_MARGIN = '700px 0px';
   const PRINT_CHART_WIDTH = 1200;
   const PRINT_CHART_HEIGHT = 680;
@@ -554,9 +559,15 @@
     return i18n.formatNumber(0, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
+  function updateLocalizedLinks() {
+    const privacyLink = document.querySelector('#footer-privacy-link');
+    if (privacyLink) privacyLink.setAttribute('href', i18n.localizedPathForLanguage(i18n.getLanguage(), 'privacy'));
+  }
+
   function applyStaticTranslations() {
     i18n.setLanguage(i18n.getLanguage());
     if (languageSelect) languageSelect.value = i18n.getLanguage();
+    updateLocalizedLinks();
 
     setText('.site-header .eyebrow', 'header.eyebrow');
     setText('.site-header h1', 'header.title');
@@ -1220,7 +1231,13 @@
   }
 
   function handleLanguageChange() {
-    i18n.setLanguage(languageSelect.value);
+    const nextLanguage = languageSelect.value;
+    const nextUrl = i18n.localizedUrlForLanguage(nextLanguage, 'simulator');
+    i18n.setLanguage(nextLanguage);
+    if (nextUrl && nextUrl !== window.location.href) {
+      window.location.assign(nextUrl);
+      return;
+    }
     applyStaticTranslations();
     reformatFormValuesForCurrentLanguage();
     updateCorrectionRateHelp();
@@ -1663,7 +1680,7 @@
             <tr class="print-table-brand-row">
               <th colspan="14" scope="colgroup">
                 <span class="print-table-brand">
-                  <img src="./assets/image/logo.png" alt="" class="print-table-brand-logo">
+                  <img src="${escapeHtml(LOGO_URL)}" alt="" class="print-table-brand-logo">
                   <span>${escapeHtml(t('print.brandTitle'))}</span>
                 </span>
               </th>
@@ -1688,7 +1705,7 @@
       : '';
     return `
       <section class="print-report-header" aria-label="${escapeHtml(t('print.reportHeaderLabel'))}">
-        <img src="./assets/image/logo.png" alt="Logo" class="print-report-logo">
+        <img src="${escapeHtml(LOGO_URL)}" alt="Logo" class="print-report-logo">
         <div><h2>${escapeHtml(t('print.brandTitle'))}</h2></div>
       </section>
 
@@ -1878,7 +1895,7 @@
     }
 
     try {
-      const response = await fetch('./assets/data/tr-bacen.json', { cache: 'no-cache' });
+      const response = await fetch(TR_DATA_URL, { cache: 'no-cache' });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
       if (!validateTrData(data)) throw new Error(t('tr.invalidJson'));

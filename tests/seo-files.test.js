@@ -1,7 +1,7 @@
 'use strict';
 
 const assert = require('node:assert/strict');
-const { readFile, readdir } = require('node:fs/promises');
+const { access, readFile } = require('node:fs/promises');
 const { join } = require('node:path');
 
 const projectRoot = join(__dirname, '..');
@@ -11,10 +11,25 @@ function extractTagValue(source, tagName) {
   return match?.[1].trim() ?? null;
 }
 
+function extractHtmlLang(html) {
+  return html.match(/<html\b[^>]*\blang=["']([^"']+)["']/i)?.[1] ?? null;
+}
+
 function extractCanonical(html) {
   const linkTags = html.match(/<link\b[^>]*>/gi) ?? [];
   const canonicalTag = linkTags.find((tag) => /\brel=["']canonical["']/i.test(tag));
   return canonicalTag?.match(/\bhref=["']([^"']+)["']/i)?.[1] ?? null;
+}
+
+function extractAlternateLinks(html) {
+  const linkTags = html.match(/<link\b[^>]*>/gi) ?? [];
+  return Object.fromEntries(linkTags
+    .filter((tag) => /\brel=["']alternate["']/i.test(tag) && /\bhreflang=["']/i.test(tag))
+    .map((tag) => [
+      tag.match(/\bhreflang=["']([^"']+)["']/i)?.[1],
+      tag.match(/\bhref=["']([^"']+)["']/i)?.[1],
+    ])
+    .filter(([language, href]) => language && href));
 }
 
 function extractMetaContent(html, attribute, value) {
@@ -31,12 +46,14 @@ function extractJsonLdNodes(html) {
     });
 }
 
-function publicUrlForFile(origin, fileName) {
-  return fileName === 'index.html' ? `${origin}/` : `${origin}/${fileName}`;
-}
-
 function normalizeHtmlText(value) {
   return value.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+}
+
+function assetReferences(html) {
+  return [...html.matchAll(/\b(?:href|src)=["']([^"']+)["']/gi)]
+    .map((match) => match[1])
+    .filter((reference) => reference.includes('assets/'));
 }
 
 (async () => {
@@ -44,25 +61,69 @@ function normalizeHtmlText(value) {
   assert.ok(domain, 'CNAME define o domínio canônico');
   const origin = `https://${domain}`;
 
-  const rootEntries = await readdir(projectRoot, { withFileTypes: true });
-  const publicHtmlFiles = rootEntries
-    .filter((entry) => entry.isFile() && entry.name.endsWith('.html'))
-    .map((entry) => entry.name)
-    .sort();
-  assert.ok(publicHtmlFiles.includes('index.html'), 'encontra a página principal');
+  const routeGroups = {
+    simulator: {
+      'pt-BR': `${origin}/`,
+      en: `${origin}/en/`,
+      es: `${origin}/es/`,
+      'x-default': `${origin}/`,
+    },
+    privacy: {
+      'pt-BR': `${origin}/privacidade.html`,
+      en: `${origin}/en/privacy.html`,
+      es: `${origin}/es/privacidad.html`,
+      'x-default': `${origin}/`,
+    },
+  };
 
-  const expectedUrls = publicHtmlFiles.map((fileName) => publicUrlForFile(origin, fileName));
+  const publicPages = [
+    { file: 'index.html', language: 'pt-BR', htmlLang: 'pt-BR', page: 'simulator' },
+    { file: 'en/index.html', language: 'en', htmlLang: 'en', page: 'simulator' },
+    { file: 'es/index.html', language: 'es', htmlLang: 'es', page: 'simulator' },
+    { file: 'privacidade.html', language: 'pt-BR', htmlLang: 'pt-BR', page: 'privacy' },
+    { file: 'en/privacy.html', language: 'en', htmlLang: 'en', page: 'privacy' },
+    { file: 'es/privacidad.html', language: 'es', htmlLang: 'es', page: 'privacy' },
+  ].map((page) => ({
+    ...page,
+    url: routeGroups[page.page][page.language],
+  }));
+
   const canonicalUrls = [];
-  for (const fileName of publicHtmlFiles) {
-    const html = await readFile(join(projectRoot, fileName), 'utf8');
-    const canonical = extractCanonical(html);
+  for (const page of publicPages) {
+    const html = await readFile(join(projectRoot, page.file), 'utf8');
+    const expectedAlternates = routeGroups[page.page];
+
+    assert.equal(extractHtmlLang(html), page.htmlLang, `${page.file}: html lang corresponde ao idioma da URL`);
+    assert.equal(extractCanonical(html), page.url, `${page.file}: canonical corresponde à URL pública`);
+    assert.deepEqual(extractAlternateLinks(html), expectedAlternates, `${page.file}: hreflang completo e recíproco`);
+    assert.equal(extractMetaContent(html, 'property', 'og:url'), page.url, `${page.file}: og:url corresponde à canonical`);
     assert.equal(
-      canonical,
-      publicUrlForFile(origin, fileName),
-      `${fileName}: canonical corresponde à URL pública`,
+      extractMetaContent(html, 'property', 'og:locale'),
+      { 'pt-BR': 'pt_BR', en: 'en_US', es: 'es_ES' }[page.language],
+      `${page.file}: og:locale corresponde ao idioma`,
     );
-    canonicalUrls.push(canonical);
+
+    const refs = assetReferences(html);
+    assert.ok(refs.length > 0, `${page.file}: referencia assets locais`);
+    if (page.file.includes('/')) {
+      assert.ok(
+        refs.every((reference) => !reference.startsWith('./assets/')),
+        `${page.file}: assets em subdiretório usam caminho relativo ao nível correto`,
+      );
+    }
+    for (const reference of refs) {
+      const resolved = new URL(reference, page.url);
+      if (resolved.origin !== origin || !resolved.pathname.includes('/assets/')) continue;
+      const assetPath = resolved.pathname.replace(/^\//, '').replace(/\?.*$/, '');
+      await assert.doesNotReject(
+        access(join(projectRoot, assetPath)),
+        `${page.file}: asset local existe (${reference})`,
+      );
+    }
+
+    canonicalUrls.push(page.url);
   }
+
   assert.equal(new Set(canonicalUrls).size, canonicalUrls.length, 'não existem canonicals duplicadas');
 
   const homeHtml = await readFile(join(projectRoot, 'index.html'), 'utf8');
@@ -137,7 +198,7 @@ function normalizeHtmlText(value) {
   const sitemap = await readFile(join(projectRoot, 'sitemap.xml'), 'utf8');
   assert.match(sitemap, /<urlset\b[^>]*xmlns=["']http:\/\/www\.sitemaps\.org\/schemas\/sitemap\/0\.9["']/i);
   const urlBlocks = sitemap.match(/<url>\s*[\s\S]*?<\/url>/gi) ?? [];
-  assert.equal(urlBlocks.length, expectedUrls.length, 'sitemap tem uma entrada para cada página pública');
+  assert.equal(urlBlocks.length, publicPages.length, 'sitemap tem uma entrada para cada página pública');
 
   const sitemapUrls = [];
   const today = new Date().toISOString().slice(0, 10);
@@ -158,7 +219,11 @@ function normalizeHtmlText(value) {
   }
 
   assert.equal(new Set(sitemapUrls).size, sitemapUrls.length, 'sitemap não contém URLs duplicadas');
-  assert.deepEqual([...sitemapUrls].sort(), [...expectedUrls].sort(), 'sitemap cobre exatamente as páginas públicas');
+  assert.deepEqual(
+    [...sitemapUrls].sort(),
+    publicPages.map((page) => page.url).sort(),
+    'sitemap cobre exatamente as seis páginas públicas',
+  );
 
   const robots = await readFile(join(projectRoot, 'robots.txt'), 'utf8');
   assert.match(robots, /^User-agent:\s*\*\s*$/im, 'robots.txt define regra para todos os agentes');

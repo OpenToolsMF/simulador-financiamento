@@ -41,6 +41,32 @@ assert.equal(i18n.normalizeLanguage('es-ES'), 'es', 'normaliza espanhol');
 assert.equal(i18n.normalizeLanguage('fr-FR'), 'pt-BR', 'usa fallback pt-BR');
 assert.equal(i18n.detectLanguage(), 'pt-BR', 'usa pt-BR como idioma inicial quando não há idioma salvo');
 
+const routeCases = [
+  ['/', { language: 'pt-BR', page: 'simulator', basePath: '' }],
+  ['/index.html', { language: 'pt-BR', page: 'simulator', basePath: '' }],
+  ['/en/', { language: 'en', page: 'simulator', basePath: '' }],
+  ['/en', { language: 'en', page: 'simulator', basePath: '' }],
+  ['/es/', { language: 'es', page: 'simulator', basePath: '' }],
+  ['/es', { language: 'es', page: 'simulator', basePath: '' }],
+  ['/privacidade.html', { language: 'pt-BR', page: 'privacy', basePath: '' }],
+  ['/en/privacy.html', { language: 'en', page: 'privacy', basePath: '' }],
+  ['/es/privacidad.html', { language: 'es', page: 'privacy', basePath: '' }],
+  ['/repo/en/', { language: 'en', page: 'simulator', basePath: '/repo' }],
+  ['/repo/es/privacidad.html', { language: 'es', page: 'privacy', basePath: '/repo' }],
+];
+for (const [pathname, expected] of routeCases) {
+  assert.deepEqual(i18n.routeInfoForPathname(pathname), expected, `detecta rota ${pathname}`);
+}
+
+const originalLocation = globalThis.location;
+globalThis.location = { pathname: '/repo/en/privacy.html', origin: 'https://example.test' };
+assert.equal(i18n.detectLanguage(), 'en', 'idioma explícito na rota vence a detecção padrão');
+assert.equal(i18n.localizedPathForLanguage('pt-BR'), '/repo/privacidade.html', 'gera URL equivalente de privacidade em pt-BR');
+assert.equal(i18n.localizedPathForLanguage('es'), '/repo/es/privacidad.html', 'gera URL equivalente de privacidade em es');
+assert.equal(i18n.localizedUrlForLanguage('es'), 'https://example.test/repo/es/privacidad.html', 'gera URL absoluta equivalente');
+if (originalLocation) globalThis.location = originalLocation;
+else delete globalThis.location;
+
 const numberCases = [
   ['1.234,56', 1234.56],
   ['1,234.56', 1234.56],

@@ -6,9 +6,17 @@
 
   if (!i18n || !languageSelect) return;
 
+  function updateLocalizedLinks() {
+    const simulatorPath = i18n.localizedPathForLanguage(i18n.getLanguage(), 'simulator');
+    const privacyPath = i18n.localizedPathForLanguage(i18n.getLanguage(), 'privacy');
+    document.querySelector('.privacy-back-link')?.setAttribute('href', simulatorPath);
+    document.querySelector('.site-footer a[data-i18n="footer.privacy"]')?.setAttribute('href', privacyPath);
+  }
+
   function applyTranslations() {
     i18n.setLanguage(i18n.getLanguage());
     languageSelect.value = i18n.getLanguage();
+    updateLocalizedLinks();
 
     document.querySelectorAll('[data-i18n]').forEach((element) => {
       element.textContent = i18n.t(element.dataset.i18n);
@@ -40,7 +48,13 @@
   }
 
   languageSelect.addEventListener('change', () => {
-    i18n.setLanguage(languageSelect.value);
+    const nextLanguage = languageSelect.value;
+    const nextUrl = i18n.localizedUrlForLanguage(nextLanguage, 'privacy');
+    i18n.setLanguage(nextLanguage);
+    if (nextUrl && nextUrl !== window.location.href) {
+      window.location.assign(nextUrl);
+      return;
+    }
     applyTranslations();
   });
 
