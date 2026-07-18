@@ -8,6 +8,8 @@
   const SELIC_CACHE_KEY = 'financing-simulator:selic-cache:v1';
   const PRIVACY_NOTICE_STORAGE_KEY = 'financing-simulator:privacy-notice-dismissed:v1';
   const SELIC_DATA_URL = './assets/data/selic-bcb.json';
+  const CHART_JS_URL = './assets/vendor/chartjs/chart.umd.min.js';
+  const CHART_PRELOAD_ROOT_MARGIN = '700px 0px';
   const PRINT_CHART_WIDTH = 1200;
   const PRINT_CHART_HEIGHT = 680;
   const PRINT_REPORT_CLEANUP_DELAY_MS = 300000;
@@ -48,6 +50,8 @@
   const summaryGrid = document.querySelector('#summary-grid');
   const summaryDetailBody = document.querySelector('#summary-detail-body');
   const projectionNote = document.querySelector('#projection-note');
+  const chartSection = document.querySelector('.chart-section');
+  const chartStatus = document.querySelector('#charts-status');
   const chartCanvases = {
     debt: document.querySelector('#debt-chart'),
     payment: document.querySelector('#payment-chart'),
@@ -76,6 +80,13 @@
   let currentConfig = null;
   let printCleanupTimer = null;
   let currentTrReferenceInfo = null;
+  let chartJsLoadPromise = null;
+  let chartObserver = null;
+  let chartsRequested = false;
+  let pendingChartComparison = null;
+  let chartRenderVersion = 0;
+  let latestRenderedChartVersion = 0;
+  let chartStatusState = 'idle';
 
   function t(key, params) {
     return i18n.t(key, params);
@@ -112,6 +123,76 @@
 
   function formatTrMonth(month) {
     return i18n.formatMonth(month);
+  }
+
+  function renderChartStatus() {
+    if (!chartStatus) return;
+
+    chartStatus.classList.toggle('chart-status-error', chartStatusState === 'error');
+    chartStatus.setAttribute('aria-busy', chartStatusState === 'loading' ? 'true' : 'false');
+
+    if (chartStatusState === 'loading') {
+      chartStatus.setAttribute('role', 'status');
+      chartStatus.textContent = t('charts.loading');
+      return;
+    }
+
+    if (chartStatusState === 'error') {
+      chartStatus.setAttribute('role', 'alert');
+      chartStatus.innerHTML = `${escapeHtml(t('charts.loadError'))} <button type="button" class="btn btn-link btn-sm p-0" data-action="retry-charts">${escapeHtml(t('charts.retry'))}</button>`;
+      return;
+    }
+
+    chartStatus.setAttribute('role', 'status');
+    chartStatus.textContent = '';
+  }
+
+  function setChartStatus(state) {
+    chartStatusState = state;
+    renderChartStatus();
+  }
+
+  function loadChartJs() {
+    if (window.Chart) return Promise.resolve(window.Chart);
+    if (chartJsLoadPromise) return chartJsLoadPromise;
+
+    chartJsLoadPromise = new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = CHART_JS_URL;
+      script.async = true;
+      script.dataset.chartjsLoader = 'true';
+
+      script.onload = () => {
+        script.onload = null;
+        script.onerror = null;
+        if (window.Chart) {
+          resolve(window.Chart);
+          return;
+        }
+        script.remove();
+        reject(new Error(`Chart.js loaded but window.Chart is unavailable from ${CHART_JS_URL}`));
+      };
+
+      script.onerror = () => {
+        script.onload = null;
+        script.onerror = null;
+        script.remove();
+        reject(new Error(`Unable to load Chart.js from ${CHART_JS_URL}`));
+      };
+
+      document.body.appendChild(script);
+    }).catch((error) => {
+      chartJsLoadPromise = null;
+      throw error;
+    });
+
+    return chartJsLoadPromise;
+  }
+
+  function disconnectChartObserver() {
+    if (!chartObserver) return;
+    chartObserver.disconnect();
+    chartObserver = null;
   }
 
   function validateTrData(data) {
@@ -545,6 +626,7 @@
     setAttr('#payment-chart', 'aria-label', 'charts.paymentAria');
     setAttr('#composition-chart', 'aria-label', 'charts.compositionAria');
     setAttr('#costs-chart', 'aria-label', 'charts.costsAria');
+    renderChartStatus();
 
     setText('#comparison-title', 'comparison.title');
     setText('[aria-labelledby="comparison-title"] .section-kicker', 'comparison.kicker');
@@ -1345,6 +1427,113 @@
     });
   }
 
+  async function renderPendingChartsWhenReady() {
+    if (!pendingChartComparison) return;
+
+    const renderVersion = chartRenderVersion;
+    const comparison = pendingChartComparison;
+    setChartStatus('loading');
+
+    try {
+      await loadChartJs();
+    } catch (error) {
+      if (renderVersion === chartRenderVersion) setChartStatus('error');
+      return;
+    }
+
+    if (renderVersion !== chartRenderVersion || comparison !== pendingChartComparison) return;
+    if (latestRenderedChartVersion === renderVersion) {
+      setChartStatus('idle');
+      return;
+    }
+
+    try {
+      renderCharts(comparison);
+      latestRenderedChartVersion = renderVersion;
+      setChartStatus('idle');
+    } catch (error) {
+      destroyCharts();
+      if (renderVersion === chartRenderVersion) setChartStatus('error');
+    }
+  }
+
+  function observeChartsWhenNeeded() {
+    if (chartsRequested || chartObserver || !chartSection) return;
+
+    if (!('IntersectionObserver' in window)) {
+      chartsRequested = true;
+      renderPendingChartsWhenReady();
+      return;
+    }
+
+    chartObserver = new IntersectionObserver((entries) => {
+      if (!entries.some((entry) => entry.isIntersecting || entry.intersectionRatio > 0)) return;
+      chartsRequested = true;
+      disconnectChartObserver();
+      renderPendingChartsWhenReady();
+    }, {
+      root: null,
+      rootMargin: CHART_PRELOAD_ROOT_MARGIN,
+      threshold: 0,
+    });
+
+    chartObserver.observe(chartSection);
+  }
+
+  function requestChartRender(comparison) {
+    pendingChartComparison = comparison;
+    chartRenderVersion += 1;
+
+    if (window.Chart || chartsRequested) {
+      chartsRequested = true;
+      renderPendingChartsWhenReady();
+      return;
+    }
+
+    observeChartsWhenNeeded();
+  }
+
+  function retryChartRender() {
+    if (!pendingChartComparison && currentComparison) {
+      pendingChartComparison = currentComparison;
+      chartRenderVersion += 1;
+    }
+    if (!pendingChartComparison) return;
+    chartsRequested = true;
+    disconnectChartObserver();
+    renderPendingChartsWhenReady();
+  }
+
+  async function ensureChartsForCurrentComparison() {
+    if (!currentComparison) return false;
+
+    pendingChartComparison = currentComparison;
+    chartRenderVersion += 1;
+    chartsRequested = true;
+    disconnectChartObserver();
+    setChartStatus('loading');
+
+    try {
+      await loadChartJs();
+    } catch (error) {
+      setChartStatus('error');
+      return false;
+    }
+
+    if (!currentComparison || !pendingChartComparison) return false;
+
+    try {
+      renderCharts(currentComparison);
+      latestRenderedChartVersion = chartRenderVersion;
+      setChartStatus('idle');
+      return true;
+    } catch (error) {
+      destroyCharts();
+      setChartStatus('error');
+      return false;
+    }
+  }
+
   function waitForPrintLayout() {
     return new Promise((resolve) => {
       window.requestAnimationFrame(() => {
@@ -1543,6 +1732,7 @@
     document.body.classList.remove('is-printing-report');
     isPreparingPrint = false;
     exportPdfButton.disabled = !hasCalculated;
+    exportPdfButton.removeAttribute('aria-busy');
   }
 
   function schedulePrintReportCleanup() {
@@ -1554,8 +1744,11 @@
     if (!hasCalculated || !currentComparison || !currentConfig || currentComparison.current.installments.length === 0 || !printReportRoot) return false;
     window.clearTimeout(printCleanupTimer);
     printCleanupTimer = null;
+    if (!await ensureChartsForCurrentComparison()) return false;
+    const comparison = currentComparison;
+    const config = currentConfig;
     const chartImages = createPrintChartImages();
-    printReportRoot.innerHTML = buildPrintReportHtml(currentComparison, currentConfig, chartImages);
+    printReportRoot.innerHTML = buildPrintReportHtml(comparison, config, chartImages);
     printReportRoot.setAttribute('aria-hidden', 'false');
     document.body.classList.add('is-printing-report');
     await waitForPrintLayout();
@@ -1565,6 +1758,7 @@
   function restorePrintReport() {
     isPreparingPrint = false;
     exportPdfButton.disabled = !hasCalculated;
+    exportPdfButton.removeAttribute('aria-busy');
     schedulePrintReportCleanup();
   }
 
@@ -1572,6 +1766,7 @@
     if (isPreparingPrint) return;
     isPreparingPrint = true;
     exportPdfButton.disabled = true;
+    exportPdfButton.setAttribute('aria-busy', 'true');
     try {
       if (!await preparePrintReport()) {
         clearPrintReport();
@@ -1581,6 +1776,7 @@
       restorePrintReport();
     } catch (error) {
       clearPrintReport();
+      setChartStatus('error');
     }
   }
 
@@ -1596,6 +1792,10 @@
     simulatedRows = [];
     currentComparison = null;
     currentConfig = null;
+    pendingChartComparison = null;
+    chartRenderVersion += 1;
+    latestRenderedChartVersion = 0;
+    setChartStatus('idle');
     clearPrintParameters();
     printSummaryBody.innerHTML = '';
     destroyCharts();
@@ -1607,7 +1807,6 @@
     currentConfig = config;
     if (config) renderPrintParameters(config);
     renderSummary(comparison.current.stats);
-    renderCharts(comparison);
     renderComparison(comparison.base.stats, comparison.current.stats);
     simulatedRows = comparison.current.installments;
     if (!hasCalculated) {
@@ -1620,6 +1819,7 @@
     tableContent.classList.remove('d-none');
     hasCalculated = true;
     exportPdfButton.disabled = false;
+    requestChartRender(comparison);
     if (scrollToResults) results.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
@@ -1766,6 +1966,9 @@
   languageSelect.addEventListener('change', handleLanguageChange);
   resetFormButton.addEventListener('click', resetFormState);
   exportPdfButton.addEventListener('click', exportResultsToPdf);
+  chartStatus?.addEventListener('click', (event) => {
+    if (event.target.closest('[data-action="retry-charts"]')) retryChartRender();
+  });
   window.addEventListener('afterprint', restorePrintReport);
   useLatestTrButton.addEventListener('click', () => applyLatestTrRate());
   ratePeriodInput.addEventListener('change', updateRatePeriod);

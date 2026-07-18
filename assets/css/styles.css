@@ -499,6 +499,32 @@ legend.form-label {
   gap: 1.5rem;
 }
 
+.chart-status {
+  min-height: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: var(--color-text-soft);
+  font-size: 0.9rem;
+}
+
+.chart-status:empty {
+  margin-bottom: 0;
+}
+
+.chart-status-error {
+  color: var(--color-danger);
+}
+
+.chart-status .btn-link {
+  color: var(--color-primary);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.chart-status .btn-link:hover,
+.chart-status .btn-link:focus {
+  text-decoration: underline;
+}
+
 .chart-panel h3 {
   margin: 0 0 0.75rem;
   color: var(--color-primary-dark);
