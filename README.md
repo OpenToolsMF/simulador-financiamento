@@ -68,6 +68,7 @@ Com Node.js disponível:
 node --check assets/js/i18n.js
 node --check assets/js/app.js
 node --check assets/js/finance.js
+node tests/seo-files.test.js
 node tests/i18n.test.js
 node tests/finance.test.js
 node tests/selic-bcb.test.js
@@ -88,6 +89,7 @@ Os testes automatizados cobrem principalmente:
 - cenário reportado com correção monetária e amortização extra;
 - dicionários e formatadores básicos de i18n;
 - parser e geração dos JSONs locais da TR e da Selic.
+- coerência entre páginas públicas, URLs canônicas, sitemap e robots.
 
 Ainda não há testes automatizados de browser/UI para layout, impressão, Chart.js, `localStorage`, cache Selic/TR no navegador ou fluxo visual de PDF. Esses pontos devem ser validados manualmente no navegador.
 

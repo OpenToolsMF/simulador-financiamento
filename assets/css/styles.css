@@ -114,6 +114,44 @@ body {
   color: var(--color-text-soft);
 }
 
+.faq-list {
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.faq-item + .faq-item {
+  border-top: 1px solid var(--color-border);
+}
+
+.faq-item summary {
+  padding: 1rem 1.1rem;
+  color: var(--color-text);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.faq-item summary::marker {
+  color: var(--color-primary);
+}
+
+.faq-item summary:focus-visible {
+  outline: 3px solid rgba(23, 107, 58, 0.24);
+  outline-offset: -3px;
+}
+
+.faq-item[open] summary {
+  color: var(--color-primary-dark);
+  background: var(--color-primary-soft);
+}
+
+.faq-item p {
+  margin: 0;
+  padding: 0.9rem 1.1rem 1rem;
+  color: var(--color-text-soft);
+  line-height: 1.6;
+}
+
 .privacy-notice {
   position: relative;
   margin-bottom: 1.25rem;

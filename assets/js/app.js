@@ -571,6 +571,13 @@
     setAttr('#privacy-notice-dismiss', 'aria-label', 'privacyNotice.dismissAria');
     setText('#footer-copyright', 'footer.copyright');
     setText('#footer-privacy-link', 'footer.privacy');
+    setText('#faq-kicker', 'faq.kicker');
+    setText('#faq-title', 'faq.title');
+    document.querySelectorAll('[data-faq-item]').forEach((item, index) => {
+      const number = index + 1;
+      setText('[data-faq-question]', `faq.${number}.question`, item);
+      setText('[data-faq-answer]', `faq.${number}.answer`, item);
+    });
     setRequiredLabel('label[for="financed-value"]', 'form.financedValue');
     setRequiredLabel('label[for="term"]', 'form.term');
     setRequiredLabel('label[for="interest-rate"]', 'form.interestRate');

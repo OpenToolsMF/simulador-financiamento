@@ -18,11 +18,25 @@
       element.setAttribute('aria-label', i18n.t(element.dataset.i18nAriaLabel));
     });
 
-    document.title = i18n.t('privacy.metadata.title');
+    const title = i18n.t('privacy.metadata.title');
+    const description = i18n.t('privacy.metadata.description');
+    document.title = title;
     document.querySelector('meta[name="description"]')?.setAttribute(
       'content',
-      i18n.t('privacy.metadata.description'),
+      description,
     );
+    document.querySelector('meta[property="og:title"]')?.setAttribute('content', title);
+    document.querySelector('meta[property="og:description"]')?.setAttribute('content', description);
+    document.querySelector('meta[property="og:locale"]')?.setAttribute(
+      'content',
+      i18n.getLocale().replace('-', '_'),
+    );
+    document.querySelector('meta[property="og:site_name"]')?.setAttribute(
+      'content',
+      i18n.t('header.title'),
+    );
+    document.querySelector('meta[name="twitter:title"]')?.setAttribute('content', title);
+    document.querySelector('meta[name="twitter:description"]')?.setAttribute('content', description);
   }
 
   languageSelect.addEventListener('change', () => {

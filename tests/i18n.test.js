@@ -4,6 +4,11 @@ const assert = require('node:assert/strict');
 const i18n = require('../assets/js/i18n.js');
 
 const languages = i18n.getSupportedLanguages();
+const expectedPrivacyTitles = {
+  'pt-BR': 'Política de Privacidade | Mapa das Parcelas',
+  en: 'Privacy Policy | Installment Map',
+  es: 'Política de Privacidad | Mapa de cuotas',
+};
 assert.deepEqual(languages, ['pt-BR', 'en', 'es'], 'expõe os três idiomas suportados');
 
 const referenceKeys = Object.keys(i18n.dictionaries['pt-BR']).sort();
@@ -16,6 +21,13 @@ for (const language of languages) {
   i18n.setLanguage(language);
   assert.equal(i18n.getLanguage(), language, `${language}: troca idioma`);
   assert.notEqual(i18n.t('metadata.title'), 'metadata.title', `${language}: encontra chave crítica`);
+  assert.equal(
+    i18n.t('privacy.metadata.title'),
+    expectedPrivacyTitles[language],
+    `${language}: mantém título específico da página de privacidade`,
+  );
+  assert.notEqual(i18n.t('faq.1.question'), 'faq.1.question', `${language}: traduz perguntas frequentes`);
+  assert.notEqual(i18n.t('faq.9.answer'), 'faq.9.answer', `${language}: traduz todas as respostas do FAQ`);
   assert.ok(i18n.t('validation.monthBetween', { term: 360 }).includes('360'), `${language}: interpola parâmetros`);
   assert.ok(i18n.formatCurrency(123456).includes('1'), `${language}: formata moeda`);
   assert.ok(i18n.formatDate('2026-07-15').length > 0, `${language}: formata data`);
