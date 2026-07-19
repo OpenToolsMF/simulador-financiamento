@@ -21,6 +21,12 @@ function extractCanonical(html) {
   return canonicalTag?.match(/\bhref=["']([^"']+)["']/i)?.[1] ?? null;
 }
 
+function extractManifest(html) {
+  const linkTags = html.match(/<link\b[^>]*>/gi) ?? [];
+  const manifestTag = linkTags.find((tag) => /\brel=["']manifest["']/i.test(tag));
+  return manifestTag?.match(/\bhref=["']([^"']+)["']/i)?.[1] ?? null;
+}
+
 function extractAlternateLinks(html) {
   const linkTags = html.match(/<link\b[^>]*>/gi) ?? [];
   return Object.fromEntries(linkTags
@@ -72,7 +78,7 @@ function assetReferences(html) {
       'pt-BR': `${origin}/privacidade.html`,
       en: `${origin}/en/privacy.html`,
       es: `${origin}/es/privacidad.html`,
-      'x-default': `${origin}/`,
+      'x-default': `${origin}/privacidade.html`,
     },
   };
 
@@ -89,6 +95,7 @@ function assetReferences(html) {
   }));
 
   const canonicalUrls = [];
+  const manifestUrls = [];
   for (const page of publicPages) {
     const html = await readFile(join(projectRoot, page.file), 'utf8');
     const expectedAlternates = routeGroups[page.page];
@@ -102,6 +109,10 @@ function assetReferences(html) {
       { 'pt-BR': 'pt_BR', en: 'en_US', es: 'es_ES' }[page.language],
       `${page.file}: og:locale corresponde ao idioma`,
     );
+
+    const manifestReference = extractManifest(html);
+    assert.ok(manifestReference, `${page.file}: referencia o manifesto da aplicação`);
+    manifestUrls.push(new URL(manifestReference, page.url).href);
 
     const refs = assetReferences(html);
     assert.ok(refs.length > 0, `${page.file}: referencia assets locais`);
@@ -125,6 +136,41 @@ function assetReferences(html) {
   }
 
   assert.equal(new Set(canonicalUrls).size, canonicalUrls.length, 'não existem canonicals duplicadas');
+  assert.deepEqual(
+    [...new Set(manifestUrls)],
+    [`${origin}/assets/image/favicon/site.webmanifest`],
+    'todas as páginas públicas usam o mesmo manifesto',
+  );
+
+  const manifestPath = join(projectRoot, 'assets/image/favicon/site.webmanifest');
+  const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
+  assert.equal(manifest.name, 'Mapa das Parcelas', 'manifesto usa o nome público do projeto');
+  assert.equal(manifest.short_name, 'Mapa Parcelas', 'manifesto possui nome curto da marca');
+  assert.ok(manifest.description, 'manifesto possui descrição');
+  assert.equal(manifest.lang, 'pt-BR', 'manifesto declara o idioma padrão');
+  assert.equal(manifest.start_url, '../../../', 'manifesto abre a raiz relativa do projeto');
+  assert.equal(manifest.scope, '../../../', 'manifesto limita o escopo à raiz relativa do projeto');
+  assert.equal(manifest.display, 'standalone', 'manifesto preserva exibição standalone');
+  assert.equal(manifest.theme_color, '#176B3A', 'manifesto usa a cor primária do projeto');
+  assert.equal(manifest.background_color, '#F4F8F5', 'manifesto usa o fundo visual do projeto');
+  assert.deepEqual(
+    manifest.icons.map(({ sizes }) => sizes),
+    ['192x192', '512x512'],
+    'manifesto oferece ícones nos tamanhos necessários',
+  );
+
+  const manifestPublicUrl = `${origin}/assets/image/favicon/site.webmanifest`;
+  for (const icon of manifest.icons) {
+    assert.ok(!icon.src.startsWith('/'), `${icon.src}: ícone usa caminho relativo`);
+    assert.equal(icon.type, 'image/png', `${icon.src}: ícone declara o tipo PNG`);
+    assert.equal(icon.purpose, 'any', `${icon.src}: ícone não declara suporte maskable não validado`);
+    const iconUrl = new URL(icon.src, manifestPublicUrl);
+    const iconPath = iconUrl.pathname.replace(/^\//, '');
+    await assert.doesNotReject(
+      access(join(projectRoot, iconPath)),
+      `${icon.src}: arquivo de ícone existe`,
+    );
+  }
 
   const homeHtml = await readFile(join(projectRoot, 'index.html'), 'utf8');
   const privacyHtml = await readFile(join(projectRoot, 'privacidade.html'), 'utf8');

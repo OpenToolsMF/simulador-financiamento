@@ -181,18 +181,18 @@
       <div class="container py-4 py-lg-5">
         <div class="site-header-content">
           <div class="site-header-topline">
-            <span class="eyebrow">Simulador de Financiamento</span>
+            <span class="eyebrow">Simulador de financiación</span>
             <div class="language-switcher">
               <label for="language-select" class="form-label">Idioma</label>
               <select id="language-select" class="form-select form-select-sm" aria-label="Idioma">
                 <option value="pt-BR">Português</option>
                 <option value="en">English</option>
-                <option value="es">Español</option>
+                <option value="es" selected>Español</option>
               </select>
             </div>
           </div>
-          <h1 class="display-6 fw-bold mb-2">Mapa das Parcelas</h1>
-          <p class="lead mb-0">Simule financiamentos SAC e Price com amortizações pontuais ou recorrentes.</p>
+          <h1 class="display-6 fw-bold mb-2">Mapa de cuotas</h1>
+          <p class="lead mb-0">Simula financiaciones SAC y Price con amortizaciones puntuales o recurrentes.</p>
         </div>
       </div>
     </header>
@@ -202,8 +202,8 @@
         <section class="surface-card mb-4" aria-labelledby="financing-title">
           <div class="section-heading">
             <div>
-              <span class="section-kicker">Configuração</span>
-              <h2 id="financing-title">Dados do financiamento</h2>
+              <span class="section-kicker">Configuración</span>
+              <h2 id="financing-title">Datos de la financiación</h2>
             </div>
             <div class="section-actions">
               <button id="export-pdf" class="btn btn-outline-primary btn-sm no-print" type="button" disabled>Exportar PDF</button>
@@ -212,17 +212,17 @@
           </div>
 
           <aside id="privacy-notice" class="privacy-notice" aria-labelledby="privacy-notice-title">
-            <button id="privacy-notice-dismiss" class="btn-close privacy-notice-dismiss" type="button" aria-label="Ocultar aviso de privacidade"></button>
+            <button id="privacy-notice-dismiss" class="btn-close privacy-notice-dismiss" type="button" aria-label="Ocultar aviso de privacidad"></button>
             <p class="mb-0">
-              <strong id="privacy-notice-title">Sua simulação é privada.</strong>
-              <span id="privacy-notice-text">Os valores ficam salvos apenas no seu navegador. Não temos cadastro nem banco de dados. Serviços da página podem receber dados técnicos.</span>
+              <strong id="privacy-notice-title">Tu simulación es privada.</strong>
+              <span id="privacy-notice-text">Los valores se guardan únicamente en tu navegador. No mantenemos registros de usuarios ni una base de datos. Los servicios utilizados por la página pueden recibir datos técnicos.</span>
             </p>
           </aside>
 
           <div class="row row-cols-1 row-cols-md-2 row-cols-xl-5 g-4 financing-config-grid">
             <div class="col financing-config-field">
               <div class="field-header">
-                <label for="financed-value" class="form-label">Valor financiado <span class="required-marker" aria-hidden="true">*</span></label>
+                <label for="financed-value" class="form-label">Importe financiado <span class="required-marker" aria-hidden="true">*</span></label>
               </div>
               <div class="input-group has-validation">
                 <span class="input-group-text">R$</span>
@@ -233,7 +233,7 @@
 
             <div class="col financing-config-field">
               <div class="field-header">
-                <label for="term" class="form-label">Prazo <span class="required-marker" aria-hidden="true">*</span></label>
+                <label for="term" class="form-label">Plazo <span class="required-marker" aria-hidden="true">*</span></label>
               </div>
               <div class="input-group has-validation">
                 <input id="term" name="term" class="form-control" type="number" min="1" max="600" step="1" inputmode="numeric" value="360" aria-describedby="term-error" required>
@@ -244,7 +244,7 @@
 
             <div class="col financing-config-field">
               <div class="field-header">
-                <label for="interest-rate" class="form-label">Taxa de juros <span class="required-marker" aria-hidden="true">*</span></label>
+                <label for="interest-rate" class="form-label">Tasa de interés <span class="required-marker" aria-hidden="true">*</span></label>
               </div>
               <div class="input-group has-validation">
                 <input id="interest-rate" name="interestRate" class="form-control" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00" aria-describedby="interest-rate-error" required>
@@ -255,20 +255,20 @@
 
             <div class="col financing-config-field">
               <div class="field-header">
-                <label for="rate-period" class="form-label">Período da taxa</label>
+                <label for="rate-period" class="form-label">Período de la tasa</label>
               </div>
               <select id="rate-period" name="ratePeriod" class="form-select">
                 <option value="annual">Anual</option>
-                <option value="monthly">Mensal</option>
+                <option value="monthly">Mensual</option>
               </select>
             </div>
 
             <div id="annual-rate-type-field" class="col financing-config-field">
               <div class="field-header">
-                <label for="annual-rate-type" class="form-label">Tipo da taxa anual</label>
+                <label for="annual-rate-type" class="form-label">Tipo de tasa anual</label>
               </div>
               <select id="annual-rate-type" name="annualRateType" class="form-select">
-                <option value="effective">Efetiva</option>
+                <option value="effective">Efectiva</option>
                 <option value="nominal">Nominal</option>
               </select>
               <div id="annual-rate-type-help" class="form-text d-none"></div>
@@ -276,36 +276,36 @@
 
             <div class="col financing-config-field">
               <div class="field-header">
-                <label for="monthly-extra-cost" class="form-label">Custos extras mensais</label>
+                <label for="monthly-extra-cost" class="form-label">Costos extra mensuales</label>
               </div>
               <div class="input-group has-validation">
                 <span class="input-group-text">R$</span>
                 <input id="monthly-extra-cost" name="monthlyExtraCost" class="form-control" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00" aria-describedby="monthly-extra-cost-help monthly-extra-cost-error">
                 <div id="monthly-extra-cost-error" class="invalid-feedback"></div>
               </div>
-              <div id="monthly-extra-cost-help" class="form-text">Seguro, taxa de administração e outros custos fixos.</div>
+              <div id="monthly-extra-cost-help" class="form-text">Seguro, tarifa de administración y otros costos fijos.</div>
             </div>
 
             <div class="col financing-config-field">
               <div class="field-header">
-                <label for="correction-mode" class="form-label">Correção monetária</label>
+                <label for="correction-mode" class="form-label">Corrección monetaria</label>
               </div>
               <select id="correction-mode" name="correctionMode" class="form-select">
-                <option value="fixed">Percentual mensal fixo</option>
-                <option value="custom">Série mensal personalizada</option>
-                <option value="none">Sem correção</option>
+                <option value="fixed">Porcentaje mensual fijo</option>
+                <option value="custom">Serie mensual personalizada</option>
+                <option value="none">Sin corrección</option>
               </select>
             </div>
 
             <div id="fixed-correction-field" class="col financing-config-field financing-config-field-wide d-none">
               <div class="field-header">
                 <span class="field-label-with-action">
-                  <label for="monthly-correction-rate" class="form-label">Correção mensal fixa</label>
-                  <button id="tr-average-info" class="info-icon-button" type="button" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="A maior TR dos últimos 12 meses será carregada quando os dados locais estiverem disponíveis." aria-label="Informações sobre a maior TR dos últimos 12 meses">?</button>
+                  <label for="monthly-correction-rate" class="form-label">Corrección mensual fija</label>
+                  <button id="tr-average-info" class="info-icon-button" type="button" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="La TR más alta de los últimos 12 meses se cargará cuando los datos locales estén disponibles." aria-label="Información sobre la TR más alta de los últimos 12 meses">?</button>
                 </span>
                 <span class="field-header-actions">
                   <button id="use-latest-tr" class="btn btn-link btn-sm p-0 tr-action-button" type="button">Usar TR 12m</button>
-                  <a class="small" href="https://www.debit.com.br/tabelas/tr-bacen" target="_blank" rel="noopener noreferrer">Ver taxa TR</a>
+                  <a class="small" href="https://www.debit.com.br/tabelas/tr-bacen" target="_blank" rel="noopener noreferrer">Ver tasa TR</a>
                 </span>
               </div>
               <div class="input-group correction-rate-group has-validation">
@@ -313,20 +313,20 @@
                 <span class="input-group-text">%</span>
                 <div id="monthly-correction-rate-error" class="invalid-feedback"></div>
               </div>
-              <div id="monthly-correction-rate-help" class="form-text">Informe a correção mensal.</div>
+              <div id="monthly-correction-rate-help" class="form-text">Informa la corrección mensual.</div>
             </div>
 
             <div class="col financing-config-field">
               <div class="field-header">
-                <label for="first-due-date" class="form-label">Data da primeira parcela</label>
+                <label for="first-due-date" class="form-label">Fecha de la primera cuota</label>
               </div>
               <input id="first-due-date" name="firstDueDate" class="form-control" type="date">
             </div>
 
             <div class="col financing-config-field">
               <div class="field-header">
-                <label for="system" class="form-label">Sistema de amortização</label>
-                <button class="info-icon-button" type="button" data-bs-toggle="modal" data-bs-target="#system-info-modal" aria-label="Mais informações sobre SAC e Price">?</button>
+                <label for="system" class="form-label">Sistema de amortización</label>
+                <button class="info-icon-button" type="button" data-bs-toggle="modal" data-bs-target="#system-info-modal" aria-label="Más información sobre SAC y Price">?</button>
               </div>
               <select id="system" name="system" class="form-select">
                 <option value="sac">SAC</option>
@@ -336,11 +336,11 @@
 
             <div id="custom-correction-field" class="col financing-config-field financing-config-field-wide d-none">
               <div class="field-header">
-                <label for="monthly-correction-series" class="form-label">Série mensal personalizada</label>
+                <label for="monthly-correction-series" class="form-label">Serie mensual personalizada</label>
               </div>
               <textarea id="monthly-correction-series" name="monthlyCorrectionSeries" class="form-control" rows="3" inputmode="decimal" placeholder="0,30&#10;0,25&#10;0,20" aria-describedby="monthly-correction-series-help monthly-correction-series-error"></textarea>
               <div id="monthly-correction-series-error" class="invalid-feedback"></div>
-              <div id="monthly-correction-series-help" class="form-text">Informe percentuais mensais separados por linha, vírgula ou ponto e vírgula. Se faltar mês, o último percentual será repetido.</div>
+              <div id="monthly-correction-series-help" class="form-text">Informa porcentajes mensuales separados por línea, coma o punto y coma. Si faltan meses, se repite el último porcentaje.</div>
             </div>
           </div>
         </section>
@@ -348,16 +348,16 @@
         <section class="surface-card mb-4" aria-labelledby="extras-title">
           <div class="section-heading align-items-start">
             <div>
-              <span class="section-kicker">Pagamentos adicionais</span>
-              <h2 id="extras-title">Amortizações extras</h2>
-              <p class="section-description">Configure pagamentos adicionais para reduzir o prazo ou o valor das próximas parcelas.</p>
+              <span class="section-kicker">Pagos adicionales</span>
+              <h2 id="extras-title">Amortizaciones extra</h2>
+              <p class="section-description">Configura pagos adicionales para reducir el plazo o el valor de las próximas cuotas.</p>
             </div>
-            <button id="add-extra" class="btn btn-outline-primary flex-shrink-0" type="button">Adicionar amortização</button>
+            <button id="add-extra" class="btn btn-outline-primary flex-shrink-0" type="button">Agregar amortización</button>
           </div>
 
           <div id="extras-empty" class="empty-state">
             <div class="empty-icon" aria-hidden="true">+</div>
-            <p class="mb-0">Nenhuma amortização extra configurada.</p>
+            <p class="mb-0">No hay amortización extra configurada.</p>
           </div>
           <div id="extras-list" class="vstack gap-3"></div>
         </section>
@@ -367,18 +367,18 @@
       </form>
 
       <div id="results" class="d-none" aria-live="polite">
-        <section class="print-report-header print-only" aria-label="Cabeçalho do relatório">
+        <section class="print-report-header print-only" aria-label="Encabezado del informe">
           <img src="../assets/image/logo.png" alt="Logo" class="print-report-logo">
           <div>
-            <h2>Mapa das Parcelas - Financiamento</h2>
+            <h2>Mapa de cuotas - Financiación</h2>
           </div>
         </section>
 
         <section id="print-parameters" class="surface-card print-only mb-4" aria-labelledby="print-parameters-title">
           <div class="section-heading">
             <div>
-              <span class="section-kicker">Parâmetros</span>
-              <h2 id="print-parameters-title">Parâmetros da simulação</h2>
+              <span class="section-kicker">Parámetros</span>
+              <h2 id="print-parameters-title">Parámetros de la simulación</h2>
             </div>
           </div>
           <table class="table print-parameters-table mb-0">
@@ -390,7 +390,7 @@
           <div class="section-heading">
             <div>
               <span class="section-kicker">Resultados</span>
-              <h2 id="summary-title">Resumo da simulação</h2>
+              <h2 id="summary-title">Resumen de la simulación</h2>
             </div>
           </div>
           <div id="simulation-warning" class="alert alert-warning d-none no-print" role="status"></div>
@@ -398,14 +398,14 @@
           <table class="table print-summary-table print-only mb-0">
             <tbody id="print-summary-body"></tbody>
           </table>
-          <p id="projection-note" class="text-secondary small mt-3 mb-0 d-none">Projeção baseada em correção monetária e custos mensais constantes. Os valores futuros reais podem variar.</p>
+          <p id="projection-note" class="text-secondary small mt-3 mb-0 d-none">Proyección basada en corrección monetaria y costos mensuales constantes. Los valores futuros reales pueden variar.</p>
         </section>
 
         <section class="surface-card mb-5" aria-labelledby="summary-detail-title">
           <div class="section-heading">
             <div>
               <span class="section-kicker">Resultados</span>
-              <h2 id="summary-detail-title">Detalhamento da simulação</h2>
+              <h2 id="summary-detail-title">Detalle de la simulación</h2>
             </div>
           </div>
           <div class="table-responsive">
@@ -420,33 +420,33 @@
           <div class="section-heading">
             <div>
               <span class="section-kicker">Gráficos</span>
-              <h2 id="charts-title">Análise visual</h2>
+              <h2 id="charts-title">Análisis visual</h2>
             </div>
           </div>
           <div id="charts-status" class="chart-status" role="status" aria-live="polite"></div>
           <div class="charts-grid">
             <div class="chart-panel">
-              <h3>Evolução do saldo devedor</h3>
+              <h3>Evolución del saldo deudor</h3>
               <div class="chart-wrap">
-                <canvas id="debt-chart" aria-label="Gráfico da evolução do saldo devedor" role="img"></canvas>
+                <canvas id="debt-chart" aria-label="Gráfico de evolución del saldo deudor" role="img"></canvas>
               </div>
             </div>
             <div class="chart-panel">
-              <h3>Composição da parcela</h3>
+              <h3>Composición de la cuota</h3>
               <div class="chart-wrap">
-                <canvas id="composition-chart" aria-label="Gráfico da composição da parcela" role="img"></canvas>
+                <canvas id="composition-chart" aria-label="Gráfico de composición de la cuota" role="img"></canvas>
               </div>
             </div>
             <div class="chart-panel">
-              <h3>Pagamento mensal</h3>
+              <h3>Pago mensual</h3>
               <div class="chart-wrap">
-                <canvas id="payment-chart" aria-label="Gráfico do pagamento mensal" role="img"></canvas>
+                <canvas id="payment-chart" aria-label="Gráfico del pago mensual" role="img"></canvas>
               </div>
             </div>
             <div class="chart-panel">
-              <h3>Custos acumulados</h3>
+              <h3>Costos acumulados</h3>
               <div class="chart-wrap">
-                <canvas id="costs-chart" aria-label="Gráfico dos custos acumulados" role="img"></canvas>
+                <canvas id="costs-chart" aria-label="Gráfico de costos acumulados" role="img"></canvas>
               </div>
             </div>
           </div>
@@ -455,13 +455,13 @@
         <section class="surface-card mb-5" aria-labelledby="comparison-title">
           <div class="section-heading">
             <div>
-              <span class="section-kicker">Cenários</span>
-              <h2 id="comparison-title">Comparação</h2>
+              <span class="section-kicker">Escenarios</span>
+              <h2 id="comparison-title">Comparación</h2>
             </div>
           </div>
           <div class="table-responsive">
             <table class="table comparison-table align-middle mb-0">
-              <thead><tr><th scope="col">Indicador</th><th scope="col">Sem amortizações</th><th scope="col">Com amortizações</th><th scope="col">Diferença</th></tr></thead>
+              <thead><tr><th scope="col">Indicador</th><th scope="col">Sin amortizaciones</th><th scope="col">Con amortizaciones</th><th scope="col">Diferencia</th></tr></thead>
               <tbody id="comparison-body"></tbody>
             </table>
           </div>
@@ -472,30 +472,30 @@
         <div class="section-heading">
           <div>
             <span class="section-kicker">Cronograma</span>
-            <h2 id="installments-title">Parcelas</h2>
+            <h2 id="installments-title">Cuotas</h2>
           </div>
         </div>
 
-        <div id="table-empty" class="empty-state">Preencha os dados para visualizar as parcelas.</div>
+        <div id="table-empty" class="empty-state">Completa los datos para ver las cuotas.</div>
 
         <div id="table-content" class="d-none">
           <div class="table-controls row g-3 align-items-end">
             <div class="col-sm-6 col-lg-4">
-              <label for="installment-filter" class="form-label">Exibir</label>
+              <label for="installment-filter" class="form-label">Mostrar</label>
               <select id="installment-filter" class="form-select">
-                <option value="all">Todas as parcelas</option>
-                <option value="extras">Apenas parcelas com amortização extra</option>
+                <option value="all">Todas las cuotas</option>
+                <option value="extras">Solo cuotas con amortización extra</option>
               </select>
             </div>
             <div class="col-sm-6 col-lg-3">
-              <label for="go-to-installment" class="form-label">Ir para parcela</label>
+              <label for="go-to-installment" class="form-label">Ir a la cuota</label>
               <div class="input-group">
                 <input id="go-to-installment" class="form-control" type="number" min="1" step="1" inputmode="numeric">
                 <button id="go-button" class="btn btn-outline-secondary" type="button">Ir</button>
               </div>
             </div>
             <div class="col-sm-6 col-lg-3">
-              <label for="page-size" class="form-label">Itens por página</label>
+              <label for="page-size" class="form-label">Ítems por página</label>
               <select id="page-size" class="form-select">
                 <option value="12">12</option>
                 <option value="24">24</option>
@@ -505,24 +505,24 @@
             </div>
           </div>
 
-          <div class="installments-table-wrap" tabindex="0" aria-label="Tabela completa de parcelas">
+          <div class="installments-table-wrap" tabindex="0" aria-label="Tabla completa de cuotas">
             <table class="table installments-table table-hover align-middle mb-0">
               <thead>
                 <tr class="print-table-brand-row">
                   <th colspan="14" scope="colgroup">
                     <span class="print-table-brand">
                       <img src="../assets/image/logo.png" alt="" class="print-table-brand-logo">
-                      <span>Mapa das Parcelas - Financiamento</span>
+                      <span>Mapa de cuotas - Financiación</span>
                     </span>
                   </th>
                 </tr>
                 <tr class="print-table-title-row">
                   <th colspan="14" scope="colgroup">
                     <span class="section-kicker">Cronograma</span>
-                    <span class="print-table-title">Parcelas</span>
+                    <span class="print-table-title">Cuotas</span>
                   </th>
                 </tr>
-                <tr><th scope="col">Parcela</th><th scope="col">Data</th><th scope="col">Saldo inicial</th><th scope="col">% correção</th><th scope="col">Correção monetária</th><th scope="col">Saldo corrigido</th><th scope="col">Juros</th><th scope="col" title="No SAC com correção, esta amortização é atualizada pelo saldo corrigido e pelas parcelas restantes; extras para reduzir prazo podem reancorar esse prazo.">Amortização regular corrigida</th><th scope="col">Parcela regular</th><th scope="col">Amortização extra</th><th scope="col">Custos extras</th><th scope="col">Pagamento total</th><th scope="col">Saldo final</th><th scope="col">Objetivo da amortização</th></tr>
+                <tr><th scope="col">Cuota</th><th scope="col">Fecha</th><th scope="col">Saldo inicial</th><th scope="col">% corrección</th><th scope="col">Corrección monetaria</th><th scope="col">Saldo corregido</th><th scope="col">Intereses</th><th scope="col" title="En SAC con corrección, esta amortización se actualiza por el saldo corregido y las cuotas restantes; los extras para reducir plazo pueden reanclar ese plazo.">Amortización regular corregida</th><th scope="col">Cuota regular</th><th scope="col">Amortización extra</th><th scope="col">Costos extra</th><th scope="col">Pago total</th><th scope="col">Saldo final</th><th scope="col">Objetivo de la amortización</th></tr>
               </thead>
               <tbody id="installments-body"></tbody>
             </table>
@@ -530,9 +530,9 @@
 
           <div class="pagination-bar">
             <span id="page-status" class="text-secondary"></span>
-            <div class="btn-group" role="group" aria-label="Paginação da tabela">
+            <div class="btn-group" role="group" aria-label="Paginación de la tabla">
               <button id="previous-page" class="btn btn-outline-secondary" type="button">Anterior</button>
-              <button id="next-page" class="btn btn-outline-secondary" type="button">Próxima</button>
+              <button id="next-page" class="btn btn-outline-secondary" type="button">Siguiente</button>
             </div>
           </div>
         </div>
@@ -541,60 +541,60 @@
       <section class="surface-card faq-section no-print mb-4" aria-labelledby="faq-title">
         <div class="section-heading">
           <div>
-            <span id="faq-kicker" class="section-kicker">Dúvidas</span>
-            <h2 id="faq-title">Perguntas frequentes</h2>
+            <span id="faq-kicker" class="section-kicker">Dudas</span>
+            <h2 id="faq-title">Preguntas frecuentes</h2>
           </div>
         </div>
 
         <div class="faq-list">
           <details class="faq-item" data-faq-item>
-            <summary data-faq-question>Qual é a diferença entre SAC e Price?</summary>
-            <p data-faq-answer>No SAC, a amortização regular é calculada com base no saldo e no prazo restantes, e os pagamentos geralmente diminuem ao longo do financiamento. Na Price, as parcelas financeiras são calculadas para permanecer regulares nas condições consideradas, com amortização crescente e juros decrescentes. Correção monetária e pagamentos extras podem alterar esses comportamentos.</p>
+            <summary data-faq-question>¿Cuál es la diferencia entre SAC y Price?</summary>
+            <p data-faq-answer>En SAC, la amortización regular se calcula a partir del saldo y el plazo restantes, y los pagos generalmente disminuyen a lo largo de la financiación. En Price, las cuotas financieras se calculan para permanecer regulares en las condiciones consideradas, con una amortización creciente e intereses decrecientes. La corrección monetaria y los pagos extra pueden modificar estos comportamientos.</p>
           </details>
           <details class="faq-item" data-faq-item>
-            <summary data-faq-question>Uma amortização extra reduz o prazo ou o valor das parcelas?</summary>
-            <p data-faq-answer>Depende do objetivo selecionado. Ao reduzir prazo, o simulador recalcula a duração restante do financiamento. Ao reduzir o valor das parcelas, ele preserva o prazo e recalcula os pagamentos futuros. A instituição financeira pode aplicar regras contratuais diferentes.</p>
+            <summary data-faq-question>¿Una amortización extra reduce el plazo o el valor de las cuotas?</summary>
+            <p data-faq-answer>Depende del objetivo seleccionado. Al reducir el plazo, el simulador recalcula la duración restante de la financiación. Al reducir el valor de las cuotas, conserva el plazo y recalcula los pagos futuros. La institución financiera puede aplicar reglas contractuales diferentes.</p>
           </details>
           <details class="faq-item" data-faq-item>
-            <summary data-faq-question>O que é correção monetária do saldo devedor?</summary>
-            <p data-faq-answer>É a atualização do saldo por um percentual ou índice antes do cálculo dos juros e da amortização do mês. A correção aumenta o saldo nominal e afeta os valores seguintes, mas não é tratada como uma tarifa mensal separada.</p>
+            <summary data-faq-question>¿Qué es la corrección monetaria del saldo pendiente?</summary>
+            <p data-faq-answer>Es la actualización del saldo mediante un porcentaje o índice antes del cálculo de los intereses y la amortización del mes. La corrección aumenta el saldo nominal y afecta los valores siguientes, pero no se trata como una tarifa mensual separada.</p>
           </details>
           <details class="faq-item" data-faq-item>
-            <summary data-faq-question>Qual taxa TR o simulador utiliza?</summary>
-            <p data-faq-answer>O valor sugerido corresponde à maior TR mensal encontrada nos últimos 12 meses disponíveis no arquivo local atualizado pelo projeto. Essa taxa é aplicada como uma projeção mensal fixa. A TR real pode mudar todos os meses.</p>
+            <summary data-faq-question>¿Qué tasa TR utiliza el simulador?</summary>
+            <p data-faq-answer>El valor sugerido corresponde a la mayor TR mensual encontrada en los últimos 12 meses disponibles en el archivo local actualizado por el proyecto. Esta tasa se aplica como una proyección mensual fija. La TR real puede cambiar todos los meses.</p>
           </details>
           <details class="faq-item" data-faq-item>
-            <summary data-faq-question>A Selic é a taxa do financiamento?</summary>
-            <p data-faq-answer>Não. A Meta Selic é usada apenas como referência inicial quando não existe uma taxa salva pelo usuário. A taxa efetivamente cobrada em um financiamento depende da instituição, do contrato, do perfil do cliente e das condições da operação.</p>
+            <summary data-faq-question>¿La Selic es la tasa de la financiación?</summary>
+            <p data-faq-answer>No. La Meta Selic se utiliza solo como referencia inicial cuando no existe una tasa guardada por el usuario. La tasa efectivamente cobrada en una financiación depende de la institución, del contrato, del perfil del cliente y de las condiciones de la operación.</p>
           </details>
           <details class="faq-item" data-faq-item>
-            <summary data-faq-question>Por que o resultado pode ser diferente do cálculo do banco?</summary>
-            <p data-faq-answer>Instituições financeiras podem considerar datas exatas, períodos diários, seguros variáveis, tarifas, tributos, arredondamentos, regras próprias de amortização, índices atualizados e outros elementos do Custo Efetivo Total. O simulador trabalha com as premissas informadas pelo usuário.</p>
+            <summary data-faq-question>¿Por qué el resultado puede ser diferente del cálculo del banco?</summary>
+            <p data-faq-answer>Las instituciones financieras pueden considerar fechas exactas, períodos diarios, seguros variables, tarifas, impuestos, redondeos, reglas propias de amortización, índices actualizados y otros elementos del costo efectivo total. El simulador trabaja con las premisas informadas por el usuario.</p>
           </details>
           <details class="faq-item" data-faq-item>
-            <summary data-faq-question>Esta simulação tem validade jurídica ou contratual?</summary>
-            <p data-faq-answer>Não. Os resultados são apenas estimativas e não representam proposta de crédito, aprovação, oferta vinculante, recomendação financeira ou condições oficiais de uma instituição. Consulte o contrato e o Custo Efetivo Total antes de tomar uma decisão.</p>
+            <summary data-faq-question>¿Esta simulación tiene validez jurídica o contractual?</summary>
+            <p data-faq-answer>No. Los resultados son solo estimaciones y no representan una propuesta de crédito, aprobación, oferta vinculante, recomendación financiera ni condiciones oficiales de una institución. Consulta el contrato y el costo efectivo total antes de tomar una decisión.</p>
           </details>
           <details class="faq-item" data-faq-item>
-            <summary data-faq-question>Posso simular o uso do FGTS como amortização extra?</summary>
-            <p data-faq-answer>Sim. O valor pode ser informado como uma amortização extra no mês estimado de aplicação, com o objetivo de reduzir prazo ou parcelas. O simulador não verifica elegibilidade, limites, intervalos de utilização nem outras regras do FGTS ou do contrato.</p>
+            <summary data-faq-question>¿Puedo simular el uso del FGTS como amortización extra?</summary>
+            <p data-faq-answer>Sí. El valor puede informarse como una amortización extra en el mes estimado de aplicación, con el objetivo de reducir el plazo o las cuotas. El simulador no verifica la elegibilidad, los límites, los intervalos de uso ni otras reglas del FGTS o del contrato.</p>
           </details>
           <details class="faq-item" data-faq-item>
-            <summary data-faq-question>Qual é a diferença entre taxa anual nominal e efetiva?</summary>
-            <p data-faq-answer>A taxa anual nominal é dividida por 12 para obter a taxa mensal. A taxa anual efetiva é convertida para a taxa mensal equivalente por capitalização composta. Use o tipo de taxa informado no contrato para que a simulação aplique a conversão correta.</p>
+            <summary data-faq-question>¿Cuál es la diferencia entre una tasa anual nominal y una efectiva?</summary>
+            <p data-faq-answer>La tasa anual nominal se divide entre 12 para obtener la tasa mensual. La tasa anual efectiva se convierte a la tasa mensual equivalente mediante capitalización compuesta. Utiliza el tipo de tasa indicado en el contrato para que la simulación aplique la conversión correcta.</p>
           </details>
         </div>
       </section>
 
       <aside class="estimate-notice" aria-label="Aviso importante">
-        <strong>Importante:</strong> Esta ferramenta apresenta apenas uma simulação estimativa, sem validade jurídica, contratual ou financeira. Os resultados dependem exclusivamente dos dados informados e das premissas adotadas, como taxa fixa, períodos mensais, correção monetária projetada e custos extras preenchidos pelo usuário. A simulação não representa proposta de crédito, aprovação, oferta vinculante, recomendação financeira, consultoria jurídica ou as condições efetivamente praticadas por instituições financeiras. Para contratar ou comparar uma operação real, consulte o contrato, o Custo Efetivo Total (CET), tributos, tarifas, seguros, índices de correção e demais condições oficiais fornecidas pela instituição responsável.
+        <strong>Importante:</strong> Esta herramienta presenta solo una simulación estimativa, sin validez jurídica, contractual o financiera. Los resultados dependen exclusivamente de los datos informados y de las premisas adoptadas, como tasa fija, períodos mensuales, corrección monetaria proyectada y costos extra completados por el usuario. La simulación no representa propuesta de crédito, aprobación, oferta vinculante, recomendación financiera, asesoría jurídica ni las condiciones efectivamente practicadas por instituciones financieras. Para contratar o comparar una operación real, consulta el contrato, el costo efectivo total, impuestos, tarifas, seguros, índices de corrección y demás condiciones oficiales proporcionadas por la institución responsable.
       </aside>
     </main>
 
     <footer class="site-footer no-print">
       <div class="container site-footer-content">
         <p id="footer-copyright" class="mb-0">© 2026 Mapa das Parcelas</p>
-        <a id="footer-privacy-link" href="./privacidad.html">Privacidade</a>
+        <a id="footer-privacy-link" href="./privacidad.html">Privacidad</a>
       </div>
     </footer>
 
@@ -603,41 +603,41 @@
     <template id="extra-template">
       <article class="extra-card" data-extra-card>
         <div class="extra-card-header">
-          <div><span class="extra-number"></span><h3>Amortização extra</h3></div>
-          <button class="btn btn-sm btn-link text-danger" type="button" data-action="remove-extra">Excluir</button>
+          <div><span class="extra-number"></span><h3>Amortización extra</h3></div>
+          <button class="btn btn-sm btn-link text-danger" type="button" data-action="remove-extra">Eliminar</button>
         </div>
         <div class="row g-3 align-items-start">
           <div class="col-md-6 col-xl">
-            <label class="form-label" data-label="type">Tipo de amortização</label>
-            <select class="form-select" data-field="type"><option value="single">Pontual</option><option value="recurring">Recorrente</option></select>
+            <label class="form-label" data-label="type">Tipo de amortización</label>
+            <select class="form-select" data-field="type"><option value="single">Puntual</option><option value="recurring">Recurrente</option></select>
           </div>
           <div class="col-md-6 col-xl">
-            <label class="form-label" data-label="value">Valor da amortização</label>
+            <label class="form-label" data-label="value">Valor de la amortización</label>
             <div class="input-group has-validation"><span class="input-group-text">R$</span><input class="form-control" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00" data-field="value"><div class="invalid-feedback" data-error="value"></div></div>
           </div>
           <div class="col-md-6 col-xl single-fields">
-            <label class="form-label" data-label="month">Mês de aplicação</label>
+            <label class="form-label" data-label="month">Mes de aplicación</label>
             <input class="form-control" type="number" min="1" step="1" inputmode="numeric" data-field="month"><div class="invalid-feedback" data-error="month"></div>
           </div>
           <div class="col-md-6 col-xl recurring-fields d-none">
-            <label class="form-label" data-label="startMonth">Mês inicial</label>
+            <label class="form-label" data-label="startMonth">Mes inicial</label>
             <input class="form-control" type="number" min="1" step="1" inputmode="numeric" data-field="startMonth"><div class="invalid-feedback" data-error="startMonth"></div>
           </div>
           <div class="col-md-6 col-xl recurring-fields d-none">
-            <label class="form-label" data-label="frequency">Frequência</label>
-            <select class="form-select" data-field="frequency"><option value="1">Todo mês</option><option value="2">A cada 2 meses</option><option value="3">A cada 3 meses</option><option value="6">A cada 6 meses</option><option value="12">A cada 12 meses</option><option value="custom">Personalizada</option></select>
+            <label class="form-label" data-label="frequency">Frecuencia</label>
+            <select class="form-select" data-field="frequency"><option value="1">Todos los meses</option><option value="2">Cada 2 meses</option><option value="3">Cada 3 meses</option><option value="6">Cada 6 meses</option><option value="12">Cada 12 meses</option><option value="custom">Personalizada</option></select>
           </div>
           <div class="col-md-6 col-xl recurring-fields custom-frequency-field d-none">
             <label class="form-label" data-label="customFrequency">Intervalo personalizado</label>
             <div class="input-group has-validation"><input class="form-control" type="number" min="1" step="1" inputmode="numeric" data-field="customFrequency"><span class="input-group-text">meses</span><div class="invalid-feedback" data-error="customFrequency"></div></div>
           </div>
           <div class="col-md-6 col-xl recurring-fields d-none">
-            <label class="form-label" data-label="endMonth">Mês final</label>
+            <label class="form-label" data-label="endMonth">Mes final</label>
             <input class="form-control" type="number" min="1" step="1" inputmode="numeric" data-field="endMonth"><div class="invalid-feedback" data-error="endMonth"></div>
           </div>
           <div class="col-md-6 col-xl">
             <label class="form-label" data-label="goal">Objetivo</label>
-            <select class="form-select" data-field="goal"><option value="term">Reduzir prazo</option><option value="payment">Reduzir valor das parcelas</option></select>
+            <select class="form-select" data-field="goal"><option value="term">Reducir plazo</option><option value="payment">Reducir valor de las cuotas</option></select>
           </div>
         </div>
       </article>
@@ -647,18 +647,18 @@
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h2 class="modal-title fs-5" id="system-info-title">Sistemas de amortização</h2>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            <h2 class="modal-title fs-5" id="system-info-title">Sistemas de amortización</h2>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
           </div>
           <div class="modal-body">
             <h3 class="h6">SAC</h3>
-            <p>No SAC, a amortização-base é calculada pelo saldo e prazo restantes. Quando uma amortização extra reduz prazo, o simulador recalcula o prazo remanescente tentando preservar aproximadamente o encargo financeiro de referência. Quando reduz parcela, preserva o prazo e recalcula a amortização.</p>
+            <p>En SAC, la amortización base se calcula con el saldo y el plazo restantes. Cuando una amortización extra reduce plazo, el simulador recalcula el plazo remanente intentando preservar aproximadamente el pago financiero de referencia. Cuando reduce cuota, preserva el plazo y recalcula la amortización.</p>
             <h3 class="h6">Price</h3>
-            <p>Na Price, as parcelas financeiras regulares são constantes para a taxa e o saldo considerados no recálculo. A amortização começa menor e aumenta gradualmente, enquanto os juros tendem a cair.</p>
-            <p class="mb-0 text-secondary small">Amortizações extras e correção monetária podem alterar a evolução do saldo e dos pagamentos nos dois sistemas.</p>
+            <p>En Price, las cuotas financieras regulares son constantes para la tasa y el saldo considerados en el recálculo. La amortización empieza menor y aumenta gradualmente, mientras los intereses tienden a bajar.</p>
+            <p class="mb-0 text-secondary small">Las amortizaciones extra y la corrección monetaria pueden alterar la evolución del saldo y de los pagos en ambos sistemas.</p>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Entendi</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Entendido</button>
           </div>
         </div>
       </div>

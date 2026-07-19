@@ -79,6 +79,8 @@ http://localhost:8000/es/privacidad.html
 
 O idioma é definido pela URL quando a rota é explícita. A preferência salva em `localStorage` só é usada quando a URL não define idioma, e o seletor de idioma navega para a página equivalente.
 
+As páginas localizadas devem manter no próprio HTML o corpo pré-renderizado no idioma da rota. `assets/js/i18n.js` continua sendo a fonte canônica das traduções e atualiza os textos dinâmicos, mas crawlers, previews e navegadores sem JavaScript não devem receber fallbacks em português nas rotas `/en/` e `/es/`.
+
 ## Validação
 
 Com Node.js disponível:
@@ -87,6 +89,7 @@ Com Node.js disponível:
 node --check assets/js/i18n.js
 node --check assets/js/app.js
 node --check assets/js/finance.js
+node tests/localized-html.test.js
 node tests/seo-files.test.js
 node tests/i18n.test.js
 node tests/finance.test.js
@@ -107,6 +110,7 @@ Os testes automatizados cobrem principalmente:
 - quitação sem saldo negativo;
 - cenário reportado com correção monetária e amortização extra;
 - dicionários e formatadores básicos de i18n;
+- correspondência entre os corpos HTML pré-renderizados, os dicionários e os dados estruturados localizados;
 - parser e geração dos JSONs locais da TR e da Selic.
 - coerência entre páginas públicas, URLs canônicas, sitemap e robots.
 
