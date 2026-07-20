@@ -72,6 +72,8 @@ const simulatorTextKeys = [
   'privacyNotice.title',
   'privacyNotice.text',
   'footer.copyright',
+  'footer.about',
+  'footer.contact',
   'footer.privacy',
   'form.financedValue',
   'form.term',
@@ -210,12 +212,16 @@ const portugueseSentinels = [
   'Resumo da simula\u00e7\u00e3o',
   'Perguntas frequentes',
   'Pol\u00edtica de Privacidade',
+  'Sobre o Mapa das Parcelas',
+  'Fale conosco',
 ];
 
 (async () => {
   const defaultPages = [
     { file: 'index.html', language: 'pt-BR' },
     { file: 'privacidade.html', language: 'pt-BR' },
+    { file: 'sobre/index.html', language: 'pt-BR' },
+    { file: 'fale-conosco/index.html', language: 'pt-BR' },
   ];
   for (const { file, language } of defaultPages) {
     const html = await readFile(join(projectRoot, file), 'utf8');
@@ -265,19 +271,23 @@ const portugueseSentinels = [
     );
   }
 
-  const privacyPages = [
-    { file: 'en/privacy.html', language: 'en' },
-    { file: 'es/privacidad.html', language: 'es' },
+  const institutionalPages = [
+    { file: 'en/privacy.html', language: 'en', minimumEntries: 35 },
+    { file: 'es/privacidad.html', language: 'es', minimumEntries: 35 },
+    { file: 'en/about/index.html', language: 'en', minimumEntries: 18 },
+    { file: 'es/acerca-de/index.html', language: 'es', minimumEntries: 18 },
+    { file: 'en/contact/index.html', language: 'en', minimumEntries: 14 },
+    { file: 'es/contacto/index.html', language: 'es', minimumEntries: 14 },
   ];
 
-  for (const { file, language } of privacyPages) {
+  for (const { file, language, minimumEntries } of institutionalPages) {
     const html = await readFile(join(projectRoot, file), 'utf8');
     const bodyHtml = extractBody(html);
     const dictionary = i18n.dictionaries[language];
     const entries = extractDataI18nEntries(bodyHtml);
 
     assertSelectedLanguage(bodyHtml, language, file);
-    assert.ok(entries.length >= 35, `${file}: possui cobertura i18n do corpo`);
+    assert.ok(entries.length >= minimumEntries, `${file}: possui cobertura i18n do corpo`);
     for (const { key, text } of entries) {
       assert.equal(text, dictionary[key], `${file}: pr\u00e9-renderiza ${key}`);
     }

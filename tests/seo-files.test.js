@@ -80,6 +80,18 @@ function assetReferences(html) {
       es: `${origin}/es/privacidad.html`,
       'x-default': `${origin}/privacidade.html`,
     },
+    about: {
+      'pt-BR': `${origin}/sobre/`,
+      en: `${origin}/en/about/`,
+      es: `${origin}/es/acerca-de/`,
+      'x-default': `${origin}/sobre/`,
+    },
+    contact: {
+      'pt-BR': `${origin}/fale-conosco/`,
+      en: `${origin}/en/contact/`,
+      es: `${origin}/es/contacto/`,
+      'x-default': `${origin}/fale-conosco/`,
+    },
   };
 
   const publicPages = [
@@ -89,6 +101,12 @@ function assetReferences(html) {
     { file: 'privacidade.html', language: 'pt-BR', htmlLang: 'pt-BR', page: 'privacy' },
     { file: 'en/privacy.html', language: 'en', htmlLang: 'en', page: 'privacy' },
     { file: 'es/privacidad.html', language: 'es', htmlLang: 'es', page: 'privacy' },
+    { file: 'sobre/index.html', language: 'pt-BR', htmlLang: 'pt-BR', page: 'about' },
+    { file: 'en/about/index.html', language: 'en', htmlLang: 'en', page: 'about' },
+    { file: 'es/acerca-de/index.html', language: 'es', htmlLang: 'es', page: 'about' },
+    { file: 'fale-conosco/index.html', language: 'pt-BR', htmlLang: 'pt-BR', page: 'contact' },
+    { file: 'en/contact/index.html', language: 'en', htmlLang: 'en', page: 'contact' },
+    { file: 'es/contacto/index.html', language: 'es', htmlLang: 'es', page: 'contact' },
   ].map((page) => ({
     ...page,
     url: routeGroups[page.page][page.language],
@@ -178,7 +196,7 @@ function assetReferences(html) {
     assert.equal(faq.inLanguage, page.language, `${page.file}: FAQ possui idioma localizado`);
   }
 
-  for (const page of publicPages.filter(({ page: pageType }) => pageType === 'privacy')) {
+  for (const page of publicPages.filter(({ page: pageType }) => ['privacy', 'about', 'contact'].includes(pageType))) {
     const nodes = structuredDataByFile.get(page.file);
     const webPage = nodes.find((node) => node['@type'] === 'WebPage');
     assert.ok(webPage, `${page.file}: possui WebPage`);
@@ -329,7 +347,7 @@ function assetReferences(html) {
   assert.deepEqual(
     [...sitemapUrls].sort(),
     publicPages.map((page) => page.url).sort(),
-    'sitemap cobre exatamente as seis páginas públicas',
+    'sitemap cobre exatamente todas as páginas públicas',
   );
 
   const robots = await readFile(join(projectRoot, 'robots.txt'), 'utf8');

@@ -196,6 +196,13 @@ body {
   gap: 1rem;
 }
 
+.site-footer-links {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+}
+
 .site-footer a {
   color: var(--color-primary-dark);
   font-weight: 600;
@@ -747,6 +754,10 @@ legend.form-label {
     align-items: flex-start;
     flex-direction: column;
     gap: 0.4rem;
+  }
+
+  .site-footer-links {
+    gap: 0.35rem 0.85rem;
   }
 }
 

@@ -561,6 +561,10 @@
 
   function updateLocalizedLinks() {
     const privacyLink = document.querySelector('#footer-privacy-link');
+    const aboutLink = document.querySelector('#footer-about-link');
+    const contactLink = document.querySelector('#footer-contact-link');
+    if (aboutLink) aboutLink.setAttribute('href', i18n.localizedPathForLanguage(i18n.getLanguage(), 'about'));
+    if (contactLink) contactLink.setAttribute('href', i18n.localizedPathForLanguage(i18n.getLanguage(), 'contact'));
     if (privacyLink) privacyLink.setAttribute('href', i18n.localizedPathForLanguage(i18n.getLanguage(), 'privacy'));
   }
 
@@ -581,6 +585,8 @@
     setText('#privacy-notice-text', 'privacyNotice.text');
     setAttr('#privacy-notice-dismiss', 'aria-label', 'privacyNotice.dismissAria');
     setText('#footer-copyright', 'footer.copyright');
+    setText('#footer-about-link', 'footer.about');
+    setText('#footer-contact-link', 'footer.contact');
     setText('#footer-privacy-link', 'footer.privacy');
     setText('#faq-kicker', 'faq.kicker');
     setText('#faq-title', 'faq.title');

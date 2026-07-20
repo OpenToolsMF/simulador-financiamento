@@ -27,6 +27,7 @@ O projeto usa HTML, CSS e JavaScript simples, sem etapa de build e sem dependên
 - Exportação do relatório em PDF usando impressão nativa do navegador.
 - Internacionalização em `pt-BR`, `en` e `es`, mantendo moeda em BRL.
 - URLs públicas próprias por idioma, com `canonical`, `hreflang` e sitemap.
+- Páginas institucionais de privacidade, sobre e contato para transparência e requisitos de publicação.
 
 ## Estrutura
 
@@ -36,6 +37,12 @@ O projeto usa HTML, CSS e JavaScript simples, sem etapa de build e sem dependên
 - `privacidade.html`: política de privacidade em `pt-BR`.
 - `en/privacy.html`: política de privacidade em inglês.
 - `es/privacidad.html`: política de privacidade em espanhol.
+- `sobre/index.html`: página sobre em `pt-BR`.
+- `en/about/index.html`: página sobre em inglês.
+- `es/acerca-de/index.html`: página sobre em espanhol.
+- `fale-conosco/index.html`: página de contato em `pt-BR`.
+- `en/contact/index.html`: página de contato em inglês.
+- `es/contacto/index.html`: página de contato em espanhol.
 - `assets/css/styles.css`: estilos próprios e estilos de impressão.
 - `assets/js/app.js`: integração da UI, validação, persistência, gráficos, TR/Selic e PDF.
 - `assets/js/finance.js`: motor financeiro SAC/Price.
@@ -75,6 +82,12 @@ http://localhost:8000/es/
 http://localhost:8000/privacidade.html
 http://localhost:8000/en/privacy.html
 http://localhost:8000/es/privacidad.html
+http://localhost:8000/sobre/
+http://localhost:8000/fale-conosco/
+http://localhost:8000/en/about/
+http://localhost:8000/en/contact/
+http://localhost:8000/es/acerca-de/
+http://localhost:8000/es/contacto/
 ```
 
 O idioma é definido pela URL quando a rota é explícita. A preferência salva em `localStorage` só é usada quando a URL não define idioma, e o seletor de idioma navega para a página equivalente.
