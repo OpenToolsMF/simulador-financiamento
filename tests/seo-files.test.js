@@ -96,9 +96,12 @@ function assetReferences(html) {
 
   const canonicalUrls = [];
   const manifestUrls = [];
+  const structuredDataByFile = new Map();
   for (const page of publicPages) {
     const html = await readFile(join(projectRoot, page.file), 'utf8');
     const expectedAlternates = routeGroups[page.page];
+
+    structuredDataByFile.set(page.file, extractJsonLdNodes(html));
 
     assert.equal(extractHtmlLang(html), page.htmlLang, `${page.file}: html lang corresponde ao idioma da URL`);
     assert.equal(extractCanonical(html), page.url, `${page.file}: canonical corresponde à URL pública`);
@@ -136,6 +139,64 @@ function assetReferences(html) {
   }
 
   assert.equal(new Set(canonicalUrls).size, canonicalUrls.length, 'não existem canonicals duplicadas');
+
+  const websiteIdentity = {
+    '@type': 'WebSite',
+    '@id': `${origin}/#website`,
+    url: `${origin}/`,
+    name: 'Mapa das Parcelas',
+    alternateName: ['Installment Map', 'Mapa de cuotas'],
+    inLanguage: ['pt-BR', 'en', 'es'],
+  };
+  const applicationNames = {
+    'pt-BR': 'Mapa das Parcelas',
+    en: 'Installment Map',
+    es: 'Mapa de cuotas',
+  };
+
+  for (const page of publicPages.filter(({ page: pageType }) => pageType === 'simulator')) {
+    const nodes = structuredDataByFile.get(page.file);
+    const websites = nodes.filter((node) => node['@type'] === 'WebSite');
+    assert.equal(websites.length, 1, `${page.file}: define uma única entidade WebSite`);
+    assert.deepEqual(websites[0], websiteIdentity, `${page.file}: usa a identidade global canônica do site`);
+
+    const application = nodes.find((node) => node['@type'] === 'WebApplication');
+    assert.ok(application, `${page.file}: possui WebApplication`);
+    assert.equal(application['@id'], `${page.url}#application`, `${page.file}: aplicação possui @id localizado`);
+    assert.equal(application.url, page.url, `${page.file}: aplicação possui URL localizada`);
+    assert.equal(application.name, applicationNames[page.language], `${page.file}: aplicação possui nome localizado`);
+    assert.equal(application.inLanguage, page.language, `${page.file}: aplicação possui idioma localizado`);
+    assert.deepEqual(
+      application.isPartOf,
+      { '@id': websiteIdentity['@id'] },
+      `${page.file}: aplicação referencia a identidade global do site`,
+    );
+
+    const faq = nodes.find((node) => node['@type'] === 'FAQPage');
+    assert.ok(faq, `${page.file}: possui FAQPage`);
+    assert.equal(faq['@id'], `${page.url}#faq`, `${page.file}: FAQ possui @id localizado`);
+    assert.equal(faq.inLanguage, page.language, `${page.file}: FAQ possui idioma localizado`);
+  }
+
+  for (const page of publicPages.filter(({ page: pageType }) => pageType === 'privacy')) {
+    const nodes = structuredDataByFile.get(page.file);
+    const webPage = nodes.find((node) => node['@type'] === 'WebPage');
+    assert.ok(webPage, `${page.file}: possui WebPage`);
+    assert.equal(webPage['@id'], `${page.url}#webpage`, `${page.file}: página possui @id localizado`);
+    assert.equal(webPage.url, page.url, `${page.file}: página possui URL localizada`);
+    assert.equal(webPage.inLanguage, page.language, `${page.file}: página possui idioma localizado`);
+    assert.deepEqual(
+      webPage.isPartOf,
+      { '@id': websiteIdentity['@id'] },
+      `${page.file}: página referencia a identidade global sem redefini-la`,
+    );
+    assert.equal(
+      webPage.about?.['@id'],
+      `${routeGroups.simulator[page.language]}#application`,
+      `${page.file}: página referencia a aplicação localizada`,
+    );
+  }
+
   assert.deepEqual(
     [...new Set(manifestUrls)],
     [`${origin}/assets/image/favicon/site.webmanifest`],
