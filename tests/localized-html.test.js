@@ -39,7 +39,7 @@ function extractVisibleFaq(html) {
         match[1].match(/<summary\b[^>]*data-faq-question[^>]*>([\s\S]*?)<\/summary>/i)?.[1] ?? '',
       ),
       answer: normalizeHtmlText(
-        match[1].match(/<p\b[^>]*data-faq-answer[^>]*>([\s\S]*?)<\/p>/i)?.[1] ?? '',
+        match[1].match(/<([a-z][\w-]*)\b[^>]*data-faq-answer[^>]*>([\s\S]*?)<\/\1>/i)?.[2] ?? '',
       ),
     }));
 }
@@ -256,9 +256,9 @@ const portugueseSentinels = [
       assert.ok(!visibleText.includes(sentinel), `${file}: n\u00e3o mant\u00e9 fallback em portugu\u00eas (${sentinel})`);
     }
 
-    const expectedFaq = Array.from({ length: 9 }, (_, index) => ({
+    const expectedFaq = Array.from({ length: 15 }, (_, index) => ({
       question: dictionary[`faq.${index + 1}.question`],
-      answer: dictionary[`faq.${index + 1}.answer`],
+      answer: normalizeHtmlText(dictionary[`faq.${index + 1}.answer`]),
     }));
     assert.deepEqual(extractVisibleFaq(bodyHtml), expectedFaq, `${file}: FAQ vis\u00edvel corresponde ao dicion\u00e1rio`);
 

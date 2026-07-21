@@ -440,6 +440,11 @@
     if (element) element.textContent = t(key);
   }
 
+  function setHtml(selector, key, root = document) {
+    const element = root.querySelector(selector);
+    if (element) element.innerHTML = t(key);
+  }
+
   function setAttr(selector, attribute, key, root = document) {
     const element = root.querySelector(selector);
     if (element) element.setAttribute(attribute, t(key));
@@ -594,7 +599,7 @@
     document.querySelectorAll('[data-faq-item]').forEach((item, index) => {
       const number = index + 1;
       setText('[data-faq-question]', `faq.${number}.question`, item);
-      setText('[data-faq-answer]', `faq.${number}.answer`, item);
+      setHtml('[data-faq-answer]', `faq.${number}.answer`, item);
     });
     setRequiredLabel('label[for="financed-value"]', 'form.financedValue');
     setRequiredLabel('label[for="term"]', 'form.term');

@@ -145,11 +145,25 @@ body {
   background: var(--color-primary-soft);
 }
 
-.faq-item p {
-  margin: 0;
+.faq-answer {
   padding: 0.9rem 1.1rem 1rem;
   color: var(--color-text-soft);
   line-height: 1.6;
+}
+
+.faq-answer p,
+.faq-answer ul {
+  margin: 0;
+}
+
+.faq-answer p + p,
+.faq-answer p + ul,
+.faq-answer ul + p {
+  margin-top: 0.7rem;
+}
+
+.faq-answer ul {
+  padding-left: 1.25rem;
 }
 
 .privacy-notice {

@@ -50,7 +50,7 @@ for (const language of languages) {
     `${language}: mantém título específico da página de contato`,
   );
   assert.notEqual(i18n.t('faq.1.question'), 'faq.1.question', `${language}: traduz perguntas frequentes`);
-  assert.notEqual(i18n.t('faq.9.answer'), 'faq.9.answer', `${language}: traduz todas as respostas do FAQ`);
+  assert.notEqual(i18n.t('faq.15.answer'), 'faq.15.answer', `${language}: traduz todas as respostas do FAQ`);
   assert.ok(i18n.t('validation.monthBetween', { term: 360 }).includes('360'), `${language}: interpola parâmetros`);
   assert.ok(i18n.formatCurrency(123456).includes('1'), `${language}: formata moeda`);
   assert.ok(i18n.formatDate('2026-07-15').length > 0, `${language}: formata data`);

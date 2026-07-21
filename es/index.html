@@ -37,138 +37,186 @@
     <meta name="twitter:image" content="https://mapadasparcelas.com.br/assets/image/logo.png">
     <meta name="twitter:image:alt" content="Logo de Mapa de cuotas">
     <script type="application/ld+json">
-      {
-            "@context": "https://schema.org",
-            "@graph": [
-                  {
-                        "@type": "WebSite",
-                        "@id": "https://mapadasparcelas.com.br/#website",
-                        "url": "https://mapadasparcelas.com.br/",
-                        "name": "Mapa das Parcelas",
-                        "alternateName": [
-                              "Installment Map",
-                              "Mapa de cuotas"
-                        ],
-                        "inLanguage": [
-                              "pt-BR",
-                              "en",
-                              "es"
-                        ]
-                  },
-                  {
-                        "@type": "WebApplication",
-                        "@id": "https://mapadasparcelas.com.br/es/#application",
-                        "name": "Mapa de cuotas",
-                        "alternateName": [
-                              "Mapa das Parcelas",
-                              "Installment Map"
-                        ],
-                        "url": "https://mapadasparcelas.com.br/es/",
-                        "image": "https://mapadasparcelas.com.br/assets/image/logo.png",
-                        "description": "Simula financiación inmobiliaria SAC y Price con amortizaciones extra, corrección monetaria, TR, Selic, gráficos, calendario de cuotas y exportación a PDF.",
-                        "applicationCategory": "FinanceApplication",
-                        "operatingSystem": "Cualquier sistema con un navegador moderno",
-                        "browserRequirements": "Requiere JavaScript y un navegador moderno.",
-                        "inLanguage": "es",
-                        "isAccessibleForFree": true,
-                        "offers": {
-                              "@type": "Offer",
-                              "price": "0",
-                              "priceCurrency": "BRL"
-                        },
-                        "featureList": [
-                              "Simulación de financiación SAC y Price",
-                              "Amortizaciones extra puntuales y recurrentes",
-                              "Corrección monetaria fija o personalizada",
-                              "Comparación de escenarios",
-                              "Gráficos y calendario de cuotas",
-                              "Exportación del informe en PDF"
-                        ],
-                        "isPartOf": {
-                              "@id": "https://mapadasparcelas.com.br/#website"
-                        }
-                  },
-                  {
-                        "@type": "FAQPage",
-                        "@id": "https://mapadasparcelas.com.br/es/#faq",
-                        "inLanguage": "es",
-                        "mainEntity": [
-                              {
-                                    "@type": "Question",
-                                    "name": "¿Cuál es la diferencia entre SAC y Price?",
-                                    "acceptedAnswer": {
-                                          "@type": "Answer",
-                                          "text": "En SAC, la amortización regular se calcula a partir del saldo y el plazo restantes, y los pagos generalmente disminuyen a lo largo de la financiación. En Price, las cuotas financieras se calculan para permanecer regulares en las condiciones consideradas, con una amortización creciente e intereses decrecientes. La corrección monetaria y los pagos extra pueden modificar estos comportamientos."
-                                    }
+{
+          "@context": "https://schema.org",
+          "@graph": [
+                    {
+                              "@type": "WebSite",
+                              "@id": "https://mapadasparcelas.com.br/#website",
+                              "url": "https://mapadasparcelas.com.br/",
+                              "name": "Mapa das Parcelas",
+                              "alternateName": [
+                                        "Installment Map",
+                                        "Mapa de cuotas"
+                              ],
+                              "inLanguage": [
+                                        "pt-BR",
+                                        "en",
+                                        "es"
+                              ]
+                    },
+                    {
+                              "@type": "WebApplication",
+                              "@id": "https://mapadasparcelas.com.br/es/#application",
+                              "name": "Mapa de cuotas",
+                              "alternateName": [
+                                        "Mapa das Parcelas",
+                                        "Installment Map"
+                              ],
+                              "url": "https://mapadasparcelas.com.br/es/",
+                              "image": "https://mapadasparcelas.com.br/assets/image/logo.png",
+                              "description": "Simula financiación inmobiliaria SAC y Price con amortizaciones extra, corrección monetaria, TR, Selic, gráficos, calendario de cuotas y exportación a PDF.",
+                              "applicationCategory": "FinanceApplication",
+                              "operatingSystem": "Cualquier sistema con un navegador moderno",
+                              "browserRequirements": "Requiere JavaScript y un navegador moderno.",
+                              "inLanguage": "es",
+                              "isAccessibleForFree": true,
+                              "offers": {
+                                        "@type": "Offer",
+                                        "price": "0",
+                                        "priceCurrency": "BRL"
                               },
-                              {
-                                    "@type": "Question",
-                                    "name": "¿Una amortización extra reduce el plazo o el valor de las cuotas?",
-                                    "acceptedAnswer": {
-                                          "@type": "Answer",
-                                          "text": "Depende del objetivo seleccionado. Al reducir el plazo, el simulador recalcula la duración restante de la financiación. Al reducir el valor de las cuotas, conserva el plazo y recalcula los pagos futuros. La institución financiera puede aplicar reglas contractuales diferentes."
-                                    }
-                              },
-                              {
-                                    "@type": "Question",
-                                    "name": "¿Qué es la corrección monetaria del saldo pendiente?",
-                                    "acceptedAnswer": {
-                                          "@type": "Answer",
-                                          "text": "Es la actualización del saldo mediante un porcentaje o índice antes del cálculo de los intereses y la amortización del mes. La corrección aumenta el saldo nominal y afecta los valores siguientes, pero no se trata como una tarifa mensual separada."
-                                    }
-                              },
-                              {
-                                    "@type": "Question",
-                                    "name": "¿Qué tasa TR utiliza el simulador?",
-                                    "acceptedAnswer": {
-                                          "@type": "Answer",
-                                          "text": "El valor sugerido corresponde a la mayor TR mensual encontrada en los últimos 12 meses disponibles en el archivo local actualizado por el proyecto. Esta tasa se aplica como una proyección mensual fija. La TR real puede cambiar todos los meses."
-                                    }
-                              },
-                              {
-                                    "@type": "Question",
-                                    "name": "¿La Selic es la tasa de la financiación?",
-                                    "acceptedAnswer": {
-                                          "@type": "Answer",
-                                          "text": "No. La Meta Selic se utiliza solo como referencia inicial cuando no existe una tasa guardada por el usuario. La tasa efectivamente cobrada en una financiación depende de la institución, del contrato, del perfil del cliente y de las condiciones de la operación."
-                                    }
-                              },
-                              {
-                                    "@type": "Question",
-                                    "name": "¿Por qué el resultado puede ser diferente del cálculo del banco?",
-                                    "acceptedAnswer": {
-                                          "@type": "Answer",
-                                          "text": "Las instituciones financieras pueden considerar fechas exactas, períodos diarios, seguros variables, tarifas, impuestos, redondeos, reglas propias de amortización, índices actualizados y otros elementos del costo efectivo total. El simulador trabaja con las premisas informadas por el usuario."
-                                    }
-                              },
-                              {
-                                    "@type": "Question",
-                                    "name": "¿Esta simulación tiene validez jurídica o contractual?",
-                                    "acceptedAnswer": {
-                                          "@type": "Answer",
-                                          "text": "No. Los resultados son solo estimaciones y no representan una propuesta de crédito, aprobación, oferta vinculante, recomendación financiera ni condiciones oficiales de una institución. Consulta el contrato y el costo efectivo total antes de tomar una decisión."
-                                    }
-                              },
-                              {
-                                    "@type": "Question",
-                                    "name": "¿Puedo simular el uso del FGTS como amortización extra?",
-                                    "acceptedAnswer": {
-                                          "@type": "Answer",
-                                          "text": "Sí. El valor puede informarse como una amortización extra en el mes estimado de aplicación, con el objetivo de reducir el plazo o las cuotas. El simulador no verifica la elegibilidad, los límites, los intervalos de uso ni otras reglas del FGTS o del contrato."
-                                    }
-                              },
-                              {
-                                    "@type": "Question",
-                                    "name": "¿Cuál es la diferencia entre una tasa anual nominal y una efectiva?",
-                                    "acceptedAnswer": {
-                                          "@type": "Answer",
-                                          "text": "La tasa anual nominal se divide entre 12 para obtener la tasa mensual. La tasa anual efectiva se convierte a la tasa mensual equivalente mediante capitalización compuesta. Utiliza el tipo de tasa indicado en el contrato para que la simulación aplique la conversión correcta."
-                                    }
+                              "featureList": [
+                                        "Simulación de financiación SAC y Price",
+                                        "Amortizaciones extra puntuales y recurrentes",
+                                        "Corrección monetaria fija o personalizada",
+                                        "Comparación de escenarios",
+                                        "Gráficos y calendario de cuotas",
+                                        "Exportación del informe en PDF"
+                              ],
+                              "isPartOf": {
+                                        "@id": "https://mapadasparcelas.com.br/#website"
                               }
-                        ]
-                  }
-            ]
-      }
+                    },
+                    {
+                              "@type": "FAQPage",
+                              "@id": "https://mapadasparcelas.com.br/es/#faq",
+                              "inLanguage": "es",
+                              "mainEntity": [
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "¿Cuál es la diferencia entre SAC y Price?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "En SAC, una parte fija de la deuda suele pagarse todos los meses. Como el saldo pendiente disminuye, los intereses también disminuyen. Por eso, las primeras cuotas normalmente son más altas y van bajando con el tiempo. En la Tabla Price, las cuotas tienden a mantener un valor más estable. Al comienzo, una parte mayor de la cuota corresponde a intereses. Con el paso del tiempo, aumenta la parte utilizada para pagar la deuda. La corrección monetaria, los seguros, las tasas y los pagos extra pueden modificar el valor de las cuotas en ambos sistemas."
+                                                  }
+                                        },
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "¿Una amortización extra reduce el plazo o el valor de las cuotas?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "Puedes elegir entre dos opciones: Reducir el plazo: el valor extra ayuda a terminar la financiación antes, disminuyendo el número de cuotas restantes. Reducir las cuotas: el plazo se mantiene, pero el valor de las próximas cuotas se recalcula y puede quedar más bajo. El banco puede aplicar reglas diferentes, según el contrato."
+                                                  }
+                                        },
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "¿Qué es amortización?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "Amortización es la parte del pago utilizada para disminuir la deuda. En una cuota de financiación, normalmente hay una parte destinada a intereses y otra destinada a amortización. Cuanto mayor sea la amortización, menor queda el saldo pendiente."
+                                                  }
+                                        },
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "¿Qué es el saldo pendiente?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "Es el valor de la deuda que todavía falta pagar. El saldo pendiente no corresponde solo a la suma de las cuotas restantes, porque las cuotas también pueden incluir intereses, seguros, tarifas y otros valores."
+                                                  }
+                                        },
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "¿Qué es la corrección monetaria del saldo pendiente?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "Es una actualización del valor de la deuda por una tasa o índice definido en el contrato. Cuando existe corrección monetaria, el saldo pendiente puede aumentar antes de disminuir con el pago de la cuota. Esta actualización también puede afectar los intereses y las próximas cuotas. La corrección monetaria no es una tarifa separada. Forma parte del método utilizado para actualizar el valor de la deuda."
+                                                  }
+                                        },
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "¿Qué tasa TR utiliza el simulador?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "El simulador sugiere la mayor tasa mensual de la TR encontrada en los últimos 12 meses disponibles en el archivo de datos del proyecto. Esa tasa se repite en todos los meses de la simulación solo como una estimación conservadora. La TR real puede cambiar todos los meses. Por eso, el resultado de la simulación puede ser diferente del valor cobrado por el banco."
+                                                  }
+                                        },
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "¿La Selic es la tasa de la financiación?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "No. La Selic es la tasa básica de interés de la economía brasileña. El simulador la utiliza solo como valor inicial de referencia cuando el usuario todavía no informó otra tasa. La tasa real de una financiación la define el banco y puede variar según el contrato, el tipo de inmueble, el plazo, los ingresos, la relación con la institución y el perfil del cliente. Antes de calcular, revisa y cambia la tasa por el valor informado en la propuesta o en el contrato."
+                                                  }
+                                        },
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "¿Por qué el resultado puede ser diferente del cálculo del banco?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "El simulador trabaja con los datos informados por el usuario y presenta una estimación. El banco puede considerar otros factores, como: fecha exacta de cada pago; intereses calculados por día; seguros; tarifas; impuestos; corrección monetaria; reglas propias de redondeo; cambios en los índices; otros costos incluidos en el costo efectivo total. Para verificar los valores oficiales, consulta la propuesta, el contrato y el estado de evolución de la financiación."
+                                                  }
+                                        },
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "¿Qué es el costo efectivo total?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "El costo efectivo total, también llamado CET en Brasil, muestra el costo total de la financiación. Puede incluir intereses, seguros, tarifas, impuestos y otros gastos obligatorios. Por eso, dos propuestas con la misma tasa de interés pueden tener costos totales diferentes. Al comparar financiaciones, revisa el costo efectivo total, y no solo la tasa de interés."
+                                                  }
+                                        },
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "¿Esta simulación tiene validez jurídica o contractual?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "No. Los resultados son solo estimaciones. No representan: propuesta de crédito; aprobación de financiación; oferta del banco; valor garantizado de cuota; recomendación financiera; condición oficial de contrato. Antes de tomar una decisión, revisa las condiciones presentadas por la institución financiera."
+                                                  }
+                                        },
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "¿Puedo simular el uso del FGTS como amortización extra?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "Sí. Informa el valor del FGTS como una amortización extra en el mes en que pretendes hacer el pago. Después, elige entre reducir el plazo o reducir el valor de las cuotas. El simulador no verifica si puedes usar el FGTS. El uso real depende de las reglas vigentes, del contrato, del tipo de inmueble, de la situación de la financiación y de la aprobación del banco o agente responsable."
+                                                  }
+                                        },
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "¿Cuál es la diferencia entre tasa anual nominal y tasa anual efectiva?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "La tasa nominal y la tasa efectiva no representan lo mismo. Cuando el contrato informa una tasa nominal anual con cálculo mensual, la tasa mensual suele obtenerse dividiendo la tasa anual entre 12. Por ejemplo: Una tasa nominal de 12% al año corresponde, en ese caso, a 1% al mes. La tasa efectiva anual considera el efecto de los intereses acumulados a lo largo de los meses. Por eso, debe convertirse para encontrar la tasa mensual equivalente. Usa en el simulador el mismo tipo de tasa presentado por el banco. Si tienes dudas, consulta la propuesta o el contrato."
+                                                  }
+                                        },
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "¿Qué significa reducir el plazo?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "Significa disminuir la cantidad de cuotas que todavía faltan pagar. En este caso, el pago extra se usa para anticipar la liquidación de la deuda. El valor de las cuotas puede seguir parecido, pero la financiación termina antes."
+                                                  }
+                                        },
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "¿Qué significa reducir el valor de las cuotas?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "Significa mantener la fecha prevista para el fin de la financiación y recalcular las cuotas restantes. En este caso, el pago extra reduce el saldo pendiente y puede disminuir el valor de las próximas cuotas."
+                                                  }
+                                        },
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "¿El simulador muestra el valor exacto que voy a pagar?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "No. El simulador muestra una estimación basada en la información completada. Los valores reales dependen de las reglas del contrato y de los cálculos realizados por la institución financiera."
+                                                  }
+                                        }
+                              ]
+                    }
+          ]
+}
     </script>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8780410675865678" crossorigin="anonymous"></script>
     <link rel="icon" type="image/svg+xml" href="../assets/image/favicon/favicon.svg">
@@ -177,7 +225,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="../assets/image/favicon/apple-touch-icon.png">
     <link rel="manifest" href="../assets/image/favicon/site.webmanifest">
     <link rel="stylesheet" href="../assets/vendor/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../assets/css/styles.css?v=20260720-institutional-pages">
+    <link rel="stylesheet" href="../assets/css/styles.css?v=20260721-faq">
   </head>
   <body>
     <header class="site-header">
@@ -554,46 +602,70 @@
         <div class="section-heading">
           <div>
             <span id="faq-kicker" class="section-kicker">Dudas</span>
-            <h2 id="faq-title">Preguntas frecuentes</h2>
+            <h2 id="faq-title">Preguntas frecuentes sobre el simulador</h2>
           </div>
         </div>
 
         <div class="faq-list">
           <details class="faq-item" data-faq-item>
             <summary data-faq-question>¿Cuál es la diferencia entre SAC y Price?</summary>
-            <p data-faq-answer>En SAC, la amortización regular se calcula a partir del saldo y el plazo restantes, y los pagos generalmente disminuyen a lo largo de la financiación. En Price, las cuotas financieras se calculan para permanecer regulares en las condiciones consideradas, con una amortización creciente e intereses decrecientes. La corrección monetaria y los pagos extra pueden modificar estos comportamientos.</p>
+            <div class="faq-answer" data-faq-answer><p>En SAC, una parte fija de la deuda suele pagarse todos los meses. Como el saldo pendiente disminuye, los intereses también disminuyen. Por eso, las primeras cuotas normalmente son más altas y van bajando con el tiempo.</p><p>En la Tabla Price, las cuotas tienden a mantener un valor más estable. Al comienzo, una parte mayor de la cuota corresponde a intereses. Con el paso del tiempo, aumenta la parte utilizada para pagar la deuda.</p><p>La corrección monetaria, los seguros, las tasas y los pagos extra pueden modificar el valor de las cuotas en ambos sistemas.</p></div>
           </details>
           <details class="faq-item" data-faq-item>
             <summary data-faq-question>¿Una amortización extra reduce el plazo o el valor de las cuotas?</summary>
-            <p data-faq-answer>Depende del objetivo seleccionado. Al reducir el plazo, el simulador recalcula la duración restante de la financiación. Al reducir el valor de las cuotas, conserva el plazo y recalcula los pagos futuros. La institución financiera puede aplicar reglas contractuales diferentes.</p>
+            <div class="faq-answer" data-faq-answer><p>Puedes elegir entre dos opciones:</p><p><strong>Reducir el plazo:</strong> el valor extra ayuda a terminar la financiación antes, disminuyendo el número de cuotas restantes.</p><p><strong>Reducir las cuotas:</strong> el plazo se mantiene, pero el valor de las próximas cuotas se recalcula y puede quedar más bajo.</p><p>El banco puede aplicar reglas diferentes, según el contrato.</p></div>
+          </details>
+          <details class="faq-item" data-faq-item>
+            <summary data-faq-question>¿Qué es amortización?</summary>
+            <div class="faq-answer" data-faq-answer><p>Amortización es la parte del pago utilizada para disminuir la deuda.</p><p>En una cuota de financiación, normalmente hay una parte destinada a intereses y otra destinada a amortización. Cuanto mayor sea la amortización, menor queda el saldo pendiente.</p></div>
+          </details>
+          <details class="faq-item" data-faq-item>
+            <summary data-faq-question>¿Qué es el saldo pendiente?</summary>
+            <div class="faq-answer" data-faq-answer><p>Es el valor de la deuda que todavía falta pagar.</p><p>El saldo pendiente no corresponde solo a la suma de las cuotas restantes, porque las cuotas también pueden incluir intereses, seguros, tarifas y otros valores.</p></div>
           </details>
           <details class="faq-item" data-faq-item>
             <summary data-faq-question>¿Qué es la corrección monetaria del saldo pendiente?</summary>
-            <p data-faq-answer>Es la actualización del saldo mediante un porcentaje o índice antes del cálculo de los intereses y la amortización del mes. La corrección aumenta el saldo nominal y afecta los valores siguientes, pero no se trata como una tarifa mensual separada.</p>
+            <div class="faq-answer" data-faq-answer><p>Es una actualización del valor de la deuda por una tasa o índice definido en el contrato.</p><p>Cuando existe corrección monetaria, el saldo pendiente puede aumentar antes de disminuir con el pago de la cuota. Esta actualización también puede afectar los intereses y las próximas cuotas.</p><p>La corrección monetaria no es una tarifa separada. Forma parte del método utilizado para actualizar el valor de la deuda.</p></div>
           </details>
           <details class="faq-item" data-faq-item>
             <summary data-faq-question>¿Qué tasa TR utiliza el simulador?</summary>
-            <p data-faq-answer>El valor sugerido corresponde a la mayor TR mensual encontrada en los últimos 12 meses disponibles en el archivo local actualizado por el proyecto. Esta tasa se aplica como una proyección mensual fija. La TR real puede cambiar todos los meses.</p>
+            <div class="faq-answer" data-faq-answer><p>El simulador sugiere la mayor tasa mensual de la TR encontrada en los últimos 12 meses disponibles en el archivo de datos del proyecto.</p><p>Esa tasa se repite en todos los meses de la simulación solo como una estimación conservadora.</p><p>La TR real puede cambiar todos los meses. Por eso, el resultado de la simulación puede ser diferente del valor cobrado por el banco.</p></div>
           </details>
           <details class="faq-item" data-faq-item>
             <summary data-faq-question>¿La Selic es la tasa de la financiación?</summary>
-            <p data-faq-answer>No. La Meta Selic se utiliza solo como referencia inicial cuando no existe una tasa guardada por el usuario. La tasa efectivamente cobrada en una financiación depende de la institución, del contrato, del perfil del cliente y de las condiciones de la operación.</p>
+            <div class="faq-answer" data-faq-answer><p>No.</p><p>La Selic es la tasa básica de interés de la economía brasileña. El simulador la utiliza solo como valor inicial de referencia cuando el usuario todavía no informó otra tasa.</p><p>La tasa real de una financiación la define el banco y puede variar según el contrato, el tipo de inmueble, el plazo, los ingresos, la relación con la institución y el perfil del cliente.</p><p>Antes de calcular, revisa y cambia la tasa por el valor informado en la propuesta o en el contrato.</p></div>
           </details>
           <details class="faq-item" data-faq-item>
             <summary data-faq-question>¿Por qué el resultado puede ser diferente del cálculo del banco?</summary>
-            <p data-faq-answer>Las instituciones financieras pueden considerar fechas exactas, períodos diarios, seguros variables, tarifas, impuestos, redondeos, reglas propias de amortización, índices actualizados y otros elementos del costo efectivo total. El simulador trabaja con las premisas informadas por el usuario.</p>
+            <div class="faq-answer" data-faq-answer><p>El simulador trabaja con los datos informados por el usuario y presenta una estimación.</p><p>El banco puede considerar otros factores, como:</p><ul><li>fecha exacta de cada pago;</li><li>intereses calculados por día;</li><li>seguros;</li><li>tarifas;</li><li>impuestos;</li><li>corrección monetaria;</li><li>reglas propias de redondeo;</li><li>cambios en los índices;</li><li>otros costos incluidos en el costo efectivo total.</li></ul><p>Para verificar los valores oficiales, consulta la propuesta, el contrato y el estado de evolución de la financiación.</p></div>
+          </details>
+          <details class="faq-item" data-faq-item>
+            <summary data-faq-question>¿Qué es el costo efectivo total?</summary>
+            <div class="faq-answer" data-faq-answer><p>El costo efectivo total, también llamado CET en Brasil, muestra el costo total de la financiación.</p><p>Puede incluir intereses, seguros, tarifas, impuestos y otros gastos obligatorios.</p><p>Por eso, dos propuestas con la misma tasa de interés pueden tener costos totales diferentes. Al comparar financiaciones, revisa el costo efectivo total, y no solo la tasa de interés.</p></div>
           </details>
           <details class="faq-item" data-faq-item>
             <summary data-faq-question>¿Esta simulación tiene validez jurídica o contractual?</summary>
-            <p data-faq-answer>No. Los resultados son solo estimaciones y no representan una propuesta de crédito, aprobación, oferta vinculante, recomendación financiera ni condiciones oficiales de una institución. Consulta el contrato y el costo efectivo total antes de tomar una decisión.</p>
+            <div class="faq-answer" data-faq-answer><p>No.</p><p>Los resultados son solo estimaciones. No representan:</p><ul><li>propuesta de crédito;</li><li>aprobación de financiación;</li><li>oferta del banco;</li><li>valor garantizado de cuota;</li><li>recomendación financiera;</li><li>condición oficial de contrato.</li></ul><p>Antes de tomar una decisión, revisa las condiciones presentadas por la institución financiera.</p></div>
           </details>
           <details class="faq-item" data-faq-item>
             <summary data-faq-question>¿Puedo simular el uso del FGTS como amortización extra?</summary>
-            <p data-faq-answer>Sí. El valor puede informarse como una amortización extra en el mes estimado de aplicación, con el objetivo de reducir el plazo o las cuotas. El simulador no verifica la elegibilidad, los límites, los intervalos de uso ni otras reglas del FGTS o del contrato.</p>
+            <div class="faq-answer" data-faq-answer><p>Sí.</p><p>Informa el valor del FGTS como una amortización extra en el mes en que pretendes hacer el pago. Después, elige entre reducir el plazo o reducir el valor de las cuotas.</p><p>El simulador no verifica si puedes usar el FGTS.</p><p>El uso real depende de las reglas vigentes, del contrato, del tipo de inmueble, de la situación de la financiación y de la aprobación del banco o agente responsable.</p></div>
           </details>
           <details class="faq-item" data-faq-item>
-            <summary data-faq-question>¿Cuál es la diferencia entre una tasa anual nominal y una efectiva?</summary>
-            <p data-faq-answer>La tasa anual nominal se divide entre 12 para obtener la tasa mensual. La tasa anual efectiva se convierte a la tasa mensual equivalente mediante capitalización compuesta. Utiliza el tipo de tasa indicado en el contrato para que la simulación aplique la conversión correcta.</p>
+            <summary data-faq-question>¿Cuál es la diferencia entre tasa anual nominal y tasa anual efectiva?</summary>
+            <div class="faq-answer" data-faq-answer><p>La tasa nominal y la tasa efectiva no representan lo mismo.</p><p>Cuando el contrato informa una tasa nominal anual con cálculo mensual, la tasa mensual suele obtenerse dividiendo la tasa anual entre 12.</p><p>Por ejemplo:</p><p>Una tasa nominal de 12% al año corresponde, en ese caso, a 1% al mes.</p><p>La tasa efectiva anual considera el efecto de los intereses acumulados a lo largo de los meses. Por eso, debe convertirse para encontrar la tasa mensual equivalente.</p><p>Usa en el simulador el mismo tipo de tasa presentado por el banco. Si tienes dudas, consulta la propuesta o el contrato.</p></div>
+          </details>
+          <details class="faq-item" data-faq-item>
+            <summary data-faq-question>¿Qué significa reducir el plazo?</summary>
+            <div class="faq-answer" data-faq-answer><p>Significa disminuir la cantidad de cuotas que todavía faltan pagar.</p><p>En este caso, el pago extra se usa para anticipar la liquidación de la deuda. El valor de las cuotas puede seguir parecido, pero la financiación termina antes.</p></div>
+          </details>
+          <details class="faq-item" data-faq-item>
+            <summary data-faq-question>¿Qué significa reducir el valor de las cuotas?</summary>
+            <div class="faq-answer" data-faq-answer><p>Significa mantener la fecha prevista para el fin de la financiación y recalcular las cuotas restantes.</p><p>En este caso, el pago extra reduce el saldo pendiente y puede disminuir el valor de las próximas cuotas.</p></div>
+          </details>
+          <details class="faq-item" data-faq-item>
+            <summary data-faq-question>¿El simulador muestra el valor exacto que voy a pagar?</summary>
+            <div class="faq-answer" data-faq-answer><p>No.</p><p>El simulador muestra una estimación basada en la información completada.</p><p>Los valores reales dependen de las reglas del contrato y de los cálculos realizados por la institución financiera.</p></div>
           </details>
         </div>
       </section>
@@ -681,8 +753,8 @@
     </div>
 
     <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="../assets/js/i18n.js?v=20260721-csv-export"></script>
+    <script src="../assets/js/i18n.js?v=20260721-faq"></script>
     <script src="../assets/js/finance.js?v=20260717-privacy-page"></script>
-    <script src="../assets/js/app.js?v=20260721-csv-export"></script>
+    <script src="../assets/js/app.js?v=20260721-faq"></script>
   </body>
 </html>

@@ -37,138 +37,186 @@
     <meta name="twitter:image" content="https://mapadasparcelas.com.br/assets/image/logo.png">
     <meta name="twitter:image:alt" content="Logo do Mapa das Parcelas">
     <script type="application/ld+json">
-      {
-            "@context": "https://schema.org",
-            "@graph": [
-                  {
-                        "@type": "WebSite",
-                        "@id": "https://mapadasparcelas.com.br/#website",
-                        "url": "https://mapadasparcelas.com.br/",
-                        "name": "Mapa das Parcelas",
-                        "alternateName": [
-                              "Installment Map",
-                              "Mapa de cuotas"
-                        ],
-                        "inLanguage": [
-                              "pt-BR",
-                              "en",
-                              "es"
-                        ]
-                  },
-                  {
-                        "@type": "WebApplication",
-                        "@id": "https://mapadasparcelas.com.br/#application",
-                        "name": "Mapa das Parcelas",
-                        "alternateName": [
-                              "Installment Map",
-                              "Mapa de cuotas"
-                        ],
-                        "url": "https://mapadasparcelas.com.br/",
-                        "image": "https://mapadasparcelas.com.br/assets/image/logo.png",
-                        "description": "Simule financiamento imobiliário SAC e Price com amortizações extras, correção monetária, TR, Selic, gráficos, cronograma de parcelas e exportação em PDF.",
-                        "applicationCategory": "FinanceApplication",
-                        "operatingSystem": "Qualquer sistema com navegador moderno",
-                        "browserRequirements": "Requer JavaScript e um navegador moderno.",
-                        "inLanguage": "pt-BR",
-                        "isAccessibleForFree": true,
-                        "offers": {
-                              "@type": "Offer",
-                              "price": "0",
-                              "priceCurrency": "BRL"
-                        },
-                        "featureList": [
-                              "Simulação pelos sistemas SAC e Price",
-                              "Amortizações extras pontuais e recorrentes",
-                              "Correção monetária fixa ou personalizada",
-                              "Comparação de cenários",
-                              "Gráficos e cronograma de parcelas",
-                              "Exportação do relatório em PDF"
-                        ],
-                        "isPartOf": {
-                              "@id": "https://mapadasparcelas.com.br/#website"
-                        }
-                  },
-                  {
-                        "@type": "FAQPage",
-                        "@id": "https://mapadasparcelas.com.br/#faq",
-                        "inLanguage": "pt-BR",
-                        "mainEntity": [
-                              {
-                                    "@type": "Question",
-                                    "name": "Qual é a diferença entre SAC e Price?",
-                                    "acceptedAnswer": {
-                                          "@type": "Answer",
-                                          "text": "No SAC, a amortização regular é calculada com base no saldo e no prazo restantes, e os pagamentos geralmente diminuem ao longo do financiamento. Na Price, as parcelas financeiras são calculadas para permanecer regulares nas condições consideradas, com amortização crescente e juros decrescentes. Correção monetária e pagamentos extras podem alterar esses comportamentos."
-                                    }
+{
+          "@context": "https://schema.org",
+          "@graph": [
+                    {
+                              "@type": "WebSite",
+                              "@id": "https://mapadasparcelas.com.br/#website",
+                              "url": "https://mapadasparcelas.com.br/",
+                              "name": "Mapa das Parcelas",
+                              "alternateName": [
+                                        "Installment Map",
+                                        "Mapa de cuotas"
+                              ],
+                              "inLanguage": [
+                                        "pt-BR",
+                                        "en",
+                                        "es"
+                              ]
+                    },
+                    {
+                              "@type": "WebApplication",
+                              "@id": "https://mapadasparcelas.com.br/#application",
+                              "name": "Mapa das Parcelas",
+                              "alternateName": [
+                                        "Installment Map",
+                                        "Mapa de cuotas"
+                              ],
+                              "url": "https://mapadasparcelas.com.br/",
+                              "image": "https://mapadasparcelas.com.br/assets/image/logo.png",
+                              "description": "Simule financiamento imobiliário SAC e Price com amortizações extras, correção monetária, TR, Selic, gráficos, cronograma de parcelas e exportação em PDF.",
+                              "applicationCategory": "FinanceApplication",
+                              "operatingSystem": "Qualquer sistema com navegador moderno",
+                              "browserRequirements": "Requer JavaScript e um navegador moderno.",
+                              "inLanguage": "pt-BR",
+                              "isAccessibleForFree": true,
+                              "offers": {
+                                        "@type": "Offer",
+                                        "price": "0",
+                                        "priceCurrency": "BRL"
                               },
-                              {
-                                    "@type": "Question",
-                                    "name": "Uma amortização extra reduz o prazo ou o valor das parcelas?",
-                                    "acceptedAnswer": {
-                                          "@type": "Answer",
-                                          "text": "Depende do objetivo selecionado. Ao reduzir prazo, o simulador recalcula a duração restante do financiamento. Ao reduzir o valor das parcelas, ele preserva o prazo e recalcula os pagamentos futuros. A instituição financeira pode aplicar regras contratuais diferentes."
-                                    }
-                              },
-                              {
-                                    "@type": "Question",
-                                    "name": "O que é correção monetária do saldo devedor?",
-                                    "acceptedAnswer": {
-                                          "@type": "Answer",
-                                          "text": "É a atualização do saldo por um percentual ou índice antes do cálculo dos juros e da amortização do mês. A correção aumenta o saldo nominal e afeta os valores seguintes, mas não é tratada como uma tarifa mensal separada."
-                                    }
-                              },
-                              {
-                                    "@type": "Question",
-                                    "name": "Qual taxa TR o simulador utiliza?",
-                                    "acceptedAnswer": {
-                                          "@type": "Answer",
-                                          "text": "O valor sugerido corresponde à maior TR mensal encontrada nos últimos 12 meses disponíveis no arquivo local atualizado pelo projeto. Essa taxa é aplicada como uma projeção mensal fixa. A TR real pode mudar todos os meses."
-                                    }
-                              },
-                              {
-                                    "@type": "Question",
-                                    "name": "A Selic é a taxa do financiamento?",
-                                    "acceptedAnswer": {
-                                          "@type": "Answer",
-                                          "text": "Não. A Meta Selic é usada apenas como referência inicial quando não existe uma taxa salva pelo usuário. A taxa efetivamente cobrada em um financiamento depende da instituição, do contrato, do perfil do cliente e das condições da operação."
-                                    }
-                              },
-                              {
-                                    "@type": "Question",
-                                    "name": "Por que o resultado pode ser diferente do cálculo do banco?",
-                                    "acceptedAnswer": {
-                                          "@type": "Answer",
-                                          "text": "Instituições financeiras podem considerar datas exatas, períodos diários, seguros variáveis, tarifas, tributos, arredondamentos, regras próprias de amortização, índices atualizados e outros elementos do Custo Efetivo Total. O simulador trabalha com as premissas informadas pelo usuário."
-                                    }
-                              },
-                              {
-                                    "@type": "Question",
-                                    "name": "Esta simulação tem validade jurídica ou contratual?",
-                                    "acceptedAnswer": {
-                                          "@type": "Answer",
-                                          "text": "Não. Os resultados são apenas estimativas e não representam proposta de crédito, aprovação, oferta vinculante, recomendação financeira ou condições oficiais de uma instituição. Consulte o contrato e o Custo Efetivo Total antes de tomar uma decisão."
-                                    }
-                              },
-                              {
-                                    "@type": "Question",
-                                    "name": "Posso simular o uso do FGTS como amortização extra?",
-                                    "acceptedAnswer": {
-                                          "@type": "Answer",
-                                          "text": "Sim. O valor pode ser informado como uma amortização extra no mês estimado de aplicação, com o objetivo de reduzir prazo ou parcelas. O simulador não verifica elegibilidade, limites, intervalos de utilização nem outras regras do FGTS ou do contrato."
-                                    }
-                              },
-                              {
-                                    "@type": "Question",
-                                    "name": "Qual é a diferença entre taxa anual nominal e efetiva?",
-                                    "acceptedAnswer": {
-                                          "@type": "Answer",
-                                          "text": "A taxa anual nominal é dividida por 12 para obter a taxa mensal. A taxa anual efetiva é convertida para a taxa mensal equivalente por capitalização composta. Use o tipo de taxa informado no contrato para que a simulação aplique a conversão correta."
-                                    }
+                              "featureList": [
+                                        "Simulação pelos sistemas SAC e Price",
+                                        "Amortizações extras pontuais e recorrentes",
+                                        "Correção monetária fixa ou personalizada",
+                                        "Comparação de cenários",
+                                        "Gráficos e cronograma de parcelas",
+                                        "Exportação do relatório em PDF"
+                              ],
+                              "isPartOf": {
+                                        "@id": "https://mapadasparcelas.com.br/#website"
                               }
-                        ]
-                  }
-            ]
-      }
+                    },
+                    {
+                              "@type": "FAQPage",
+                              "@id": "https://mapadasparcelas.com.br/#faq",
+                              "inLanguage": "pt-BR",
+                              "mainEntity": [
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "Qual é a diferença entre SAC e Price?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "No SAC, uma parte fixa da dívida costuma ser paga todos os meses. Como o saldo devedor diminui, os juros também diminuem. Por isso, as primeiras parcelas normalmente são maiores e vão ficando menores com o tempo. Na Tabela Price, as parcelas tendem a manter um valor mais estável. No início, uma parte maior da parcela corresponde aos juros. Com o passar do tempo, a parte usada para pagar a dívida aumenta. Correção monetária, seguros, taxas e pagamentos extras podem alterar o valor das parcelas nos dois sistemas."
+                                                  }
+                                        },
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "Uma amortização extra reduz o prazo ou o valor das parcelas?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "Você pode escolher entre duas opções: Reduzir o prazo: o valor extra ajuda a terminar o financiamento mais cedo, diminuindo o número de parcelas restantes. Reduzir as parcelas: o prazo é mantido, mas o valor das próximas parcelas é recalculado e pode ficar menor. O banco pode aplicar regras diferentes, conforme o contrato."
+                                                  }
+                                        },
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "O que é amortização?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "Amortização é a parte do pagamento usada para diminuir a dívida. Em uma parcela de financiamento, normalmente há uma parte destinada aos juros e outra destinada à amortização. Quanto maior a amortização, menor fica o saldo devedor."
+                                                  }
+                                        },
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "O que é saldo devedor?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "É o valor da dívida que ainda falta pagar. O saldo devedor não corresponde apenas à soma das parcelas restantes, pois as parcelas também podem incluir juros, seguros, tarifas e outros valores."
+                                                  }
+                                        },
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "O que é correção monetária do saldo devedor?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "É uma atualização do valor da dívida por uma taxa ou índice definido no contrato. Quando existe correção monetária, o saldo devedor pode aumentar antes de diminuir com o pagamento da parcela. Essa atualização também pode afetar os juros e as próximas parcelas. A correção monetária não é uma tarifa separada. Ela faz parte da forma usada para atualizar o valor da dívida."
+                                                  }
+                                        },
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "Qual taxa TR o simulador utiliza?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "O simulador sugere a maior taxa mensal da TR encontrada nos últimos 12 meses disponíveis no arquivo de dados do projeto. Essa taxa é repetida em todos os meses da simulação apenas como uma estimativa conservadora. A TR real pode mudar todos os meses. Por isso, o resultado da simulação pode ser diferente do valor cobrado pelo banco."
+                                                  }
+                                        },
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "A Selic é a taxa do financiamento?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "Não. A Selic é a taxa básica de juros da economia. Ela é usada pelo simulador apenas como um valor inicial de referência quando o usuário ainda não informou outra taxa. A taxa real de um financiamento é definida pelo banco e pode variar conforme o contrato, o tipo de imóvel, o prazo, a renda, o relacionamento com a instituição e o perfil do cliente. Antes de calcular, confira e altere a taxa para o valor informado na proposta ou no contrato."
+                                                  }
+                                        },
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "Por que o resultado pode ser diferente do cálculo do banco?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "O simulador trabalha com os dados informados pelo usuário e apresenta uma estimativa. O banco pode considerar outros fatores, como: data exata de cada pagamento; juros calculados por dia; seguros; tarifas; impostos; correção monetária; regras próprias de arredondamento; mudanças nos índices; outros custos incluídos no Custo Efetivo Total. Para conferir os valores oficiais, consulte a proposta, o contrato e o demonstrativo do financiamento."
+                                                  }
+                                        },
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "O que é Custo Efetivo Total?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "O Custo Efetivo Total, também chamado de CET, mostra o custo total do financiamento. Ele pode incluir juros, seguros, tarifas, impostos e outras despesas obrigatórias. Por isso, duas propostas com a mesma taxa de juros podem ter custos totais diferentes. Ao comparar financiamentos, confira o CET, e não apenas a taxa de juros."
+                                                  }
+                                        },
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "Esta simulação tem validade jurídica ou contratual?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "Não. Os resultados são apenas estimativas. Eles não representam: proposta de crédito; aprovação de financiamento; oferta do banco; valor garantido de parcela; recomendação financeira; condição oficial de contrato. Antes de tomar uma decisão, confira as condições apresentadas pela instituição financeira."
+                                                  }
+                                        },
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "Posso simular o uso do FGTS como amortização extra?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "Sim. Informe o valor do FGTS como uma amortização extra no mês em que pretende fazer o pagamento. Depois, escolha entre reduzir o prazo ou reduzir o valor das parcelas. O simulador não verifica se você pode usar o FGTS. A utilização real depende das regras vigentes, do contrato, do tipo de imóvel, da situação do financiamento e da aprovação do banco ou agente responsável."
+                                                  }
+                                        },
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "Qual é a diferença entre taxa anual nominal e taxa anual efetiva?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "A taxa nominal e a taxa efetiva não representam a mesma coisa. Quando o contrato informa uma taxa nominal anual com cálculo mensal, a taxa mensal costuma ser obtida pela divisão da taxa anual por 12. Por exemplo: Uma taxa nominal de 12% ao ano corresponde, nesse caso, a 1% ao mês. Já a taxa efetiva anual considera o efeito dos juros acumulados ao longo dos meses. Por isso, ela precisa ser convertida para encontrar a taxa mensal equivalente. Use no simulador o mesmo tipo de taxa apresentado pelo banco. Caso tenha dúvida, consulte a proposta ou o contrato."
+                                                  }
+                                        },
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "O que significa reduzir o prazo?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "Significa diminuir a quantidade de parcelas que ainda faltam pagar. Nesse caso, o pagamento extra é usado para antecipar a quitação da dívida. O valor das parcelas pode continuar parecido, mas o financiamento termina mais cedo."
+                                                  }
+                                        },
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "O que significa reduzir o valor das parcelas?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "Significa manter a data prevista para o fim do financiamento e recalcular as parcelas restantes. Nesse caso, o pagamento extra reduz o saldo devedor e pode diminuir o valor das próximas parcelas."
+                                                  }
+                                        },
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "O simulador mostra o valor exato que vou pagar?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "Não. O simulador mostra uma estimativa baseada nas informações preenchidas. Os valores reais dependem das regras do contrato e dos cálculos feitos pela instituição financeira."
+                                                  }
+                                        }
+                              ]
+                    }
+          ]
+}
     </script>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8780410675865678" crossorigin="anonymous"></script>
     <link rel="icon" type="image/svg+xml" href="./assets/image/favicon/favicon.svg">
@@ -177,7 +225,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./assets/image/favicon/apple-touch-icon.png">
     <link rel="manifest" href="./assets/image/favicon/site.webmanifest">
     <link rel="stylesheet" href="./assets/vendor/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="./assets/css/styles.css?v=20260720-institutional-pages">
+    <link rel="stylesheet" href="./assets/css/styles.css?v=20260721-faq">
   </head>
   <body>
     <header class="site-header">
@@ -554,46 +602,70 @@
         <div class="section-heading">
           <div>
             <span id="faq-kicker" class="section-kicker">Dúvidas</span>
-            <h2 id="faq-title">Perguntas frequentes</h2>
+            <h2 id="faq-title">Perguntas frequentes sobre o simulador</h2>
           </div>
         </div>
 
         <div class="faq-list">
           <details class="faq-item" data-faq-item>
             <summary data-faq-question>Qual é a diferença entre SAC e Price?</summary>
-            <p data-faq-answer>No SAC, a amortização regular é calculada com base no saldo e no prazo restantes, e os pagamentos geralmente diminuem ao longo do financiamento. Na Price, as parcelas financeiras são calculadas para permanecer regulares nas condições consideradas, com amortização crescente e juros decrescentes. Correção monetária e pagamentos extras podem alterar esses comportamentos.</p>
+            <div class="faq-answer" data-faq-answer><p>No SAC, uma parte fixa da dívida costuma ser paga todos os meses. Como o saldo devedor diminui, os juros também diminuem. Por isso, as primeiras parcelas normalmente são maiores e vão ficando menores com o tempo.</p><p>Na Tabela Price, as parcelas tendem a manter um valor mais estável. No início, uma parte maior da parcela corresponde aos juros. Com o passar do tempo, a parte usada para pagar a dívida aumenta.</p><p>Correção monetária, seguros, taxas e pagamentos extras podem alterar o valor das parcelas nos dois sistemas.</p></div>
           </details>
           <details class="faq-item" data-faq-item>
             <summary data-faq-question>Uma amortização extra reduz o prazo ou o valor das parcelas?</summary>
-            <p data-faq-answer>Depende do objetivo selecionado. Ao reduzir prazo, o simulador recalcula a duração restante do financiamento. Ao reduzir o valor das parcelas, ele preserva o prazo e recalcula os pagamentos futuros. A instituição financeira pode aplicar regras contratuais diferentes.</p>
+            <div class="faq-answer" data-faq-answer><p>Você pode escolher entre duas opções:</p><p><strong>Reduzir o prazo:</strong> o valor extra ajuda a terminar o financiamento mais cedo, diminuindo o número de parcelas restantes.</p><p><strong>Reduzir as parcelas:</strong> o prazo é mantido, mas o valor das próximas parcelas é recalculado e pode ficar menor.</p><p>O banco pode aplicar regras diferentes, conforme o contrato.</p></div>
+          </details>
+          <details class="faq-item" data-faq-item>
+            <summary data-faq-question>O que é amortização?</summary>
+            <div class="faq-answer" data-faq-answer><p>Amortização é a parte do pagamento usada para diminuir a dívida.</p><p>Em uma parcela de financiamento, normalmente há uma parte destinada aos juros e outra destinada à amortização. Quanto maior a amortização, menor fica o saldo devedor.</p></div>
+          </details>
+          <details class="faq-item" data-faq-item>
+            <summary data-faq-question>O que é saldo devedor?</summary>
+            <div class="faq-answer" data-faq-answer><p>É o valor da dívida que ainda falta pagar.</p><p>O saldo devedor não corresponde apenas à soma das parcelas restantes, pois as parcelas também podem incluir juros, seguros, tarifas e outros valores.</p></div>
           </details>
           <details class="faq-item" data-faq-item>
             <summary data-faq-question>O que é correção monetária do saldo devedor?</summary>
-            <p data-faq-answer>É a atualização do saldo por um percentual ou índice antes do cálculo dos juros e da amortização do mês. A correção aumenta o saldo nominal e afeta os valores seguintes, mas não é tratada como uma tarifa mensal separada.</p>
+            <div class="faq-answer" data-faq-answer><p>É uma atualização do valor da dívida por uma taxa ou índice definido no contrato.</p><p>Quando existe correção monetária, o saldo devedor pode aumentar antes de diminuir com o pagamento da parcela. Essa atualização também pode afetar os juros e as próximas parcelas.</p><p>A correção monetária não é uma tarifa separada. Ela faz parte da forma usada para atualizar o valor da dívida.</p></div>
           </details>
           <details class="faq-item" data-faq-item>
             <summary data-faq-question>Qual taxa TR o simulador utiliza?</summary>
-            <p data-faq-answer>O valor sugerido corresponde à maior TR mensal encontrada nos últimos 12 meses disponíveis no arquivo local atualizado pelo projeto. Essa taxa é aplicada como uma projeção mensal fixa. A TR real pode mudar todos os meses.</p>
+            <div class="faq-answer" data-faq-answer><p>O simulador sugere a maior taxa mensal da TR encontrada nos últimos 12 meses disponíveis no arquivo de dados do projeto.</p><p>Essa taxa é repetida em todos os meses da simulação apenas como uma estimativa conservadora.</p><p>A TR real pode mudar todos os meses. Por isso, o resultado da simulação pode ser diferente do valor cobrado pelo banco.</p></div>
           </details>
           <details class="faq-item" data-faq-item>
             <summary data-faq-question>A Selic é a taxa do financiamento?</summary>
-            <p data-faq-answer>Não. A Meta Selic é usada apenas como referência inicial quando não existe uma taxa salva pelo usuário. A taxa efetivamente cobrada em um financiamento depende da instituição, do contrato, do perfil do cliente e das condições da operação.</p>
+            <div class="faq-answer" data-faq-answer><p>Não.</p><p>A Selic é a taxa básica de juros da economia. Ela é usada pelo simulador apenas como um valor inicial de referência quando o usuário ainda não informou outra taxa.</p><p>A taxa real de um financiamento é definida pelo banco e pode variar conforme o contrato, o tipo de imóvel, o prazo, a renda, o relacionamento com a instituição e o perfil do cliente.</p><p>Antes de calcular, confira e altere a taxa para o valor informado na proposta ou no contrato.</p></div>
           </details>
           <details class="faq-item" data-faq-item>
             <summary data-faq-question>Por que o resultado pode ser diferente do cálculo do banco?</summary>
-            <p data-faq-answer>Instituições financeiras podem considerar datas exatas, períodos diários, seguros variáveis, tarifas, tributos, arredondamentos, regras próprias de amortização, índices atualizados e outros elementos do Custo Efetivo Total. O simulador trabalha com as premissas informadas pelo usuário.</p>
+            <div class="faq-answer" data-faq-answer><p>O simulador trabalha com os dados informados pelo usuário e apresenta uma estimativa.</p><p>O banco pode considerar outros fatores, como:</p><ul><li>data exata de cada pagamento;</li><li>juros calculados por dia;</li><li>seguros;</li><li>tarifas;</li><li>impostos;</li><li>correção monetária;</li><li>regras próprias de arredondamento;</li><li>mudanças nos índices;</li><li>outros custos incluídos no Custo Efetivo Total.</li></ul><p>Para conferir os valores oficiais, consulte a proposta, o contrato e o demonstrativo do financiamento.</p></div>
+          </details>
+          <details class="faq-item" data-faq-item>
+            <summary data-faq-question>O que é Custo Efetivo Total?</summary>
+            <div class="faq-answer" data-faq-answer><p>O Custo Efetivo Total, também chamado de CET, mostra o custo total do financiamento.</p><p>Ele pode incluir juros, seguros, tarifas, impostos e outras despesas obrigatórias.</p><p>Por isso, duas propostas com a mesma taxa de juros podem ter custos totais diferentes. Ao comparar financiamentos, confira o CET, e não apenas a taxa de juros.</p></div>
           </details>
           <details class="faq-item" data-faq-item>
             <summary data-faq-question>Esta simulação tem validade jurídica ou contratual?</summary>
-            <p data-faq-answer>Não. Os resultados são apenas estimativas e não representam proposta de crédito, aprovação, oferta vinculante, recomendação financeira ou condições oficiais de uma instituição. Consulte o contrato e o Custo Efetivo Total antes de tomar uma decisão.</p>
+            <div class="faq-answer" data-faq-answer><p>Não.</p><p>Os resultados são apenas estimativas. Eles não representam:</p><ul><li>proposta de crédito;</li><li>aprovação de financiamento;</li><li>oferta do banco;</li><li>valor garantido de parcela;</li><li>recomendação financeira;</li><li>condição oficial de contrato.</li></ul><p>Antes de tomar uma decisão, confira as condições apresentadas pela instituição financeira.</p></div>
           </details>
           <details class="faq-item" data-faq-item>
             <summary data-faq-question>Posso simular o uso do FGTS como amortização extra?</summary>
-            <p data-faq-answer>Sim. O valor pode ser informado como uma amortização extra no mês estimado de aplicação, com o objetivo de reduzir prazo ou parcelas. O simulador não verifica elegibilidade, limites, intervalos de utilização nem outras regras do FGTS ou do contrato.</p>
+            <div class="faq-answer" data-faq-answer><p>Sim.</p><p>Informe o valor do FGTS como uma amortização extra no mês em que pretende fazer o pagamento. Depois, escolha entre reduzir o prazo ou reduzir o valor das parcelas.</p><p>O simulador não verifica se você pode usar o FGTS.</p><p>A utilização real depende das regras vigentes, do contrato, do tipo de imóvel, da situação do financiamento e da aprovação do banco ou agente responsável.</p></div>
           </details>
           <details class="faq-item" data-faq-item>
-            <summary data-faq-question>Qual é a diferença entre taxa anual nominal e efetiva?</summary>
-            <p data-faq-answer>A taxa anual nominal é dividida por 12 para obter a taxa mensal. A taxa anual efetiva é convertida para a taxa mensal equivalente por capitalização composta. Use o tipo de taxa informado no contrato para que a simulação aplique a conversão correta.</p>
+            <summary data-faq-question>Qual é a diferença entre taxa anual nominal e taxa anual efetiva?</summary>
+            <div class="faq-answer" data-faq-answer><p>A taxa nominal e a taxa efetiva não representam a mesma coisa.</p><p>Quando o contrato informa uma taxa nominal anual com cálculo mensal, a taxa mensal costuma ser obtida pela divisão da taxa anual por 12.</p><p>Por exemplo:</p><p>Uma taxa nominal de 12% ao ano corresponde, nesse caso, a 1% ao mês.</p><p>Já a taxa efetiva anual considera o efeito dos juros acumulados ao longo dos meses. Por isso, ela precisa ser convertida para encontrar a taxa mensal equivalente.</p><p>Use no simulador o mesmo tipo de taxa apresentado pelo banco. Caso tenha dúvida, consulte a proposta ou o contrato.</p></div>
+          </details>
+          <details class="faq-item" data-faq-item>
+            <summary data-faq-question>O que significa reduzir o prazo?</summary>
+            <div class="faq-answer" data-faq-answer><p>Significa diminuir a quantidade de parcelas que ainda faltam pagar.</p><p>Nesse caso, o pagamento extra é usado para antecipar a quitação da dívida. O valor das parcelas pode continuar parecido, mas o financiamento termina mais cedo.</p></div>
+          </details>
+          <details class="faq-item" data-faq-item>
+            <summary data-faq-question>O que significa reduzir o valor das parcelas?</summary>
+            <div class="faq-answer" data-faq-answer><p>Significa manter a data prevista para o fim do financiamento e recalcular as parcelas restantes.</p><p>Nesse caso, o pagamento extra reduz o saldo devedor e pode diminuir o valor das próximas parcelas.</p></div>
+          </details>
+          <details class="faq-item" data-faq-item>
+            <summary data-faq-question>O simulador mostra o valor exato que vou pagar?</summary>
+            <div class="faq-answer" data-faq-answer><p>Não.</p><p>O simulador mostra uma estimativa baseada nas informações preenchidas.</p><p>Os valores reais dependem das regras do contrato e dos cálculos feitos pela instituição financeira.</p></div>
           </details>
         </div>
       </section>
@@ -681,8 +753,8 @@
     </div>
 
     <script src="./assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="./assets/js/i18n.js?v=20260721-csv-export"></script>
+    <script src="./assets/js/i18n.js?v=20260721-faq"></script>
     <script src="./assets/js/finance.js?v=20260717-privacy-page"></script>
-    <script src="./assets/js/app.js?v=20260721-csv-export"></script>
+    <script src="./assets/js/app.js?v=20260721-faq"></script>
   </body>
 </html>

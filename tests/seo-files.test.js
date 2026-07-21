@@ -53,7 +53,7 @@ function extractJsonLdNodes(html) {
 }
 
 function normalizeHtmlText(value) {
-  return value.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+  return value.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
 }
 
 function assetReferences(html) {
@@ -291,17 +291,21 @@ function assetReferences(html) {
     /<section\b[^>]*class=["'][^"']*faq-section[^"']*no-print[^"']*["'][^>]*>/i,
     'FAQ existe no HTML e não integra o relatório impresso',
   );
-  assert.match(homeHtml, /<h2\b[^>]*>Perguntas frequentes<\/h2>/i, 'FAQ possui fallback indexável em português');
+  assert.match(
+    homeHtml,
+    /<h2\b[^>]*>Perguntas frequentes sobre o simulador<\/h2>/i,
+    'FAQ possui fallback indexável em português',
+  );
   const visibleFaqItems = [...homeHtml.matchAll(/<details\b[^>]*data-faq-item[^>]*>([\s\S]*?)<\/details>/gi)]
     .map((match) => {
       const question = match[1].match(/<summary\b[^>]*data-faq-question[^>]*>([\s\S]*?)<\/summary>/i)?.[1];
-      const answer = match[1].match(/<p\b[^>]*data-faq-answer[^>]*>([\s\S]*?)<\/p>/i)?.[1];
+      const answer = match[1].match(/<([a-z][\w-]*)\b[^>]*data-faq-answer[^>]*>([\s\S]*?)<\/\1>/i)?.[2];
       return {
         question: normalizeHtmlText(question ?? ''),
         answer: normalizeHtmlText(answer ?? ''),
       };
     });
-  assert.equal(visibleFaqItems.length, 9, 'FAQ visível contém nove perguntas e respostas');
+  assert.equal(visibleFaqItems.length, 15, 'FAQ visível contém quinze perguntas e respostas');
   assert.ok(
     visibleFaqItems.every(({ question, answer }) => question && answer),
     'todas as perguntas visíveis possuem resposta',

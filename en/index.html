@@ -37,138 +37,186 @@
     <meta name="twitter:image" content="https://mapadasparcelas.com.br/assets/image/logo.png">
     <meta name="twitter:image:alt" content="Installment Map logo">
     <script type="application/ld+json">
-      {
-            "@context": "https://schema.org",
-            "@graph": [
-                  {
-                        "@type": "WebSite",
-                        "@id": "https://mapadasparcelas.com.br/#website",
-                        "url": "https://mapadasparcelas.com.br/",
-                        "name": "Mapa das Parcelas",
-                        "alternateName": [
-                              "Installment Map",
-                              "Mapa de cuotas"
-                        ],
-                        "inLanguage": [
-                              "pt-BR",
-                              "en",
-                              "es"
-                        ]
-                  },
-                  {
-                        "@type": "WebApplication",
-                        "@id": "https://mapadasparcelas.com.br/en/#application",
-                        "name": "Installment Map",
-                        "alternateName": [
-                              "Mapa das Parcelas",
-                              "Mapa de cuotas"
-                        ],
-                        "url": "https://mapadasparcelas.com.br/en/",
-                        "image": "https://mapadasparcelas.com.br/assets/image/logo.png",
-                        "description": "Simulate SAC and Price home financing with extra amortizations, monetary correction, TR, Selic, charts, installment schedules, and PDF export.",
-                        "applicationCategory": "FinanceApplication",
-                        "operatingSystem": "Any system with a modern browser",
-                        "browserRequirements": "Requires JavaScript and a modern browser.",
-                        "inLanguage": "en",
-                        "isAccessibleForFree": true,
-                        "offers": {
-                              "@type": "Offer",
-                              "price": "0",
-                              "priceCurrency": "BRL"
-                        },
-                        "featureList": [
-                              "SAC and Price financing simulation",
-                              "One-time and recurring extra amortizations",
-                              "Fixed or custom monetary correction",
-                              "Scenario comparison",
-                              "Charts and installment schedule",
-                              "PDF report export"
-                        ],
-                        "isPartOf": {
-                              "@id": "https://mapadasparcelas.com.br/#website"
-                        }
-                  },
-                  {
-                        "@type": "FAQPage",
-                        "@id": "https://mapadasparcelas.com.br/en/#faq",
-                        "inLanguage": "en",
-                        "mainEntity": [
-                              {
-                                    "@type": "Question",
-                                    "name": "What is the difference between SAC and Price?",
-                                    "acceptedAnswer": {
-                                          "@type": "Answer",
-                                          "text": "In SAC, regular amortization is calculated from the remaining balance and term, and payments generally decrease over the financing period. In Price, financial installments are calculated to remain regular under the conditions considered, with increasing amortization and decreasing interest. Monetary correction and extra payments can change these behaviors."
-                                    }
+{
+          "@context": "https://schema.org",
+          "@graph": [
+                    {
+                              "@type": "WebSite",
+                              "@id": "https://mapadasparcelas.com.br/#website",
+                              "url": "https://mapadasparcelas.com.br/",
+                              "name": "Mapa das Parcelas",
+                              "alternateName": [
+                                        "Installment Map",
+                                        "Mapa de cuotas"
+                              ],
+                              "inLanguage": [
+                                        "pt-BR",
+                                        "en",
+                                        "es"
+                              ]
+                    },
+                    {
+                              "@type": "WebApplication",
+                              "@id": "https://mapadasparcelas.com.br/en/#application",
+                              "name": "Installment Map",
+                              "alternateName": [
+                                        "Mapa das Parcelas",
+                                        "Mapa de cuotas"
+                              ],
+                              "url": "https://mapadasparcelas.com.br/en/",
+                              "image": "https://mapadasparcelas.com.br/assets/image/logo.png",
+                              "description": "Simulate SAC and Price home financing with extra amortizations, monetary correction, TR, Selic, charts, installment schedules, and PDF export.",
+                              "applicationCategory": "FinanceApplication",
+                              "operatingSystem": "Any system with a modern browser",
+                              "browserRequirements": "Requires JavaScript and a modern browser.",
+                              "inLanguage": "en",
+                              "isAccessibleForFree": true,
+                              "offers": {
+                                        "@type": "Offer",
+                                        "price": "0",
+                                        "priceCurrency": "BRL"
                               },
-                              {
-                                    "@type": "Question",
-                                    "name": "Does an extra amortization reduce the term or the installment amount?",
-                                    "acceptedAnswer": {
-                                          "@type": "Answer",
-                                          "text": "It depends on the selected goal. When reducing the term, the simulator recalculates the remaining financing duration. When reducing the installment amount, it preserves the term and recalculates future payments. The financial institution may apply different contractual rules."
-                                    }
-                              },
-                              {
-                                    "@type": "Question",
-                                    "name": "What is monetary correction of the outstanding balance?",
-                                    "acceptedAnswer": {
-                                          "@type": "Answer",
-                                          "text": "It is the update of the balance by a percentage or index before monthly interest and amortization are calculated. The correction increases the nominal balance and affects subsequent values, but it is not treated as a separate monthly fee."
-                                    }
-                              },
-                              {
-                                    "@type": "Question",
-                                    "name": "Which TR rate does the simulator use?",
-                                    "acceptedAnswer": {
-                                          "@type": "Answer",
-                                          "text": "The suggested value is the highest monthly TR found in the latest 12 months available in the local file updated by the project. This rate is applied as a fixed monthly projection. The actual TR may change every month."
-                                    }
-                              },
-                              {
-                                    "@type": "Question",
-                                    "name": "Is Selic the financing rate?",
-                                    "acceptedAnswer": {
-                                          "@type": "Answer",
-                                          "text": "No. The Selic target rate is used only as an initial reference when there is no rate saved by the user. The rate actually charged on financing depends on the institution, contract, customer profile, and transaction conditions."
-                                    }
-                              },
-                              {
-                                    "@type": "Question",
-                                    "name": "Why can the result differ from the bank calculation?",
-                                    "acceptedAnswer": {
-                                          "@type": "Answer",
-                                          "text": "Financial institutions may consider exact dates, daily periods, variable insurance, fees, taxes, rounding, specific amortization rules, updated indexes, and other elements of the total effective cost. The simulator works with the assumptions entered by the user."
-                                    }
-                              },
-                              {
-                                    "@type": "Question",
-                                    "name": "Does this simulation have legal or contractual validity?",
-                                    "acceptedAnswer": {
-                                          "@type": "Answer",
-                                          "text": "No. The results are estimates only and do not represent a credit proposal, approval, binding offer, financial recommendation, or official terms from an institution. Review the contract and the total effective cost before making a decision."
-                                    }
-                              },
-                              {
-                                    "@type": "Question",
-                                    "name": "Can I simulate the use of FGTS as an extra amortization?",
-                                    "acceptedAnswer": {
-                                          "@type": "Answer",
-                                          "text": "Yes. The amount can be entered as an extra amortization in the estimated application month, with the goal of reducing the term or installments. The simulator does not verify eligibility, limits, usage intervals, or other FGTS or contract rules."
-                                    }
-                              },
-                              {
-                                    "@type": "Question",
-                                    "name": "What is the difference between a nominal and an effective annual rate?",
-                                    "acceptedAnswer": {
-                                          "@type": "Answer",
-                                          "text": "A nominal annual rate is divided by 12 to obtain the monthly rate. An effective annual rate is converted to the equivalent monthly rate through compound capitalization. Use the rate type stated in the contract so the simulation applies the correct conversion."
-                                    }
+                              "featureList": [
+                                        "SAC and Price financing simulation",
+                                        "One-time and recurring extra amortizations",
+                                        "Fixed or custom monetary correction",
+                                        "Scenario comparison",
+                                        "Charts and installment schedule",
+                                        "PDF report export"
+                              ],
+                              "isPartOf": {
+                                        "@id": "https://mapadasparcelas.com.br/#website"
                               }
-                        ]
-                  }
-            ]
-      }
+                    },
+                    {
+                              "@type": "FAQPage",
+                              "@id": "https://mapadasparcelas.com.br/en/#faq",
+                              "inLanguage": "en",
+                              "mainEntity": [
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "What is the difference between SAC and Price?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "In SAC, a fixed portion of the debt is usually paid every month. As the outstanding balance decreases, interest also decreases. For this reason, the first installments are usually higher and become smaller over time. In the Price system, installments tend to keep a more stable amount. At the beginning, a larger part of the installment corresponds to interest. Over time, the part used to pay down the debt increases. Monetary correction, insurance, fees, and extra payments can change installment amounts in both systems."
+                                                  }
+                                        },
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "Does an extra amortization reduce the term or the installment amount?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "You can choose between two options: Reduce the term: the extra amount helps finish the financing earlier by reducing the number of remaining installments. Reduce the installments: the term is maintained, but the amount of the next installments is recalculated and may become lower. The bank may apply different rules depending on the contract."
+                                                  }
+                                        },
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "What is amortization?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "Amortization is the part of the payment used to reduce the debt. In a financing installment, there is usually one part allocated to interest and another part allocated to amortization. The greater the amortization, the lower the outstanding balance becomes."
+                                                  }
+                                        },
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "What is the outstanding balance?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "It is the amount of debt still left to pay. The outstanding balance is not simply the sum of the remaining installments, because installments may also include interest, insurance, fees, and other amounts."
+                                                  }
+                                        },
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "What is monetary correction of the outstanding balance?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "It is an update to the debt amount by a rate or index defined in the contract. When monetary correction exists, the outstanding balance can increase before decreasing with the installment payment. This update can also affect interest and future installments. Monetary correction is not a separate fee. It is part of the method used to update the debt amount."
+                                                  }
+                                        },
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "Which TR rate does the simulator use?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "The simulator suggests the highest monthly TR rate found in the latest 12 months available in the project data file. This rate is repeated in every month of the simulation only as a conservative estimate. The actual TR may change every month. Therefore, the simulation result may differ from the amount charged by the bank."
+                                                  }
+                                        },
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "Is Selic the financing rate?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "No. Selic is the base interest rate of the Brazilian economy. The simulator uses it only as an initial reference value when the user has not entered another rate yet. The actual financing rate is defined by the bank and may vary according to the contract, property type, term, income, relationship with the institution, and customer profile. Before calculating, check and change the rate to the value stated in the proposal or contract."
+                                                  }
+                                        },
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "Why can the result differ from the bank calculation?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "The simulator works with the data entered by the user and presents an estimate. The bank may consider other factors, such as: the exact date of each payment; interest calculated by day; insurance; fees; taxes; monetary correction; specific rounding rules; changes in indexes; other costs included in the total effective cost. To check official values, review the financing proposal, contract, and statement."
+                                                  }
+                                        },
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "What is the total effective cost?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "The total effective cost, also called CET in Brazil, shows the total cost of the financing. It may include interest, insurance, fees, taxes, and other mandatory expenses. For this reason, two proposals with the same interest rate may have different total costs. When comparing financing offers, check the total effective cost, not only the interest rate."
+                                                  }
+                                        },
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "Does this simulation have legal or contractual validity?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "No. The results are estimates only. They do not represent: a credit proposal; financing approval; a bank offer; a guaranteed installment amount; a financial recommendation; an official contract condition. Before making a decision, review the conditions presented by the financial institution."
+                                                  }
+                                        },
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "Can I simulate the use of FGTS as an extra amortization?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "Yes. Enter the FGTS amount as an extra amortization in the month when you intend to make the payment. Then choose whether to reduce the term or reduce the installment amount. The simulator does not verify whether you can use FGTS. Actual use depends on current rules, the contract, the property type, the financing status, and approval by the bank or responsible agent."
+                                                  }
+                                        },
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "What is the difference between a nominal annual rate and an effective annual rate?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "The nominal rate and the effective rate are not the same thing. When the contract states a nominal annual rate with monthly calculation, the monthly rate is usually obtained by dividing the annual rate by 12. For example: A nominal rate of 12% per year corresponds, in this case, to 1% per month. The effective annual rate considers the effect of accumulated interest over the months. Therefore, it must be converted to find the equivalent monthly rate. Use in the simulator the same type of rate presented by the bank. If in doubt, review the proposal or contract."
+                                                  }
+                                        },
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "What does reducing the term mean?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "It means decreasing the number of installments still left to pay. In this case, the extra payment is used to anticipate debt payoff. The installment amount may remain similar, but the financing ends earlier."
+                                                  }
+                                        },
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "What does reducing the installment amount mean?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "It means keeping the scheduled end date of the financing and recalculating the remaining installments. In this case, the extra payment reduces the outstanding balance and may lower the amount of the next installments."
+                                                  }
+                                        },
+                                        {
+                                                  "@type": "Question",
+                                                  "name": "Does the simulator show the exact amount I will pay?",
+                                                  "acceptedAnswer": {
+                                                            "@type": "Answer",
+                                                            "text": "No. The simulator shows an estimate based on the information entered. Actual amounts depend on the contract rules and calculations made by the financial institution."
+                                                  }
+                                        }
+                              ]
+                    }
+          ]
+}
     </script>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8780410675865678" crossorigin="anonymous"></script>
     <link rel="icon" type="image/svg+xml" href="../assets/image/favicon/favicon.svg">
@@ -177,7 +225,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="../assets/image/favicon/apple-touch-icon.png">
     <link rel="manifest" href="../assets/image/favicon/site.webmanifest">
     <link rel="stylesheet" href="../assets/vendor/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../assets/css/styles.css?v=20260720-institutional-pages">
+    <link rel="stylesheet" href="../assets/css/styles.css?v=20260721-faq">
   </head>
   <body>
     <header class="site-header">
@@ -554,46 +602,70 @@
         <div class="section-heading">
           <div>
             <span id="faq-kicker" class="section-kicker">Questions</span>
-            <h2 id="faq-title">Frequently asked questions</h2>
+            <h2 id="faq-title">Frequently asked questions about the simulator</h2>
           </div>
         </div>
 
         <div class="faq-list">
           <details class="faq-item" data-faq-item>
             <summary data-faq-question>What is the difference between SAC and Price?</summary>
-            <p data-faq-answer>In SAC, regular amortization is calculated from the remaining balance and term, and payments generally decrease over the financing period. In Price, financial installments are calculated to remain regular under the conditions considered, with increasing amortization and decreasing interest. Monetary correction and extra payments can change these behaviors.</p>
+            <div class="faq-answer" data-faq-answer><p>In SAC, a fixed portion of the debt is usually paid every month. As the outstanding balance decreases, interest also decreases. For this reason, the first installments are usually higher and become smaller over time.</p><p>In the Price system, installments tend to keep a more stable amount. At the beginning, a larger part of the installment corresponds to interest. Over time, the part used to pay down the debt increases.</p><p>Monetary correction, insurance, fees, and extra payments can change installment amounts in both systems.</p></div>
           </details>
           <details class="faq-item" data-faq-item>
             <summary data-faq-question>Does an extra amortization reduce the term or the installment amount?</summary>
-            <p data-faq-answer>It depends on the selected goal. When reducing the term, the simulator recalculates the remaining financing duration. When reducing the installment amount, it preserves the term and recalculates future payments. The financial institution may apply different contractual rules.</p>
+            <div class="faq-answer" data-faq-answer><p>You can choose between two options:</p><p><strong>Reduce the term:</strong> the extra amount helps finish the financing earlier by reducing the number of remaining installments.</p><p><strong>Reduce the installments:</strong> the term is maintained, but the amount of the next installments is recalculated and may become lower.</p><p>The bank may apply different rules depending on the contract.</p></div>
+          </details>
+          <details class="faq-item" data-faq-item>
+            <summary data-faq-question>What is amortization?</summary>
+            <div class="faq-answer" data-faq-answer><p>Amortization is the part of the payment used to reduce the debt.</p><p>In a financing installment, there is usually one part allocated to interest and another part allocated to amortization. The greater the amortization, the lower the outstanding balance becomes.</p></div>
+          </details>
+          <details class="faq-item" data-faq-item>
+            <summary data-faq-question>What is the outstanding balance?</summary>
+            <div class="faq-answer" data-faq-answer><p>It is the amount of debt still left to pay.</p><p>The outstanding balance is not simply the sum of the remaining installments, because installments may also include interest, insurance, fees, and other amounts.</p></div>
           </details>
           <details class="faq-item" data-faq-item>
             <summary data-faq-question>What is monetary correction of the outstanding balance?</summary>
-            <p data-faq-answer>It is the update of the balance by a percentage or index before monthly interest and amortization are calculated. The correction increases the nominal balance and affects subsequent values, but it is not treated as a separate monthly fee.</p>
+            <div class="faq-answer" data-faq-answer><p>It is an update to the debt amount by a rate or index defined in the contract.</p><p>When monetary correction exists, the outstanding balance can increase before decreasing with the installment payment. This update can also affect interest and future installments.</p><p>Monetary correction is not a separate fee. It is part of the method used to update the debt amount.</p></div>
           </details>
           <details class="faq-item" data-faq-item>
             <summary data-faq-question>Which TR rate does the simulator use?</summary>
-            <p data-faq-answer>The suggested value is the highest monthly TR found in the latest 12 months available in the local file updated by the project. This rate is applied as a fixed monthly projection. The actual TR may change every month.</p>
+            <div class="faq-answer" data-faq-answer><p>The simulator suggests the highest monthly TR rate found in the latest 12 months available in the project data file.</p><p>This rate is repeated in every month of the simulation only as a conservative estimate.</p><p>The actual TR may change every month. Therefore, the simulation result may differ from the amount charged by the bank.</p></div>
           </details>
           <details class="faq-item" data-faq-item>
             <summary data-faq-question>Is Selic the financing rate?</summary>
-            <p data-faq-answer>No. The Selic target rate is used only as an initial reference when there is no rate saved by the user. The rate actually charged on financing depends on the institution, contract, customer profile, and transaction conditions.</p>
+            <div class="faq-answer" data-faq-answer><p>No.</p><p>Selic is the base interest rate of the Brazilian economy. The simulator uses it only as an initial reference value when the user has not entered another rate yet.</p><p>The actual financing rate is defined by the bank and may vary according to the contract, property type, term, income, relationship with the institution, and customer profile.</p><p>Before calculating, check and change the rate to the value stated in the proposal or contract.</p></div>
           </details>
           <details class="faq-item" data-faq-item>
             <summary data-faq-question>Why can the result differ from the bank calculation?</summary>
-            <p data-faq-answer>Financial institutions may consider exact dates, daily periods, variable insurance, fees, taxes, rounding, specific amortization rules, updated indexes, and other elements of the total effective cost. The simulator works with the assumptions entered by the user.</p>
+            <div class="faq-answer" data-faq-answer><p>The simulator works with the data entered by the user and presents an estimate.</p><p>The bank may consider other factors, such as:</p><ul><li>the exact date of each payment;</li><li>interest calculated by day;</li><li>insurance;</li><li>fees;</li><li>taxes;</li><li>monetary correction;</li><li>specific rounding rules;</li><li>changes in indexes;</li><li>other costs included in the total effective cost.</li></ul><p>To check official values, review the financing proposal, contract, and statement.</p></div>
+          </details>
+          <details class="faq-item" data-faq-item>
+            <summary data-faq-question>What is the total effective cost?</summary>
+            <div class="faq-answer" data-faq-answer><p>The total effective cost, also called CET in Brazil, shows the total cost of the financing.</p><p>It may include interest, insurance, fees, taxes, and other mandatory expenses.</p><p>For this reason, two proposals with the same interest rate may have different total costs. When comparing financing offers, check the total effective cost, not only the interest rate.</p></div>
           </details>
           <details class="faq-item" data-faq-item>
             <summary data-faq-question>Does this simulation have legal or contractual validity?</summary>
-            <p data-faq-answer>No. The results are estimates only and do not represent a credit proposal, approval, binding offer, financial recommendation, or official terms from an institution. Review the contract and the total effective cost before making a decision.</p>
+            <div class="faq-answer" data-faq-answer><p>No.</p><p>The results are estimates only. They do not represent:</p><ul><li>a credit proposal;</li><li>financing approval;</li><li>a bank offer;</li><li>a guaranteed installment amount;</li><li>a financial recommendation;</li><li>an official contract condition.</li></ul><p>Before making a decision, review the conditions presented by the financial institution.</p></div>
           </details>
           <details class="faq-item" data-faq-item>
             <summary data-faq-question>Can I simulate the use of FGTS as an extra amortization?</summary>
-            <p data-faq-answer>Yes. The amount can be entered as an extra amortization in the estimated application month, with the goal of reducing the term or installments. The simulator does not verify eligibility, limits, usage intervals, or other FGTS or contract rules.</p>
+            <div class="faq-answer" data-faq-answer><p>Yes.</p><p>Enter the FGTS amount as an extra amortization in the month when you intend to make the payment. Then choose whether to reduce the term or reduce the installment amount.</p><p>The simulator does not verify whether you can use FGTS.</p><p>Actual use depends on current rules, the contract, the property type, the financing status, and approval by the bank or responsible agent.</p></div>
           </details>
           <details class="faq-item" data-faq-item>
-            <summary data-faq-question>What is the difference between a nominal and an effective annual rate?</summary>
-            <p data-faq-answer>A nominal annual rate is divided by 12 to obtain the monthly rate. An effective annual rate is converted to the equivalent monthly rate through compound capitalization. Use the rate type stated in the contract so the simulation applies the correct conversion.</p>
+            <summary data-faq-question>What is the difference between a nominal annual rate and an effective annual rate?</summary>
+            <div class="faq-answer" data-faq-answer><p>The nominal rate and the effective rate are not the same thing.</p><p>When the contract states a nominal annual rate with monthly calculation, the monthly rate is usually obtained by dividing the annual rate by 12.</p><p>For example:</p><p>A nominal rate of 12% per year corresponds, in this case, to 1% per month.</p><p>The effective annual rate considers the effect of accumulated interest over the months. Therefore, it must be converted to find the equivalent monthly rate.</p><p>Use in the simulator the same type of rate presented by the bank. If in doubt, review the proposal or contract.</p></div>
+          </details>
+          <details class="faq-item" data-faq-item>
+            <summary data-faq-question>What does reducing the term mean?</summary>
+            <div class="faq-answer" data-faq-answer><p>It means decreasing the number of installments still left to pay.</p><p>In this case, the extra payment is used to anticipate debt payoff. The installment amount may remain similar, but the financing ends earlier.</p></div>
+          </details>
+          <details class="faq-item" data-faq-item>
+            <summary data-faq-question>What does reducing the installment amount mean?</summary>
+            <div class="faq-answer" data-faq-answer><p>It means keeping the scheduled end date of the financing and recalculating the remaining installments.</p><p>In this case, the extra payment reduces the outstanding balance and may lower the amount of the next installments.</p></div>
+          </details>
+          <details class="faq-item" data-faq-item>
+            <summary data-faq-question>Does the simulator show the exact amount I will pay?</summary>
+            <div class="faq-answer" data-faq-answer><p>No.</p><p>The simulator shows an estimate based on the information entered.</p><p>Actual amounts depend on the contract rules and calculations made by the financial institution.</p></div>
           </details>
         </div>
       </section>
@@ -681,8 +753,8 @@
     </div>
 
     <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="../assets/js/i18n.js?v=20260721-csv-export"></script>
+    <script src="../assets/js/i18n.js?v=20260721-faq"></script>
     <script src="../assets/js/finance.js?v=20260717-privacy-page"></script>
-    <script src="../assets/js/app.js?v=20260721-csv-export"></script>
+    <script src="../assets/js/app.js?v=20260721-faq"></script>
   </body>
 </html>
