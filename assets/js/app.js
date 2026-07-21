@@ -26,6 +26,7 @@
   const privacyNoticeDismissButton = document.querySelector('#privacy-notice-dismiss');
   const resetFormButton = document.querySelector('#reset-form');
   const exportPdfButton = document.querySelector('#export-pdf');
+  const exportCsvButton = document.querySelector('#export-csv');
   const financedValueInput = document.querySelector('#financed-value');
   const monthlyExtraCostInput = document.querySelector('#monthly-extra-cost');
   const termInput = document.querySelector('#term');
@@ -638,6 +639,9 @@
       if (summaryDetailHeaders[index]) summaryDetailHeaders[index].textContent = t(key);
     });
     setText('#export-pdf', 'results.exportPdf');
+    setText('#export-csv', 'results.exportCsv');
+    setText('[data-csv-mode="formatted"]', 'results.exportCsvFormatted');
+    setText('[data-csv-mode="raw"]', 'results.exportCsvRaw');
     setText('#projection-note', 'results.projectionNote');
 
     setText('#charts-title', 'charts.title');
@@ -1606,6 +1610,117 @@
     return '';
   }
 
+  function installmentFormattedCsvRow(row) {
+    return [
+      row.number,
+      formatDate(row.dueDate),
+      formatCurrency(row.openingBalanceCents),
+      formatPercent(row.correctionRate),
+      formatCurrency(row.correctionCents),
+      formatCurrency(row.correctedBalanceCents),
+      formatCurrency(row.interestCents),
+      formatCurrency(row.regularAmortizationCents),
+      formatCurrency(row.regularPaymentCents),
+      formatCurrency(row.extraPaymentCents),
+      formatCurrency(row.monthlyExtraCostCents),
+      formatCurrency(row.totalPaymentCents),
+      formatCurrency(row.closingBalanceCents),
+      installmentGoalLabel(row),
+    ];
+  }
+
+  function rawCurrencyValue(cents) {
+    return (Math.round(cents || 0) / 100).toFixed(2);
+  }
+
+  function rawRateValue(rate) {
+    const value = Number(rate || 0).toFixed(10).replace(/0+$/, '').replace(/\.$/, '');
+    return value || '0';
+  }
+
+  function installmentRawCsvRow(row) {
+    return [
+      row.number,
+      row.dueDate || '',
+      rawCurrencyValue(row.openingBalanceCents),
+      rawRateValue(row.correctionRate),
+      rawCurrencyValue(row.correctionCents),
+      rawCurrencyValue(row.correctedBalanceCents),
+      rawCurrencyValue(row.interestCents),
+      rawCurrencyValue(row.regularAmortizationCents),
+      rawCurrencyValue(row.regularPaymentCents),
+      rawCurrencyValue(row.extraPaymentCents),
+      rawCurrencyValue(row.monthlyExtraCostCents),
+      rawCurrencyValue(row.totalPaymentCents),
+      rawCurrencyValue(row.closingBalanceCents),
+      installmentGoalLabel(row),
+    ];
+  }
+
+  function escapeCsvCell(value) {
+    const text = String(value ?? '');
+    const escaped = text.replace(/"/g, '""');
+    return /[;"\r\n]/.test(escaped) ? `"${escaped}"` : escaped;
+  }
+
+  function csvLine(values) {
+    return values.map(escapeCsvCell).join(';');
+  }
+
+  function buildInstallmentsCsv(rows, mode = 'formatted') {
+    const header = installmentColumnKeys().map((key) => t(key));
+    const rowBuilder = mode === 'raw' ? installmentRawCsvRow : installmentFormattedCsvRow;
+    const lines = [
+      csvLine(header),
+      ...rows.map((row) => csvLine(rowBuilder(row))),
+    ];
+    return `\uFEFF${lines.join('\r\n')}\r\n`;
+  }
+
+  function currentDateStamp() {
+    const date = new Date();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${date.getFullYear()}-${month}-${day}`;
+  }
+
+  function downloadCsv(fileName, content) {
+    const blob = new Blob([content], { type: 'text/csv;charset=utf-8' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+    link.style.display = 'none';
+    try {
+      document.body.appendChild(link);
+      link.click();
+    } finally {
+      link.remove();
+      window.setTimeout(() => window.URL.revokeObjectURL(url), 0);
+    }
+  }
+
+  function csvFileName(mode) {
+    const suffix = mode === 'raw' ? 'valores' : 'formatado';
+    return `mapa-das-parcelas-parcelas-${suffix}-${currentDateStamp()}.csv`;
+  }
+
+  function exportInstallmentsToCsv(mode = 'formatted') {
+    if (!hasCalculated || !currentComparison?.current?.installments?.length || !exportCsvButton) return;
+    exportCsvButton.disabled = true;
+    exportCsvButton.setAttribute('aria-busy', 'true');
+    try {
+      const exportMode = mode === 'raw' ? 'raw' : 'formatted';
+      const csv = buildInstallmentsCsv(currentComparison.current.installments, exportMode);
+      downloadCsv(csvFileName(exportMode), csv);
+    } catch (error) {
+      showGeneralError(t('results.exportCsvError'));
+    } finally {
+      exportCsvButton.disabled = !hasCalculated;
+      exportCsvButton.removeAttribute('aria-busy');
+    }
+  }
+
   function installmentRowHtml(row) {
     const goal = installmentGoalLabel(row);
     const cells = [
@@ -1816,6 +1931,7 @@
     tableContent.classList.add('d-none');
     tableEmpty.classList.remove('d-none');
     exportPdfButton.disabled = true;
+    if (exportCsvButton) exportCsvButton.disabled = true;
     tableEmpty.textContent = hasCalculated
       ? t('installments.emptyStale')
       : t('installments.emptyPrompt');
@@ -1849,6 +1965,7 @@
     tableContent.classList.remove('d-none');
     hasCalculated = true;
     exportPdfButton.disabled = false;
+    if (exportCsvButton) exportCsvButton.disabled = false;
     requestChartRender(comparison);
     if (scrollToResults) results.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
@@ -1974,6 +2091,7 @@
     currentPage = 1;
     hasCalculated = false;
     exportPdfButton.disabled = true;
+    if (exportCsvButton) exportCsvButton.disabled = true;
     installmentFilter.value = 'all';
     goToInstallment.value = '';
     pageSizeSelect.value = '12';
@@ -1996,6 +2114,9 @@
   languageSelect.addEventListener('change', handleLanguageChange);
   resetFormButton.addEventListener('click', resetFormState);
   exportPdfButton.addEventListener('click', exportResultsToPdf);
+  document.querySelectorAll('[data-csv-mode]').forEach((button) => {
+    button.addEventListener('click', () => exportInstallmentsToCsv(button.dataset.csvMode));
+  });
   chartStatus?.addEventListener('click', (event) => {
     if (event.target.closest('[data-action="retry-charts"]')) retryChartRender();
   });

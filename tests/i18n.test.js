@@ -31,6 +31,9 @@ for (const language of languages) {
   i18n.setLanguage(language);
   assert.equal(i18n.getLanguage(), language, `${language}: troca idioma`);
   assert.notEqual(i18n.t('metadata.title'), 'metadata.title', `${language}: encontra chave crítica`);
+  assert.notEqual(i18n.t('results.exportCsv'), 'results.exportCsv', `${language}: traduz exportação CSV`);
+  assert.notEqual(i18n.t('results.exportCsvFormatted'), 'results.exportCsvFormatted', `${language}: traduz opção de CSV formatado`);
+  assert.notEqual(i18n.t('results.exportCsvRaw'), 'results.exportCsvRaw', `${language}: traduz opção de CSV raw`);
   assert.equal(
     i18n.t('privacy.metadata.title'),
     expectedPrivacyTitles[language],

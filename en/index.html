@@ -477,6 +477,15 @@
             <span class="section-kicker">Schedule</span>
             <h2 id="installments-title">Installments</h2>
           </div>
+          <div class="section-actions">
+            <div class="dropdown no-print">
+              <button id="export-csv" class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" disabled>Export CSV</button>
+              <ul class="dropdown-menu" aria-labelledby="export-csv">
+                <li><button class="dropdown-item" type="button" data-csv-mode="formatted">Formatted values</button></li>
+                <li><button class="dropdown-item" type="button" data-csv-mode="raw">Raw values</button></li>
+              </ul>
+            </div>
+          </div>
         </div>
 
         <div id="table-empty" class="empty-state">Fill in the data to view installments.</div>
@@ -672,8 +681,8 @@
     </div>
 
     <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="../assets/js/i18n.js?v=20260720-institutional-pages"></script>
+    <script src="../assets/js/i18n.js?v=20260721-csv-export"></script>
     <script src="../assets/js/finance.js?v=20260717-privacy-page"></script>
-    <script src="../assets/js/app.js?v=20260720-institutional-pages"></script>
+    <script src="../assets/js/app.js?v=20260721-csv-export"></script>
   </body>
 </html>
