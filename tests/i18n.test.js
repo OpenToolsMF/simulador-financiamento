@@ -34,6 +34,7 @@ for (const language of languages) {
   assert.notEqual(i18n.t('results.exportCsv'), 'results.exportCsv', `${language}: traduz exportação CSV`);
   assert.notEqual(i18n.t('results.exportCsvFormatted'), 'results.exportCsvFormatted', `${language}: traduz opção de CSV formatado`);
   assert.notEqual(i18n.t('results.exportCsvRaw'), 'results.exportCsvRaw', `${language}: traduz opção de CSV raw`);
+  assert.notEqual(i18n.t('bcb.title'), 'bcb.title', `${language}: traduz modal de taxas médias BCB`);
   assert.equal(
     i18n.t('privacy.metadata.title'),
     expectedPrivacyTitles[language],

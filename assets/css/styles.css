@@ -406,6 +406,17 @@ legend.form-label {
   text-decoration: underline;
 }
 
+.financing-field-action {
+  --bs-btn-padding-y: 0.125rem;
+  --bs-btn-padding-x: 0.45rem;
+  --bs-btn-font-size: 0.72rem;
+  --bs-btn-line-height: 1.2;
+
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
 .field-header a,
 .field-header .btn {
   flex-shrink: 0;
@@ -547,6 +558,17 @@ legend.form-label {
 
 .comparison-table th:not(:first-child),
 .comparison-table td:not(:first-child) { text-align: right; font-variant-numeric: tabular-nums; }
+
+.bcb-rates-table th:first-child,
+.bcb-rates-table td:first-child {
+  text-align: left;
+  white-space: normal;
+}
+
+.bcb-rates-table th:not(:first-child),
+.bcb-rates-table td:not(:first-child) {
+  white-space: nowrap;
+}
 
 .summary-detail-table th:nth-child(3) {
   text-align: left;

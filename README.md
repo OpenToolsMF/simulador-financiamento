@@ -14,11 +14,12 @@ O projeto usa HTML, CSS e JavaScript simples, sem etapa de build e sem dependên
   - percentual mensal fixo;
   - série mensal personalizada.
 - Maior TR dos últimos 12 meses a partir do JSON local `assets/data/tr-bacen.json`.
-- Taxa Selic padrão carregada a partir do JSON local `assets/data/selic-bcb.json`, com cache diário em `localStorage`.
+- Taxas médias BCB por instituição para modalidades imobiliárias e veicular a partir do JSON local `assets/data/bcb-credit-rates.json`.
+- Taxa de juros padrão anual efetiva baseada na média das menores taxas prefixadas de mercado do BCB, com cache diário em `localStorage`.
 - Amortizações extras pontuais ou recorrentes, com objetivo de reduzir prazo ou reduzir parcelas.
 - Recálculo automático ao alterar campos.
 - Persistência dos últimos valores preenchidos em `localStorage`.
-- Reset do formulário preservando caches diários de Selic/TR.
+- Reset do formulário preservando caches diários de TR/taxas médias BCB.
 - Gráficos com Chart.js:
   - evolução do saldo devedor;
   - composição da parcela;
@@ -44,16 +45,16 @@ O projeto usa HTML, CSS e JavaScript simples, sem etapa de build e sem dependên
 - `en/contact/index.html`: página de contato em inglês.
 - `es/contacto/index.html`: página de contato em espanhol.
 - `assets/css/styles.css`: estilos próprios e estilos de impressão.
-- `assets/js/app.js`: integração da UI, validação, persistência, gráficos, TR/Selic e PDF.
+- `assets/js/app.js`: integração da UI, validação, persistência, gráficos, TR/taxas médias BCB e PDF.
 - `assets/js/finance.js`: motor financeiro SAC/Price.
 - `assets/js/i18n.js`: traduções, formatação e parsing localizado.
 - `assets/data/tr-bacen.json`: base local versionada com taxas TR mensais.
-- `assets/data/selic-bcb.json`: base local versionada com a última Meta Selic.
+- `assets/data/bcb-credit-rates.json`: base local versionada com taxas médias BCB por instituição para modalidades imobiliárias e veicular.
 - `assets/image/`: logo e favicons.
 - `assets/vendor/bootstrap/`: Bootstrap 5.3.8 local.
 - `assets/vendor/chartjs/`: Chart.js 4.5.1 local.
 - `scripts/update-tr-bacen.mjs`: atualização da base local da TR.
-- `scripts/update-selic-bcb.mjs`: atualização da base local da Selic.
+- `scripts/update-bcb-credit-rates.mjs`: atualização da base local de taxas médias BCB.
 - `tests/`: testes Node sem dependências externas.
 - `contracts/style.md`: contrato visual do projeto.
 
@@ -99,14 +100,17 @@ As páginas localizadas devem manter no próprio HTML o corpo pré-renderizado n
 Com Node.js disponível:
 
 ```sh
+node --check scripts/update-bcb-credit-rates.mjs
+node --check scripts/update-tr-bacen.mjs
 node --check assets/js/i18n.js
 node --check assets/js/app.js
+node --check assets/js/privacy.js
 node --check assets/js/finance.js
 node tests/localized-html.test.js
 node tests/seo-files.test.js
 node tests/i18n.test.js
 node tests/finance.test.js
-node tests/selic-bcb.test.js
+node tests/bcb-credit-rates.test.js
 node tests/tr-bacen.test.js
 git diff --check
 ```
@@ -124,23 +128,23 @@ Os testes automatizados cobrem principalmente:
 - cenário reportado com correção monetária e amortização extra;
 - dicionários e formatadores básicos de i18n;
 - correspondência entre os corpos HTML pré-renderizados, os dicionários e os dados estruturados localizados;
-- parser e geração dos JSONs locais da TR e da Selic.
+- parser e geração dos JSONs locais da TR e das taxas médias BCB.
 - coerência entre páginas públicas, URLs canônicas, sitemap e robots.
 
-Ainda não há testes automatizados de browser/UI para layout, impressão, Chart.js, `localStorage`, cache Selic/TR no navegador ou fluxo visual de PDF. Esses pontos devem ser validados manualmente no navegador.
+Ainda não há testes automatizados de browser/UI para layout, impressão, Chart.js, `localStorage`, cache TR/BCB no navegador ou fluxo visual de PDF. Esses pontos devem ser validados manualmente no navegador.
 
 ## Atualizar as bases locais de referência
 
-O simulador não consulta a página externa da TR nem a API do BCB diretamente no navegador. A opção “Usar TR 12m” lê o arquivo local `assets/data/tr-bacen.json`, seleciona a maior TR dos últimos 12 meses disponíveis e preenche a correção mensal fixa. A taxa Selic padrão lê o arquivo local `assets/data/selic-bcb.json`.
+O simulador não consulta a página externa da TR nem a API Olinda do BCB diretamente no navegador. A opção “Usar TR 12m” lê o arquivo local `assets/data/tr-bacen.json`, seleciona a maior TR dos últimos 12 meses disponíveis e preenche a correção mensal fixa. A taxa de juros padrão e o modal “Consultar taxas médias BCB” leem o arquivo local `assets/data/bcb-credit-rates.json`, que inclui taxas imobiliárias mensais e taxas veiculares diárias de aquisição de veículos.
 
 Para atualizar manualmente:
 
 ```sh
 node scripts/update-tr-bacen.mjs
-node scripts/update-selic-bcb.mjs
+node scripts/update-bcb-credit-rates.mjs
 ```
 
-O workflow `.github/workflows/update-reference-rates.yml` executa as duas atualizações em dias úteis e também pode ser disparado manualmente pelo GitHub Actions. Se houver alteração em `assets/data/tr-bacen.json` ou `assets/data/selic-bcb.json`, ele cria um commit automático com a nova base.
+O workflow `.github/workflows/update-reference-rates.yml` executa as duas atualizações em dias úteis e também pode ser disparado manualmente pelo GitHub Actions. Se houver alteração em `assets/data/tr-bacen.json` ou `assets/data/bcb-credit-rates.json`, ele cria um commit automático com a nova base.
 
 ## Publicação
 

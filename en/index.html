@@ -12,7 +12,7 @@
     </script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Simulate SAC and Price home financing with extra amortizations, monetary correction, TR, Selic, charts, installment schedules, and PDF export.">
+    <meta name="description" content="Simulate SAC and Price home financing with extra amortizations, monetary correction, TR, BCB average rates, charts, installment schedules, and PDF export.">
     <meta name="google-adsense-account" content="ca-pub-8780410675865678">
     <title>Installment Map - Financing</title>
     <link rel="canonical" href="https://mapadasparcelas.com.br/en/">
@@ -24,7 +24,7 @@
     <meta property="og:locale" content="en_US">
     <meta property="og:site_name" content="Installment Map">
     <meta property="og:title" content="Installment Map - Financing">
-    <meta property="og:description" content="Simulate SAC and Price home financing with extra amortizations, monetary correction, TR, Selic, charts, installment schedules, and PDF export.">
+    <meta property="og:description" content="Simulate SAC and Price home financing with extra amortizations, monetary correction, TR, BCB average rates, charts, installment schedules, and PDF export.">
     <meta property="og:url" content="https://mapadasparcelas.com.br/en/">
     <meta property="og:image" content="https://mapadasparcelas.com.br/assets/image/logo.png">
     <meta property="og:image:type" content="image/png">
@@ -33,7 +33,7 @@
     <meta property="og:image:alt" content="Installment Map logo">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Installment Map - Financing">
-    <meta name="twitter:description" content="Simulate SAC and Price home financing with extra amortizations, monetary correction, TR, Selic, charts, installment schedules, and PDF export.">
+    <meta name="twitter:description" content="Simulate SAC and Price home financing with extra amortizations, monetary correction, TR, BCB average rates, charts, installment schedules, and PDF export.">
     <meta name="twitter:image" content="https://mapadasparcelas.com.br/assets/image/logo.png">
     <meta name="twitter:image:alt" content="Installment Map logo">
     <script type="application/ld+json">
@@ -65,7 +65,7 @@
                               ],
                               "url": "https://mapadasparcelas.com.br/en/",
                               "image": "https://mapadasparcelas.com.br/assets/image/logo.png",
-                              "description": "Simulate SAC and Price home financing with extra amortizations, monetary correction, TR, Selic, charts, installment schedules, and PDF export.",
+                              "description": "Simulate SAC and Price home financing with extra amortizations, monetary correction, TR, BCB average rates, charts, installment schedules, and PDF export.",
                               "applicationCategory": "FinanceApplication",
                               "operatingSystem": "Any system with a modern browser",
                               "browserRequirements": "Requires JavaScript and a modern browser.",
@@ -143,10 +143,10 @@
                                         },
                                         {
                                                   "@type": "Question",
-                                                  "name": "Is Selic the financing rate?",
+                                                  "name": "Is the BCB average rate the financing rate?",
                                                   "acceptedAnswer": {
                                                             "@type": "Answer",
-                                                            "text": "No. Selic is the base interest rate of the Brazilian economy. The simulator uses it only as an initial reference value when the user has not entered another rate yet. The actual financing rate is defined by the bank and may vary according to the contract, property type, term, income, relationship with the institution, and customer profile. Before calculating, check and change the rate to the value stated in the proposal or contract."
+                                                            "text": "Not necessarily. BCB average rates show historical averages reported by financial institutions, separated by modality. They are useful as an initial reference and comparison, not as a credit offer. When the user has not entered another rate yet, the simulator defaults to the average of the lowest market fixed-rate financing rates available in the project data file. The actual financing rate is defined by the bank and may vary according to the contract, property type, term, income, relationship with the institution, and customer profile. Before calculating, check and change the rate to the value stated in the proposal or contract."
                                                   }
                                         },
                                         {
@@ -225,7 +225,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="../assets/image/favicon/apple-touch-icon.png">
     <link rel="manifest" href="../assets/image/favicon/site.webmanifest">
     <link rel="stylesheet" href="../assets/vendor/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../assets/css/styles.css?v=20260721-faq">
+    <link rel="stylesheet" href="../assets/css/styles.css?v=20260721-bcb-action">
   </head>
   <body>
     <header class="site-header">
@@ -296,6 +296,7 @@
             <div class="col financing-config-field">
               <div class="field-header">
                 <label for="interest-rate" class="form-label">Interest rate <span class="required-marker" aria-hidden="true">*</span></label>
+                <button id="open-bcb-rates" class="btn btn-outline-primary btn-sm financing-field-action" type="button" data-bs-toggle="modal" data-bs-target="#bcb-rates-modal" aria-label="View BCB average rates" title="View BCB average rates">BCB</button>
               </div>
               <div class="input-group has-validation">
                 <input id="interest-rate" name="interestRate" class="form-control" type="text" inputmode="decimal" autocomplete="off" placeholder="0.00" aria-describedby="interest-rate-error" required>
@@ -632,8 +633,8 @@
             <div class="faq-answer" data-faq-answer><p>The simulator suggests the highest monthly TR rate found in the latest 12 months available in the project data file.</p><p>This rate is repeated in every month of the simulation only as a conservative estimate.</p><p>The actual TR may change every month. Therefore, the simulation result may differ from the amount charged by the bank.</p></div>
           </details>
           <details class="faq-item" data-faq-item>
-            <summary data-faq-question>Is Selic the financing rate?</summary>
-            <div class="faq-answer" data-faq-answer><p>No.</p><p>Selic is the base interest rate of the Brazilian economy. The simulator uses it only as an initial reference value when the user has not entered another rate yet.</p><p>The actual financing rate is defined by the bank and may vary according to the contract, property type, term, income, relationship with the institution, and customer profile.</p><p>Before calculating, check and change the rate to the value stated in the proposal or contract.</p></div>
+            <summary data-faq-question>Is the BCB average rate the financing rate?</summary>
+            <div class="faq-answer" data-faq-answer><p>Not necessarily.</p><p>BCB average rates show historical averages reported by financial institutions, separated by modality. They are useful as an initial reference and comparison, not as a credit offer.</p><p>When the user has not entered another rate yet, the simulator defaults to the average of the lowest market fixed-rate financing rates available in the project data file.</p><p>The actual financing rate is defined by the bank and may vary according to the contract, property type, term, income, relationship with the institution, and customer profile. Before calculating, check and change the rate to the value stated in the proposal or contract.</p></div>
           </details>
           <details class="faq-item" data-faq-item>
             <summary data-faq-question>Why can the result differ from the bank calculation?</summary>
@@ -731,6 +732,40 @@
       </article>
     </template>
 
+    <div class="modal fade" id="bcb-rates-modal" tabindex="-1" aria-labelledby="bcb-rates-title" aria-hidden="true">
+      <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title fs-5" id="bcb-rates-title">BCB average rates</h2>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p id="bcb-rates-disclaimer" class="text-secondary small">Rates are historical averages published by the BCB. They do not represent an offer, approval, or contractual condition.</p>
+            <div class="mb-3">
+              <span id="bcb-credit-type-label" class="form-label d-block">Credit type</span>
+              <div class="btn-group bcb-credit-type-group" role="group" aria-labelledby="bcb-credit-type-label">
+                <button id="bcb-credit-real-estate" class="btn btn-outline-primary active" type="button" aria-pressed="true">Real estate</button>
+                <button id="bcb-credit-vehicle" class="btn btn-outline-secondary" type="button" aria-pressed="false">Vehicle</button>
+              </div>
+            </div>
+            <div class="row g-3 align-items-end">
+              <div class="col-12">
+                <label for="bcb-institution-filter" class="form-label">Filter institution</label>
+                <input id="bcb-institution-filter" class="form-control" type="search" autocomplete="off" placeholder="Enter the bank name">
+              </div>
+            </div>
+            <div id="bcb-rates-status" class="form-text mt-3" role="status" aria-live="polite">Loading BCB average rates...</div>
+            <div class="table-responsive mt-3">
+              <table class="table comparison-table bcb-rates-table align-middle mb-0">
+                <thead><tr><th scope="col">Institution</th><th scope="col">Modality</th><th scope="col">Annual rate</th><th scope="col">Reference</th><th scope="col">Action</th></tr></thead>
+                <tbody id="bcb-rates-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="modal fade" id="system-info-modal" tabindex="-1" aria-labelledby="system-info-title" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -753,8 +788,8 @@
     </div>
 
     <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="../assets/js/i18n.js?v=20260721-faq"></script>
+    <script src="../assets/js/i18n.js?v=20260721-bcb-vehicle"></script>
     <script src="../assets/js/finance.js?v=20260717-privacy-page"></script>
-    <script src="../assets/js/app.js?v=20260721-faq"></script>
+    <script src="../assets/js/app.js?v=20260721-bcb-vehicle"></script>
   </body>
 </html>

@@ -78,6 +78,7 @@ const simulatorTextKeys = [
   'form.financedValue',
   'form.term',
   'form.interestRate',
+  'form.viewBcbRatesShort',
   'form.ratePeriod',
   'form.annualRateType',
   'form.monthlyExtraCost',
@@ -184,12 +185,25 @@ const simulatorTextKeys = [
   'modal.priceBody',
   'modal.note',
   'modal.ok',
+  'bcb.title',
+  'bcb.disclaimer',
+  'bcb.creditType',
+  'bcb.realEstate',
+  'bcb.vehicle',
+  'bcb.institutionFilter',
+  'bcb.loading',
+  'bcb.col.institution',
+  'bcb.col.modality',
+  'bcb.col.annualRate',
+  'bcb.col.period',
+  'bcb.col.action',
   'unit.months',
 ];
 
 const simulatorAttributeKeys = [
   'language.label',
   'privacyNotice.dismissAria',
+  'form.viewBcbRates',
   'form.trInfoDefault',
   'form.trInfoAria',
   'form.systemInfoAria',
@@ -203,6 +217,8 @@ const simulatorAttributeKeys = [
   'notice.aria',
   'print.reportHeaderLabel',
   'modal.close',
+  'bcb.close',
+  'bcb.institutionPlaceholder',
 ];
 
 const portugueseSentinels = [

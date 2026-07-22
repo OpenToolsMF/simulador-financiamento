@@ -12,7 +12,7 @@
     </script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Simule financiamento imobiliário SAC e Price com amortizações extras, correção monetária, TR, Selic, gráficos, cronograma de parcelas e exportação em PDF.">
+    <meta name="description" content="Simule financiamento imobiliário SAC e Price com amortizações extras, correção monetária, TR, taxas médias BCB, gráficos, cronograma de parcelas e exportação em PDF.">
     <meta name="google-adsense-account" content="ca-pub-8780410675865678">
     <title>Mapa das Parcelas - Financiamento</title>
     <link rel="canonical" href="https://mapadasparcelas.com.br/">
@@ -24,7 +24,7 @@
     <meta property="og:locale" content="pt_BR">
     <meta property="og:site_name" content="Mapa das Parcelas">
     <meta property="og:title" content="Mapa das Parcelas - Financiamento">
-    <meta property="og:description" content="Simule financiamento imobiliário SAC e Price com amortizações extras, correção monetária, TR, Selic, gráficos, cronograma de parcelas e exportação em PDF.">
+    <meta property="og:description" content="Simule financiamento imobiliário SAC e Price com amortizações extras, correção monetária, TR, taxas médias BCB, gráficos, cronograma de parcelas e exportação em PDF.">
     <meta property="og:url" content="https://mapadasparcelas.com.br/">
     <meta property="og:image" content="https://mapadasparcelas.com.br/assets/image/logo.png">
     <meta property="og:image:type" content="image/png">
@@ -33,7 +33,7 @@
     <meta property="og:image:alt" content="Logo do Mapa das Parcelas">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Mapa das Parcelas - Financiamento">
-    <meta name="twitter:description" content="Simule financiamento imobiliário SAC e Price com amortizações extras, correção monetária, TR, Selic, gráficos, cronograma de parcelas e exportação em PDF.">
+    <meta name="twitter:description" content="Simule financiamento imobiliário SAC e Price com amortizações extras, correção monetária, TR, taxas médias BCB, gráficos, cronograma de parcelas e exportação em PDF.">
     <meta name="twitter:image" content="https://mapadasparcelas.com.br/assets/image/logo.png">
     <meta name="twitter:image:alt" content="Logo do Mapa das Parcelas">
     <script type="application/ld+json">
@@ -65,7 +65,7 @@
                               ],
                               "url": "https://mapadasparcelas.com.br/",
                               "image": "https://mapadasparcelas.com.br/assets/image/logo.png",
-                              "description": "Simule financiamento imobiliário SAC e Price com amortizações extras, correção monetária, TR, Selic, gráficos, cronograma de parcelas e exportação em PDF.",
+                              "description": "Simule financiamento imobiliário SAC e Price com amortizações extras, correção monetária, TR, taxas médias BCB, gráficos, cronograma de parcelas e exportação em PDF.",
                               "applicationCategory": "FinanceApplication",
                               "operatingSystem": "Qualquer sistema com navegador moderno",
                               "browserRequirements": "Requer JavaScript e um navegador moderno.",
@@ -143,10 +143,10 @@
                                         },
                                         {
                                                   "@type": "Question",
-                                                  "name": "A Selic é a taxa do financiamento?",
+                                                  "name": "A taxa média BCB é a taxa do financiamento?",
                                                   "acceptedAnswer": {
                                                             "@type": "Answer",
-                                                            "text": "Não. A Selic é a taxa básica de juros da economia. Ela é usada pelo simulador apenas como um valor inicial de referência quando o usuário ainda não informou outra taxa. A taxa real de um financiamento é definida pelo banco e pode variar conforme o contrato, o tipo de imóvel, o prazo, a renda, o relacionamento com a instituição e o perfil do cliente. Antes de calcular, confira e altere a taxa para o valor informado na proposta ou no contrato."
+                                                            "text": "Não necessariamente. As taxas médias do BCB mostram médias históricas informadas por instituições financeiras, separadas por modalidade. Elas servem como referência inicial e comparação, não como proposta de crédito. Quando o usuário ainda não informou outra taxa, o simulador usa como padrão a média das menores taxas prefixadas de mercado disponíveis no arquivo de dados do projeto. A taxa real de um financiamento é definida pelo banco e pode variar conforme o contrato, o tipo de imóvel, o prazo, a renda, o relacionamento com a instituição e o perfil do cliente. Antes de calcular, confira e altere a taxa para o valor informado na proposta ou no contrato."
                                                   }
                                         },
                                         {
@@ -225,7 +225,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./assets/image/favicon/apple-touch-icon.png">
     <link rel="manifest" href="./assets/image/favicon/site.webmanifest">
     <link rel="stylesheet" href="./assets/vendor/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="./assets/css/styles.css?v=20260721-faq">
+    <link rel="stylesheet" href="./assets/css/styles.css?v=20260721-bcb-action">
   </head>
   <body>
     <header class="site-header">
@@ -296,6 +296,7 @@
             <div class="col financing-config-field">
               <div class="field-header">
                 <label for="interest-rate" class="form-label">Taxa de juros <span class="required-marker" aria-hidden="true">*</span></label>
+                <button id="open-bcb-rates" class="btn btn-outline-primary btn-sm financing-field-action" type="button" data-bs-toggle="modal" data-bs-target="#bcb-rates-modal" aria-label="Consultar taxas médias BCB" title="Consultar taxas médias BCB">BCB</button>
               </div>
               <div class="input-group has-validation">
                 <input id="interest-rate" name="interestRate" class="form-control" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00" aria-describedby="interest-rate-error" required>
@@ -632,8 +633,8 @@
             <div class="faq-answer" data-faq-answer><p>O simulador sugere a maior taxa mensal da TR encontrada nos últimos 12 meses disponíveis no arquivo de dados do projeto.</p><p>Essa taxa é repetida em todos os meses da simulação apenas como uma estimativa conservadora.</p><p>A TR real pode mudar todos os meses. Por isso, o resultado da simulação pode ser diferente do valor cobrado pelo banco.</p></div>
           </details>
           <details class="faq-item" data-faq-item>
-            <summary data-faq-question>A Selic é a taxa do financiamento?</summary>
-            <div class="faq-answer" data-faq-answer><p>Não.</p><p>A Selic é a taxa básica de juros da economia. Ela é usada pelo simulador apenas como um valor inicial de referência quando o usuário ainda não informou outra taxa.</p><p>A taxa real de um financiamento é definida pelo banco e pode variar conforme o contrato, o tipo de imóvel, o prazo, a renda, o relacionamento com a instituição e o perfil do cliente.</p><p>Antes de calcular, confira e altere a taxa para o valor informado na proposta ou no contrato.</p></div>
+            <summary data-faq-question>A taxa média BCB é a taxa do financiamento?</summary>
+            <div class="faq-answer" data-faq-answer><p>Não necessariamente.</p><p>As taxas médias do BCB mostram médias históricas informadas por instituições financeiras, separadas por modalidade. Elas servem como referência inicial e comparação, não como proposta de crédito.</p><p>Quando o usuário ainda não informou outra taxa, o simulador usa como padrão a média das menores taxas prefixadas de mercado disponíveis no arquivo de dados do projeto.</p><p>A taxa real de um financiamento é definida pelo banco e pode variar conforme o contrato, o tipo de imóvel, o prazo, a renda, o relacionamento com a instituição e o perfil do cliente. Antes de calcular, confira e altere a taxa para o valor informado na proposta ou no contrato.</p></div>
           </details>
           <details class="faq-item" data-faq-item>
             <summary data-faq-question>Por que o resultado pode ser diferente do cálculo do banco?</summary>
@@ -731,6 +732,40 @@
       </article>
     </template>
 
+    <div class="modal fade" id="bcb-rates-modal" tabindex="-1" aria-labelledby="bcb-rates-title" aria-hidden="true">
+      <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title fs-5" id="bcb-rates-title">Taxas médias BCB</h2>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            <p id="bcb-rates-disclaimer" class="text-secondary small">As taxas são médias históricas publicadas pelo BCB. Não representam proposta, aprovação ou condição contratual.</p>
+            <div class="mb-3">
+              <span id="bcb-credit-type-label" class="form-label d-block">Tipo de crédito</span>
+              <div class="btn-group bcb-credit-type-group" role="group" aria-labelledby="bcb-credit-type-label">
+                <button id="bcb-credit-real-estate" class="btn btn-outline-primary active" type="button" aria-pressed="true">Imobiliário</button>
+                <button id="bcb-credit-vehicle" class="btn btn-outline-secondary" type="button" aria-pressed="false">Veicular</button>
+              </div>
+            </div>
+            <div class="row g-3 align-items-end">
+              <div class="col-12">
+                <label for="bcb-institution-filter" class="form-label">Filtrar instituição</label>
+                <input id="bcb-institution-filter" class="form-control" type="search" autocomplete="off" placeholder="Digite o nome do banco">
+              </div>
+            </div>
+            <div id="bcb-rates-status" class="form-text mt-3" role="status" aria-live="polite">Carregando taxas médias BCB...</div>
+            <div class="table-responsive mt-3">
+              <table class="table comparison-table bcb-rates-table align-middle mb-0">
+                <thead><tr><th scope="col">Instituição</th><th scope="col">Modalidade</th><th scope="col">Taxa a.a.</th><th scope="col">Referência</th><th scope="col">Ação</th></tr></thead>
+                <tbody id="bcb-rates-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="modal fade" id="system-info-modal" tabindex="-1" aria-labelledby="system-info-title" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -753,8 +788,8 @@
     </div>
 
     <script src="./assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="./assets/js/i18n.js?v=20260721-faq"></script>
+    <script src="./assets/js/i18n.js?v=20260721-bcb-vehicle"></script>
     <script src="./assets/js/finance.js?v=20260717-privacy-page"></script>
-    <script src="./assets/js/app.js?v=20260721-faq"></script>
+    <script src="./assets/js/app.js?v=20260721-bcb-vehicle"></script>
   </body>
 </html>

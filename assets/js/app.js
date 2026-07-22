@@ -5,13 +5,13 @@
   const i18n = window.FinancingI18n;
   const STORAGE_KEY = 'financing-simulator:form-state:v1';
   const TR_CACHE_KEY = 'financing-simulator:tr-cache:v1';
-  const SELIC_CACHE_KEY = 'financing-simulator:selic-cache:v1';
+  const BCB_CREDIT_RATES_CACHE_KEY = 'financing-simulator:bcb-credit-rates-cache:v1';
   const PRIVACY_NOTICE_STORAGE_KEY = 'financing-simulator:privacy-notice-dismissed:v1';
   const appScriptUrl = document.currentScript?.src || document.querySelector('script[src*="assets/js/app.js"]')?.src;
   const ASSET_BASE_URL = appScriptUrl ? new URL('../', appScriptUrl).href : new URL('./assets/', document.baseURI).href;
   const assetUrl = (path) => new URL(path, ASSET_BASE_URL).href;
   const TR_DATA_URL = assetUrl('data/tr-bacen.json');
-  const SELIC_DATA_URL = assetUrl('data/selic-bcb.json');
+  const BCB_CREDIT_RATES_DATA_URL = assetUrl('data/bcb-credit-rates.json');
   const CHART_JS_URL = assetUrl('vendor/chartjs/chart.umd.min.js');
   const LOGO_URL = assetUrl('image/logo.png');
   const CHART_PRELOAD_ROOT_MARGIN = '700px 0px';
@@ -31,6 +31,7 @@
   const monthlyExtraCostInput = document.querySelector('#monthly-extra-cost');
   const termInput = document.querySelector('#term');
   const interestRateInput = document.querySelector('#interest-rate');
+  const interestRateReferenceHelp = document.querySelector('#interest-rate-reference-help');
   const ratePeriodInput = document.querySelector('#rate-period');
   const annualRateTypeField = document.querySelector('#annual-rate-type-field');
   const annualRateTypeInput = document.querySelector('#annual-rate-type');
@@ -74,6 +75,12 @@
   const pageStatus = document.querySelector('#page-status');
   const previousPage = document.querySelector('#previous-page');
   const nextPage = document.querySelector('#next-page');
+  const bcbRatesModal = document.querySelector('#bcb-rates-modal');
+  const bcbCreditRealEstateButton = document.querySelector('#bcb-credit-real-estate');
+  const bcbCreditVehicleButton = document.querySelector('#bcb-credit-vehicle');
+  const bcbInstitutionFilter = document.querySelector('#bcb-institution-filter');
+  const bcbRatesStatus = document.querySelector('#bcb-rates-status');
+  const bcbRatesBody = document.querySelector('#bcb-rates-body');
 
   let extraSequence = 0;
   let simulatedRows = [];
@@ -86,6 +93,12 @@
   let currentConfig = null;
   let printCleanupTimer = null;
   let currentTrReferenceInfo = null;
+  let currentBcbCreditRates = null;
+  let currentBcbCreditRatesExpiresAt = '';
+  let currentBcbRateReference = null;
+  let currentBcbModalRows = [];
+  let selectedBcbCreditType = 'realEstate';
+  let bcbCreditRatesLoadPromise = null;
   let chartJsLoadPromise = null;
   let chartObserver = null;
   let chartsRequested = false;
@@ -129,6 +142,25 @@
 
   function formatTrMonth(month) {
     return i18n.formatMonth(month);
+  }
+
+  function formatReferencePeriod(period) {
+    if (period && typeof period === 'object') {
+      return `${i18n.formatDate(period.startDate)} – ${i18n.formatDate(period.endDate)}`;
+    }
+    return i18n.formatMonth(period);
+  }
+
+  function normalizeSearchText(value) {
+    return String(value || '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .trim();
+  }
+
+  function bcbModalityLabel(modalityKey) {
+    return t(`bcb.modality.${modalityKey}`);
   }
 
   function renderChartStatus() {
@@ -228,14 +260,72 @@
     );
   }
 
-  function parseSelicRate(data) {
-    const latest = data?.latest;
-    const ratePercent = latest?.ratePercent;
-    if (!Number.isFinite(ratePercent) || ratePercent < 0 || typeof latest?.date !== 'string') return null;
-    return {
-      date: latest.date,
-      ratePercent,
-    };
+  function validBcbInstitution(item) {
+    return Boolean(
+      item
+      && typeof item.institution === 'string'
+      && item.institution.trim()
+      && typeof item.cnpj8 === 'string'
+      && Number.isInteger(item.position)
+      && item.position > 0
+      && Number.isFinite(item.monthlyRatePercent)
+      && item.monthlyRatePercent > 0
+      && Number.isFinite(item.annualRatePercent)
+      && item.annualRatePercent > 0
+    );
+  }
+
+  function validBcbReferencePeriod(reference) {
+    if (typeof reference === 'string') return /^\d{4}-\d{2}$/.test(reference);
+    return Boolean(
+      reference
+      && typeof reference.startDate === 'string'
+      && /^\d{4}-\d{2}-\d{2}$/.test(reference.startDate)
+      && typeof reference.endDate === 'string'
+      && /^\d{4}-\d{2}-\d{2}$/.test(reference.endDate)
+    );
+  }
+
+  function validBcbCreditType(creditType, key, allowedModalityKeys) {
+    return Boolean(
+      creditType
+      && creditType.key === key
+      && typeof creditType.label === 'string'
+      && validBcbReferencePeriod(creditType.referencePeriod)
+      && Array.isArray(creditType.modalities)
+      && creditType.modalities.length > 0
+      && creditType.modalities.every((modality) => (
+        modality
+        && allowedModalityKeys.includes(modality.key)
+        && typeof modality.code === 'string'
+        && typeof modality.label === 'string'
+        && Array.isArray(modality.institutions)
+        && modality.institutions.every(validBcbInstitution)
+      ))
+    );
+  }
+
+  function validateBcbCreditRatesData(data) {
+    const realEstate = data?.creditTypes?.realEstate;
+    const vehicle = data?.creditTypes?.vehicle;
+    const defaultRate = data?.defaultInterestRate;
+    return Boolean(
+      data
+      && typeof data.generatedAt === 'string'
+      && typeof data.sourceUrl === 'string'
+      && typeof data.referencePeriod === 'string'
+      && defaultRate
+      && defaultRate.creditType === 'realEstate'
+      && defaultRate.modalityKey === 'marketFixed'
+      && Number.isFinite(defaultRate.monthlyRatePercent)
+      && defaultRate.monthlyRatePercent > 0
+      && Number.isFinite(defaultRate.annualEquivalentRatePercent)
+      && defaultRate.annualEquivalentRatePercent > 0
+      && Number.isInteger(defaultRate.institutionCount)
+      && defaultRate.institutionCount > 0
+      && validBcbCreditType(realEstate, 'realEstate', ['marketFixed', 'marketTr', 'marketIpca'])
+      && (!vehicle || validBcbCreditType(vehicle, 'vehicle', ['vehicleFixed']))
+    );
   }
 
   function nextLocalMidnightIso() {
@@ -243,10 +333,10 @@
     return new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).toISOString();
   }
 
-  function readSelicCache() {
+  function readBcbCreditRatesCache() {
     let cache;
     try {
-      cache = JSON.parse(window.localStorage.getItem(SELIC_CACHE_KEY));
+      cache = JSON.parse(window.localStorage.getItem(BCB_CREDIT_RATES_CACHE_KEY));
     } catch (error) {
       return null;
     }
@@ -254,29 +344,32 @@
     if (
       !cache
       || cache.version !== 1
-      || !Number.isFinite(cache.ratePercent)
-      || cache.ratePercent < 0
+      || !validateBcbCreditRatesData(cache.data)
       || typeof cache.expiresAt !== 'string'
       || Date.parse(cache.expiresAt) <= Date.now()
     ) {
       return null;
     }
 
-    return cache;
+    return {
+      data: cache.data,
+      expiresAt: cache.expiresAt,
+    };
   }
 
-  function writeSelicCache(selic) {
+  function writeBcbCreditRatesCache(data) {
+    const expiresAt = nextLocalMidnightIso();
     try {
-      window.localStorage.setItem(SELIC_CACHE_KEY, JSON.stringify({
+      window.localStorage.setItem(BCB_CREDIT_RATES_CACHE_KEY, JSON.stringify({
         version: 1,
-        ratePercent: selic.ratePercent,
-        sourceDate: selic.date,
+        data,
         fetchedAt: new Date().toISOString(),
-        expiresAt: nextLocalMidnightIso(),
+        expiresAt,
       }));
     } catch (error) {
       // The simulator remains fully functional when storage is unavailable.
     }
+    return expiresAt;
   }
 
   function readTrCache() {
@@ -604,6 +697,9 @@
     setRequiredLabel('label[for="financed-value"]', 'form.financedValue');
     setRequiredLabel('label[for="term"]', 'form.term');
     setRequiredLabel('label[for="interest-rate"]', 'form.interestRate');
+    setText('#open-bcb-rates', 'form.viewBcbRatesShort');
+    setAttr('#open-bcb-rates', 'aria-label', 'form.viewBcbRates');
+    setAttr('#open-bcb-rates', 'title', 'form.viewBcbRates');
     setText('label[for="rate-period"]', 'form.ratePeriod');
     setText('label[for="annual-rate-type"]', 'form.annualRateType');
     setText('label[for="monthly-extra-cost"]', 'form.monthlyExtraCost');
@@ -698,9 +794,23 @@
     setText('#system-info-modal .modal-body p:nth-of-type(2)', 'modal.priceBody');
     setText('#system-info-modal .modal-body p:nth-of-type(3)', 'modal.note');
     setText('#system-info-modal .modal-footer .btn', 'modal.ok');
+    setText('#bcb-rates-title', 'bcb.title');
+    setAttr('#bcb-rates-modal .btn-close', 'aria-label', 'bcb.close');
+    setText('#bcb-rates-disclaimer', 'bcb.disclaimer');
+    setText('#bcb-credit-type-label', 'bcb.creditType');
+    setText('#bcb-credit-real-estate', 'bcb.realEstate');
+    setText('#bcb-credit-vehicle', 'bcb.vehicle');
+    setText('label[for="bcb-institution-filter"]', 'bcb.institutionFilter');
+    setAttr('#bcb-institution-filter', 'placeholder', 'bcb.institutionPlaceholder');
+    const bcbHeaders = document.querySelectorAll('#bcb-rates-modal thead th');
+    ['bcb.col.institution', 'bcb.col.modality', 'bcb.col.annualRate', 'bcb.col.period', 'bcb.col.action'].forEach((key, index) => {
+      if (bcbHeaders[index]) bcbHeaders[index].textContent = t(key);
+    });
 
     updateSelectOptions();
     extrasList.querySelectorAll('[data-extra-card]').forEach(translateExtraCard);
+    renderInterestRateReferenceHelp();
+    renderBcbRatesModal();
 
     if (currentTrReferenceInfo) {
       setTrReferenceHelp(currentTrReferenceInfo.reference, currentTrReferenceInfo.generatedAt);
@@ -796,14 +906,79 @@
     syncMoneyDigits(financedValueInput);
   }
 
-  function applySelicToInterestField(selic) {
+  function clearInterestRateReferenceHelp() {
+    currentBcbRateReference = null;
+    if (interestRateReferenceHelp) interestRateReferenceHelp.textContent = '';
+  }
+
+  function renderInterestRateReferenceHelp() {
+    if (!interestRateReferenceHelp || !currentBcbRateReference) return;
+    if (currentBcbRateReference.type === 'selected') {
+      interestRateReferenceHelp.textContent = t('form.interestRateReferenceSelected', {
+        institution: currentBcbRateReference.institution,
+        modality: bcbModalityLabel(currentBcbRateReference.modalityKey),
+        monthly: formatInterestRateInput(currentBcbRateReference.monthlyRatePercent),
+        annual: formatRateInput(currentBcbRateReference.annualRatePercent),
+        period: formatReferencePeriod(currentBcbRateReference.referencePeriod),
+      });
+      return;
+    }
+
+    interestRateReferenceHelp.textContent = t('form.interestRateReferenceDefault', {
+      monthly: formatInterestRateInput(currentBcbRateReference.monthlyRatePercent),
+      annual: formatRateInput(currentBcbRateReference.annualRatePercent),
+      count: currentBcbRateReference.institutionCount,
+      period: formatReferencePeriod(currentBcbRateReference.referencePeriod),
+    });
+  }
+
+  function applyBcbRateToInterestField(reference) {
     ratePeriodInput.value = 'annual';
     annualRateTypeInput.value = 'effective';
     updateRatePeriod();
-    interestRateInput.value = formatInterestRateInput(selic.ratePercent);
+    interestRateInput.value = formatInterestRateInput(reference.annualRatePercent);
     interestRateInput.classList.remove('is-invalid');
     interestRateInput.removeAttribute('aria-invalid');
     document.querySelector('#interest-rate-error').textContent = '';
+    currentBcbRateReference = reference;
+    renderInterestRateReferenceHelp();
+  }
+
+  async function loadBcbCreditRatesData() {
+    if (
+      currentBcbCreditRates
+      && currentBcbCreditRatesExpiresAt
+      && Date.parse(currentBcbCreditRatesExpiresAt) > Date.now()
+    ) {
+      return currentBcbCreditRates;
+    }
+
+    currentBcbCreditRates = null;
+    currentBcbCreditRatesExpiresAt = '';
+    const cachedData = readBcbCreditRatesCache();
+    if (cachedData) {
+      currentBcbCreditRates = cachedData.data;
+      currentBcbCreditRatesExpiresAt = cachedData.expiresAt;
+      return cachedData.data;
+    }
+
+    if (bcbCreditRatesLoadPromise) return bcbCreditRatesLoadPromise;
+
+    bcbCreditRatesLoadPromise = fetch(BCB_CREDIT_RATES_DATA_URL, { cache: 'no-cache' })
+      .then(async (response) => {
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        if (!validateBcbCreditRatesData(data)) throw new Error(t('bcb.invalidJson'));
+        currentBcbCreditRatesExpiresAt = writeBcbCreditRatesCache(data);
+        currentBcbCreditRates = data;
+        return data;
+      })
+      .catch((error) => {
+        bcbCreditRatesLoadPromise = null;
+        throw error;
+      });
+
+    return bcbCreditRatesLoadPromise;
   }
 
   function applyTrReferenceToCorrectionField(reference, generatedAt) {
@@ -2003,6 +2178,152 @@
     autoCalculationTimer = window.setTimeout(() => performCalculation({ automatic: true }), 300);
   }
 
+  function bcbCreditType(data = currentBcbCreditRates) {
+    return data?.creditTypes?.[selectedBcbCreditType] || null;
+  }
+
+  function bcbModalities(data = currentBcbCreditRates) {
+    return bcbCreditType(data)?.modalities || [];
+  }
+
+  function bcbCurrentReferencePeriod(data = currentBcbCreditRates) {
+    return bcbCreditType(data)?.referencePeriod || data?.referencePeriod || '';
+  }
+
+  function updateBcbCreditTypeButtons() {
+    [
+      ['realEstate', bcbCreditRealEstateButton],
+      ['vehicle', bcbCreditVehicleButton],
+    ].forEach(([creditType, button]) => {
+      if (!button) return;
+      const active = selectedBcbCreditType === creditType;
+      button.classList.toggle('active', active);
+      button.classList.toggle('btn-outline-primary', active);
+      button.classList.toggle('btn-outline-secondary', !active);
+      button.setAttribute('aria-pressed', String(active));
+    });
+  }
+
+  function setBcbCreditType(creditType, { render = true } = {}) {
+    selectedBcbCreditType = creditType === 'vehicle' ? 'vehicle' : 'realEstate';
+    updateBcbCreditTypeButtons();
+    if (render) renderBcbRatesModal();
+  }
+
+  function allBcbRateRows() {
+    const creditType = bcbCreditType();
+    const referencePeriod = bcbCurrentReferencePeriod();
+    return bcbModalities()
+      .flatMap((modality) => modality.institutions.map((institution) => ({
+        ...institution,
+        creditTypeKey: creditType?.key || selectedBcbCreditType,
+        modalityKey: modality.key,
+        referencePeriod,
+      })))
+      .sort((left, right) => (
+        left.monthlyRatePercent - right.monthlyRatePercent
+        || left.annualRatePercent - right.annualRatePercent
+        || left.institution.localeCompare(right.institution, i18n.getLocale())
+        || bcbModalityLabel(left.modalityKey).localeCompare(bcbModalityLabel(right.modalityKey), i18n.getLocale())
+      ));
+  }
+
+  function bcbModalStatus(message, variant = 'muted') {
+    if (!bcbRatesStatus) return;
+    bcbRatesStatus.textContent = message;
+    bcbRatesStatus.classList.toggle('text-danger', variant === 'error');
+    bcbRatesStatus.classList.toggle('text-secondary', variant !== 'error');
+  }
+
+  function renderBcbRatesModal() {
+    if (!bcbRatesBody || !bcbRatesStatus) return;
+    if (!currentBcbCreditRates) {
+      currentBcbModalRows = [];
+      bcbRatesBody.innerHTML = '';
+      bcbModalStatus(t('bcb.loading'));
+      return;
+    }
+
+    const query = normalizeSearchText(bcbInstitutionFilter?.value);
+    currentBcbModalRows = allBcbRateRows().filter((institution) => (
+      !query || normalizeSearchText(institution.institution).includes(query)
+    ));
+
+    if (currentBcbModalRows.length === 0) {
+      bcbRatesBody.innerHTML = '';
+      bcbModalStatus(t('bcb.empty'));
+      return;
+    }
+
+    bcbModalStatus(t('bcb.loaded', {
+      count: currentBcbModalRows.length,
+      period: formatReferencePeriod(bcbCurrentReferencePeriod()),
+    }));
+    bcbRatesBody.innerHTML = currentBcbModalRows.map((institution, index) => `
+      <tr>
+        <th scope="row">${escapeHtml(institution.institution)}</th>
+        <td>${escapeHtml(bcbModalityLabel(institution.modalityKey))}</td>
+        <td>${escapeHtml(`${formatRateInput(institution.annualRatePercent)}%`)}</td>
+        <td>${escapeHtml(formatReferencePeriod(institution.referencePeriod))}</td>
+        <td><button class="btn btn-sm btn-outline-primary" type="button" data-bcb-rate-index="${index}">${escapeHtml(t('bcb.useRate'))}</button></td>
+      </tr>
+    `).join('');
+  }
+
+  async function openBcbRatesModal() {
+    setBcbCreditType('realEstate', { render: false });
+    bcbModalStatus(t('bcb.loading'));
+    if (bcbRatesBody) bcbRatesBody.innerHTML = '';
+    try {
+      await loadBcbCreditRatesData();
+      renderBcbRatesModal();
+    } catch (error) {
+      currentBcbCreditRates = null;
+      currentBcbCreditRatesExpiresAt = '';
+      currentBcbModalRows = [];
+      if (bcbRatesBody) bcbRatesBody.innerHTML = '';
+      bcbModalStatus(t('bcb.failure'), 'error');
+    }
+  }
+
+  function selectBcbRate(index) {
+    const institution = currentBcbModalRows[index];
+    if (!institution || !currentBcbCreditRates) return;
+    applyBcbRateToInterestField({
+      type: 'selected',
+      institution: institution.institution,
+      creditTypeKey: institution.creditTypeKey,
+      modalityKey: institution.modalityKey,
+      monthlyRatePercent: institution.monthlyRatePercent,
+      annualRatePercent: institution.annualRatePercent,
+      referencePeriod: institution.referencePeriod,
+    });
+    window.bootstrap?.Modal?.getInstance(bcbRatesModal)?.hide();
+    scheduleAutomaticCalculation();
+  }
+
+  async function applyDefaultBcbInterestRate({ schedule = true, persist = true } = {}) {
+    try {
+      const data = await loadBcbCreditRatesData();
+      const defaultRate = data.defaultInterestRate;
+      applyBcbRateToInterestField({
+        type: 'default',
+        monthlyRatePercent: defaultRate.monthlyRatePercent,
+        annualRatePercent: defaultRate.annualEquivalentRatePercent,
+        institutionCount: defaultRate.institutionCount,
+        referencePeriod: defaultRate.referencePeriod || data.referencePeriod,
+      });
+      if (schedule) scheduleAutomaticCalculation();
+      else if (persist) persistFormState();
+      return true;
+    } catch (error) {
+      interestRateInput.value = '';
+      currentBcbRateReference = null;
+      if (interestRateReferenceHelp) interestRateReferenceHelp.textContent = t('bcb.failure');
+      return false;
+    }
+  }
+
   async function applyLatestTrRate({ schedule = true, updateButton = true, persist = true } = {}) {
     const originalText = useLatestTrButton.textContent;
     if (updateButton) {
@@ -2045,32 +2366,6 @@
     }
   }
 
-  async function applyLatestSelicRate({ schedule = true, persist = true } = {}) {
-    const cachedSelic = readSelicCache();
-    if (cachedSelic) {
-      applySelicToInterestField(cachedSelic);
-      if (schedule) scheduleAutomaticCalculation();
-      else if (persist) persistFormState();
-      return true;
-    }
-
-    try {
-      const response = await fetch(SELIC_DATA_URL, { cache: 'no-cache' });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const selic = parseSelicRate(await response.json());
-      if (!selic) throw new Error(t('selic.invalidResponse'));
-
-      writeSelicCache(selic);
-      applySelicToInterestField(selic);
-      if (schedule) scheduleAutomaticCalculation();
-      else if (persist) persistFormState();
-      return true;
-    } catch (error) {
-      interestRateInput.value = '';
-      return false;
-    }
-  }
-
   async function resetFormState() {
     window.clearTimeout(autoCalculationTimer);
     autoCalculationTimer = null;
@@ -2082,6 +2377,7 @@
     clearMoneyDigits(monthlyExtraCostInput);
     termInput.value = '360';
     interestRateInput.value = '';
+    clearInterestRateReferenceHelp();
     ratePeriodInput.value = 'annual';
     annualRateTypeInput.value = 'effective';
     setFirstDueDateToToday();
@@ -2106,11 +2402,11 @@
     updateExtrasEmptyState();
     hideSimulation();
 
-    const [trLoaded, selicLoaded] = await Promise.all([
+    const [trLoaded, bcbLoaded] = await Promise.all([
       applyLatestTrRate({ schedule: false, updateButton: false, persist: false }),
-      applyLatestSelicRate({ schedule: false, persist: false }),
+      applyDefaultBcbInterestRate({ schedule: false, persist: false }),
     ]);
-    if (trLoaded && selicLoaded) performCalculation({ automatic: true });
+    if (trLoaded && bcbLoaded) performCalculation({ automatic: true });
     clearPersistedFormState();
   }
 
@@ -2127,6 +2423,15 @@
   });
   window.addEventListener('afterprint', restorePrintReport);
   useLatestTrButton.addEventListener('click', () => applyLatestTrRate());
+  bcbRatesModal?.addEventListener('show.bs.modal', openBcbRatesModal);
+  bcbCreditRealEstateButton?.addEventListener('click', () => setBcbCreditType('realEstate'));
+  bcbCreditVehicleButton?.addEventListener('click', () => setBcbCreditType('vehicle'));
+  bcbInstitutionFilter?.addEventListener('input', renderBcbRatesModal);
+  bcbRatesBody?.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-bcb-rate-index]');
+    if (!button) return;
+    selectBcbRate(Number(button.dataset.bcbRateIndex));
+  });
   ratePeriodInput.addEventListener('change', updateRatePeriod);
   annualRateTypeInput.addEventListener('change', updateAnnualRateTypeHelp);
   correctionModeInput.addEventListener('change', updateCorrectionFields);
@@ -2142,11 +2447,15 @@
 
   form.addEventListener('input', (event) => {
     if (event.target.matches('#financed-value, #monthly-extra-cost, [data-field="value"]')) formatMoneyWhileTyping(event.target, event);
+    if (event.target === interestRateInput) clearInterestRateReferenceHelp();
     if (event.target === monthlyCorrectionRateInput) updateCorrectionRateHelp();
     scheduleAutomaticCalculation();
   });
 
-  form.addEventListener('change', scheduleAutomaticCalculation);
+  form.addEventListener('change', (event) => {
+    if ([interestRateInput, ratePeriodInput, annualRateTypeInput].includes(event.target)) clearInterestRateReferenceHelp();
+    scheduleAutomaticCalculation();
+  });
 
   document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((element) => {
     window.bootstrap?.Tooltip?.getOrCreateInstance(element);
@@ -2213,9 +2522,9 @@
   } else {
     Promise.all([
       applyLatestTrRate({ schedule: false, updateButton: false, persist: false }),
-      applyLatestSelicRate({ schedule: false, persist: false }),
-    ]).then(([trLoaded, selicLoaded]) => {
-      if (trLoaded && selicLoaded) scheduleAutomaticCalculation();
+      applyDefaultBcbInterestRate({ schedule: false, persist: false }),
+    ]).then(([trLoaded, bcbLoaded]) => {
+      if (trLoaded && bcbLoaded) scheduleAutomaticCalculation();
     });
   }
 }());
