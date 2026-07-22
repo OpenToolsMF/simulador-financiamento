@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -13,6 +13,8 @@ export const SOURCE_URLS = {
   vehicle: VEHICLE_SOURCE_URL,
 };
 export const OUTPUT_PATH = 'assets/data/bcb-credit-rates.json';
+export const FETCH_TIMEOUT_MS = 10_000;
+export const FETCH_ATTEMPTS = 3;
 
 export const REAL_ESTATE_MARKET_MODALITIES = [
   {
@@ -301,10 +303,7 @@ function buildVehicleCreditType(payload) {
   };
 }
 
-export function buildBcbCreditRatesData(realEstatePayload, vehiclePayload, generatedAt = new Date().toISOString()) {
-  const realEstate = buildRealEstateCreditType(realEstatePayload);
-  const vehicle = buildVehicleCreditType(vehiclePayload);
-
+function buildBcbCreditRatesDataFromCreditTypes(realEstate, vehicle, generatedAt = new Date().toISOString()) {
   return {
     sourceUrl: REAL_ESTATE_SOURCE_URL,
     sourceUrls: SOURCE_URLS,
@@ -318,28 +317,135 @@ export function buildBcbCreditRatesData(realEstatePayload, vehiclePayload, gener
   };
 }
 
-async function fetchBcbJson(fetchImpl, url, label) {
-  const response = await fetchImpl(url, {
-    headers: {
-      'user-agent': 'mapa-das-parcelas/1.0 (+https://mapadasparcelas.com.br/)',
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error(`Falha ao baixar taxas médias BCB (${label}): HTTP ${response.status}.`);
-  }
-
-  return response.json();
+export function buildBcbCreditRatesData(realEstatePayload, vehiclePayload, generatedAt = new Date().toISOString()) {
+  return buildBcbCreditRatesDataFromCreditTypes(
+    buildRealEstateCreditType(realEstatePayload),
+    buildVehicleCreditType(vehiclePayload),
+    generatedAt,
+  );
 }
 
-export async function updateBcbCreditRates({ fetchImpl = fetch, outputPath = OUTPUT_PATH } = {}) {
-  const [realEstatePayload, vehiclePayload] = await Promise.all([
+function formatTimeoutSeconds(milliseconds) {
+  return `${Math.round(milliseconds / 1000)}s`;
+}
+
+function normalizeFetchError(error) {
+  if (error?.name === 'AbortError') {
+    return `tempo limite de ${formatTimeoutSeconds(FETCH_TIMEOUT_MS)} excedido`;
+  }
+
+  return error?.message || String(error);
+}
+
+async function fetchBcbJsonAttempt(fetchImpl, url, label, attempt) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+
+  try {
+    const response = await fetchImpl(url, {
+      signal: controller.signal,
+      headers: {
+        'user-agent': 'mapa-das-parcelas/1.0 (+https://mapadasparcelas.com.br/)',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    return response.json();
+  } catch (error) {
+    throw new Error(`Falha ao baixar taxas médias BCB (${label}) na tentativa ${attempt}/${FETCH_ATTEMPTS}: ${normalizeFetchError(error)}.`);
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
+async function fetchBcbJson(fetchImpl, url, label) {
+  let lastError = null;
+
+  for (let attempt = 1; attempt <= FETCH_ATTEMPTS; attempt += 1) {
+    try {
+      return await fetchBcbJsonAttempt(fetchImpl, url, label, attempt);
+    } catch (error) {
+      lastError = error;
+    }
+  }
+
+  throw new Error(`Falha ao baixar taxas médias BCB (${label}) após ${FETCH_ATTEMPTS} tentativas. Última causa: ${lastError.message}`);
+}
+
+function isValidVehicleCreditType(vehicle) {
+  if (
+    vehicle?.key !== 'vehicle'
+    || !normalizeText(vehicle?.label)
+    || !normalizeIsoDate(vehicle?.referencePeriod?.startDate)
+    || !normalizeIsoDate(vehicle?.referencePeriod?.endDate)
+    || !Array.isArray(vehicle?.modalities)
+    || vehicle.modalities.length === 0
+  ) {
+    return false;
+  }
+
+  return vehicle.modalities.every((modality) => (
+    modality?.key === 'vehicleFixed'
+    && modality?.code === '401101'
+    && normalizeText(modality?.label)
+    && normalizeText(modality?.sourceName)
+    && Array.isArray(modality?.institutions)
+    && modality.institutions.length > 0
+    && modality.institutions.every((institution) => (
+      normalizeText(institution?.institution)
+      && normalizeText(institution?.cnpj8)
+      && normalizePosition(institution?.position)
+      && normalizeRate(institution?.monthlyRatePercent) > 0
+      && normalizeRate(institution?.annualRatePercent) > 0
+    ))
+  ));
+}
+
+async function readPreviousVehicleCreditType(outputPath) {
+  try {
+    const raw = await readFile(outputPath, 'utf8');
+    const data = JSON.parse(raw);
+    const vehicle = data?.creditTypes?.vehicle;
+    return isValidVehicleCreditType(vehicle) ? vehicle : null;
+  } catch {
+    return null;
+  }
+}
+
+function vehicleReferencePeriodLabel(vehicle) {
+  return `${vehicle.referencePeriod.startDate} a ${vehicle.referencePeriod.endDate}`;
+}
+
+export async function updateBcbCreditRates({ fetchImpl = fetch, outputPath = OUTPUT_PATH, logger = console } = {}) {
+  const absoluteOutputPath = resolve(outputPath);
+  const [realEstateResult, vehicleResult] = await Promise.allSettled([
     fetchBcbJson(fetchImpl, REAL_ESTATE_SOURCE_URL, 'imobiliário'),
     fetchBcbJson(fetchImpl, VEHICLE_SOURCE_URL, 'veicular'),
   ]);
 
-  const data = buildBcbCreditRatesData(realEstatePayload, vehiclePayload);
-  const absoluteOutputPath = resolve(outputPath);
+  if (realEstateResult.status === 'rejected') {
+    throw realEstateResult.reason;
+  }
+
+  const realEstate = buildRealEstateCreditType(realEstateResult.value);
+  let vehicle = null;
+
+  if (vehicleResult.status === 'fulfilled') {
+    vehicle = buildVehicleCreditType(vehicleResult.value);
+  } else {
+    vehicle = await readPreviousVehicleCreditType(absoluteOutputPath);
+
+    if (!vehicle) {
+      throw new Error(`${vehicleResult.reason.message} Não há bloco veicular anterior válido para preservar.`);
+    }
+
+    logger.warn(`Taxas veiculares BCB preservadas do JSON anterior (${vehicleReferencePeriodLabel(vehicle)}). Motivo: ${vehicleResult.reason.message}`);
+  }
+
+  const data = buildBcbCreditRatesDataFromCreditTypes(realEstate, vehicle);
   await mkdir(dirname(absoluteOutputPath), { recursive: true });
   await writeFile(absoluteOutputPath, `${JSON.stringify(data, null, 2)}\n`);
   return data;

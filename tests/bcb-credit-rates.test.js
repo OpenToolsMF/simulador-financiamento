@@ -1,7 +1,7 @@
 'use strict';
 
 const assert = require('node:assert/strict');
-const { mkdtemp, readFile } = require('node:fs/promises');
+const { mkdtemp, readFile, writeFile } = require('node:fs/promises');
 const { tmpdir } = require('node:os');
 const { join } = require('node:path');
 
@@ -10,9 +10,21 @@ const { join } = require('node:path');
     REAL_ESTATE_SOURCE_URL,
     VEHICLE_SOURCE_URL,
     SOURCE_URLS,
+    FETCH_ATTEMPTS,
     buildBcbCreditRatesData,
     updateBcbCreditRates,
   } = await import('../scripts/update-bcb-credit-rates.mjs');
+
+  const successfulResponse = (payload) => ({
+    ok: true,
+    json: async () => payload,
+  });
+
+  const failedResponse = (status) => ({
+    ok: false,
+    status,
+    json: async () => ({}),
+  });
 
   const realEstatePayload = {
     value: [
@@ -230,19 +242,14 @@ const { join } = require('node:path');
   const requestedUrls = [];
   await updateBcbCreditRates({
     outputPath,
-    fetchImpl: async (url) => {
+    fetchImpl: async (url, options) => {
       requestedUrls.push(url);
+      assert.equal(typeof options?.signal?.addEventListener, 'function', 'envia signal para permitir timeout por AbortController');
       if (url === REAL_ESTATE_SOURCE_URL) {
-        return {
-          ok: true,
-          json: async () => realEstatePayload,
-        };
+        return successfulResponse(realEstatePayload);
       }
       if (url === VEHICLE_SOURCE_URL) {
-        return {
-          ok: true,
-          json: async () => vehiclePayload,
-        };
+        return successfulResponse(vehiclePayload);
       }
       throw new Error(`URL inesperada: ${url}`);
     },
@@ -258,6 +265,119 @@ const { join } = require('node:path');
   assert.equal(generated.referencePeriod, data.referencePeriod, 'grava período imobiliário no JSON gerado');
   assert.equal(generated.creditTypes.vehicle.referencePeriod.startDate, '2026-07-01', 'grava período veicular no JSON gerado');
   assert.equal(typeof generated.defaultInterestRate.monthlyRatePercent, 'number', 'grava taxa default como número');
+
+  const retryOutputDirectory = await mkdtemp(join(tmpdir(), 'bcb-credit-rates-retry-test-'));
+  const retryOutputPath = join(retryOutputDirectory, 'bcb-credit-rates.json');
+  const retryAttempts = { realEstate: 0, vehicle: 0 };
+  await updateBcbCreditRates({
+    outputPath: retryOutputPath,
+    fetchImpl: async (url) => {
+      if (url === REAL_ESTATE_SOURCE_URL) {
+        retryAttempts.realEstate += 1;
+        return successfulResponse(realEstatePayload);
+      }
+
+      if (url === VEHICLE_SOURCE_URL) {
+        retryAttempts.vehicle += 1;
+        return retryAttempts.vehicle < FETCH_ATTEMPTS
+          ? failedResponse(504)
+          : successfulResponse(vehiclePayload);
+      }
+
+      throw new Error(`URL inesperada: ${url}`);
+    },
+  });
+
+  assert.deepEqual(
+    retryAttempts,
+    { realEstate: 1, vehicle: FETCH_ATTEMPTS },
+    'repete fetch veicular com HTTP 504 e aceita sucesso na terceira tentativa',
+  );
+
+  const requiredRealEstateOutputDirectory = await mkdtemp(join(tmpdir(), 'bcb-credit-rates-required-test-'));
+  const requiredRealEstateOutputPath = join(requiredRealEstateOutputDirectory, 'bcb-credit-rates.json');
+  let realEstateFailures = 0;
+
+  await assert.rejects(
+    () => updateBcbCreditRates({
+      outputPath: requiredRealEstateOutputPath,
+      fetchImpl: async (url) => {
+        if (url === REAL_ESTATE_SOURCE_URL) {
+          realEstateFailures += 1;
+          return failedResponse(504);
+        }
+
+        if (url === VEHICLE_SOURCE_URL) {
+          return successfulResponse(vehiclePayload);
+        }
+
+        throw new Error(`URL inesperada: ${url}`);
+      },
+    }),
+    /imobiliário.*após 3 tentativas.*HTTP 504/,
+    'falha quando o endpoint imobiliário obrigatório falha após três tentativas',
+  );
+
+  assert.equal(realEstateFailures, FETCH_ATTEMPTS, 'tenta baixar o endpoint imobiliário três vezes antes de falhar');
+
+  const fallbackOutputDirectory = await mkdtemp(join(tmpdir(), 'bcb-credit-rates-fallback-test-'));
+  const fallbackOutputPath = join(fallbackOutputDirectory, 'bcb-credit-rates.json');
+  const previousData = buildBcbCreditRatesData(realEstatePayload, vehiclePayload, '2026-07-20T12:00:00.000Z');
+  await writeFile(fallbackOutputPath, `${JSON.stringify(previousData, null, 2)}\n`);
+  const fallbackWarnings = [];
+
+  const fallbackData = await updateBcbCreditRates({
+    outputPath: fallbackOutputPath,
+    logger: {
+      warn: (message) => fallbackWarnings.push(message),
+    },
+    fetchImpl: async (url) => {
+      if (url === REAL_ESTATE_SOURCE_URL) {
+        return successfulResponse(realEstatePayload);
+      }
+
+      if (url === VEHICLE_SOURCE_URL) {
+        return failedResponse(504);
+      }
+
+      throw new Error(`URL inesperada: ${url}`);
+    },
+  });
+
+  assert.deepEqual(
+    fallbackData.creditTypes.vehicle,
+    previousData.creditTypes.vehicle,
+    'preserva o bloco veicular anterior quando o endpoint veicular falha',
+  );
+  assert.match(
+    fallbackWarnings[0],
+    /Taxas veiculares BCB preservadas.*2026-07-01 a 2026-07-07.*HTTP 504/,
+    'registra aviso com período preservado e causa do fallback veicular',
+  );
+
+  const missingFallbackOutputDirectory = await mkdtemp(join(tmpdir(), 'bcb-credit-rates-missing-fallback-test-'));
+  const missingFallbackOutputPath = join(missingFallbackOutputDirectory, 'bcb-credit-rates.json');
+
+  await assert.rejects(
+    () => updateBcbCreditRates({
+      outputPath: missingFallbackOutputPath,
+      fetchImpl: async (url) => {
+        if (url === REAL_ESTATE_SOURCE_URL) {
+          return successfulResponse(realEstatePayload);
+        }
+
+        if (url === VEHICLE_SOURCE_URL) {
+          const error = new Error('aborted');
+          error.name = 'AbortError';
+          throw error;
+        }
+
+        throw new Error(`URL inesperada: ${url}`);
+      },
+    }),
+    /veicular.*após 3 tentativas.*tempo limite de 10s excedido.*Não há bloco veicular anterior válido/,
+    'falha quando o endpoint veicular expira e não existe bloco anterior válido',
+  );
 
   console.log('Testes das taxas médias BCB concluídos com sucesso.');
 })();
