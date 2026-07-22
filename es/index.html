@@ -146,7 +146,7 @@
                                                   "name": "¿La tasa media BCB es la tasa de la financiación?",
                                                   "acceptedAnswer": {
                                                             "@type": "Answer",
-                                                            "text": "No necesariamente. Las tasas medias del BCB muestran promedios históricos informados por instituciones financieras, separados por modalidad. Sirven como referencia inicial y comparación, no como oferta de crédito. Cuando el usuario todavía no informó otra tasa, el simulador usa como valor predeterminado el promedio de las menores tasas prefixadas de mercado disponibles en el archivo de datos del proyecto. La tasa real de una financiación la define el banco y puede variar según el contrato, el tipo de inmueble, el plazo, los ingresos, la relación con la institución y el perfil del cliente. Antes de calcular, revisa y cambia la tasa por el valor informado en la propuesta o en el contrato."
+                                                            "text": "No necesariamente. Las tasas medias del BCB muestran promedios históricos informados por instituciones financieras, separados por modalidad. Sirven como referencia inicial y comparación, no como oferta de crédito. Cuando el usuario todavía no informó otra tasa, el simulador usa como valor predeterminado la mediana de las tasas anuales inmobiliarias de mercado postfijadas en TR disponibles en el archivo de datos del proyecto. La tasa real de una financiación la define el banco y puede variar según el contrato, el tipo de inmueble, el plazo, los ingresos, la relación con la institución y el perfil del cliente. Antes de calcular, revisa y cambia la tasa por el valor informado en la propuesta o en el contrato."
                                                   }
                                         },
                                         {
@@ -634,7 +634,7 @@
           </details>
           <details class="faq-item" data-faq-item>
             <summary data-faq-question>¿La tasa media BCB es la tasa de la financiación?</summary>
-            <div class="faq-answer" data-faq-answer><p>No necesariamente.</p><p>Las tasas medias del BCB muestran promedios históricos informados por instituciones financieras, separados por modalidad. Sirven como referencia inicial y comparación, no como oferta de crédito.</p><p>Cuando el usuario todavía no informó otra tasa, el simulador usa como valor predeterminado el promedio de las menores tasas prefixadas de mercado disponibles en el archivo de datos del proyecto.</p><p>La tasa real de una financiación la define el banco y puede variar según el contrato, el tipo de inmueble, el plazo, los ingresos, la relación con la institución y el perfil del cliente. Antes de calcular, revisa y cambia la tasa por el valor informado en la propuesta o en el contrato.</p></div>
+            <div class="faq-answer" data-faq-answer><p>No necesariamente.</p><p>Las tasas medias del BCB muestran promedios históricos informados por instituciones financieras, separados por modalidad. Sirven como referencia inicial y comparación, no como oferta de crédito.</p><p>Cuando el usuario todavía no informó otra tasa, el simulador usa como valor predeterminado la mediana de las tasas anuales inmobiliarias de mercado postfijadas en TR disponibles en el archivo de datos del proyecto.</p><p>La tasa real de una financiación la define el banco y puede variar según el contrato, el tipo de inmueble, el plazo, los ingresos, la relación con la institución y el perfil del cliente. Antes de calcular, revisa y cambia la tasa por el valor informado en la propuesta o en el contrato.</p></div>
           </details>
           <details class="faq-item" data-faq-item>
             <summary data-faq-question>¿Por qué el resultado puede ser diferente del cálculo del banco?</summary>
@@ -788,8 +788,8 @@
     </div>
 
     <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="../assets/js/i18n.js?v=20260721-bcb-vehicle"></script>
+    <script src="../assets/js/i18n.js?v=20260721-bcb-default-tr"></script>
     <script src="../assets/js/finance.js?v=20260717-privacy-page"></script>
-    <script src="../assets/js/app.js?v=20260721-bcb-vehicle"></script>
+    <script src="../assets/js/app.js?v=20260721-bcb-default-tr"></script>
   </body>
 </html>

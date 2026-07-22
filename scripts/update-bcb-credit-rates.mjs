@@ -44,8 +44,7 @@ export const VEHICLE_MODALITIES = [
   },
 ];
 
-const DEFAULT_MODALITY_KEY = 'marketFixed';
-const DEFAULT_INSTITUTION_LIMIT = 20;
+const DEFAULT_MODALITY_KEY = 'marketTr';
 const realEstateModalityBySourceName = new Map(REAL_ESTATE_MARKET_MODALITIES.map((modality) => [modality.sourceName, modality]));
 const vehicleModalityBySourceName = new Map(VEHICLE_MODALITIES.map((modality) => [modality.sourceName, modality]));
 
@@ -161,6 +160,18 @@ function roundRate(value) {
   return Number(value.toFixed(6));
 }
 
+function monthlyEquivalentRatePercentFromAnnual(annualRatePercent) {
+  return ((1 + (annualRatePercent / 100)) ** (1 / 12) - 1) * 100;
+}
+
+function median(values) {
+  const sortedValues = values.slice().sort((left, right) => left - right);
+  const middle = Math.floor(sortedValues.length / 2);
+  return sortedValues.length % 2 === 0
+    ? (sortedValues[middle - 1] + sortedValues[middle]) / 2
+    : sortedValues[middle];
+}
+
 function latestMonthPeriod(rows) {
   return rows.reduce((latest, row) => (row.period > latest ? row.period : latest), rows[0]?.period ?? '');
 }
@@ -184,22 +195,22 @@ function sortInstitutions(left, right) {
 
 function buildDefaultInterestRate(modalities, referencePeriod) {
   const defaultModality = modalities.find((modality) => modality.key === DEFAULT_MODALITY_KEY);
-  const institutions = defaultModality?.institutions.slice(0, DEFAULT_INSTITUTION_LIMIT) ?? [];
+  const institutions = defaultModality?.institutions ?? [];
   if (institutions.length === 0) {
-    throw new Error('Nenhuma taxa prefixada de mercado válida foi encontrada para calcular o default.');
+    throw new Error('Nenhuma taxa pós-fixada TR de mercado válida foi encontrada para calcular o default.');
   }
 
-  const monthlyRatePercent = institutions.reduce((sum, institution) => sum + institution.monthlyRatePercent, 0) / institutions.length;
-  const annualEquivalentRatePercent = ((1 + (monthlyRatePercent / 100)) ** 12 - 1) * 100;
+  const annualRatePercent = median(institutions.map((institution) => institution.annualRatePercent));
+  const monthlyRatePercent = monthlyEquivalentRatePercentFromAnnual(annualRatePercent);
 
   return {
     creditType: 'realEstate',
     modalityKey: DEFAULT_MODALITY_KEY,
-    method: 'average-lowest-20-market-fixed-monthly',
+    method: 'median-market-tr-annual',
     referencePeriod,
     institutionCount: institutions.length,
     monthlyRatePercent: roundRate(monthlyRatePercent),
-    annualEquivalentRatePercent: roundRate(annualEquivalentRatePercent),
+    annualEquivalentRatePercent: roundRate(annualRatePercent),
   };
 }
 

@@ -4,16 +4,16 @@
     "realEstate": "https://olinda.bcb.gov.br/olinda/servico/taxaJuros/versao/v2/odata/TaxasJurosMensalPorMes?$format=json",
     "vehicle": "https://olinda.bcb.gov.br/olinda/servico/taxaJuros/versao/v2/odata/TaxasJurosDiariaPorInicioPeriodo?$format=json&$top=500&$filter=Modalidade%20eq%20'Aquisi%C3%A7%C3%A3o%20de%20ve%C3%ADculos%20-%20Prefixado'"
   },
-  "generatedAt": "2026-07-22T00:14:35.501Z",
+  "generatedAt": "2026-07-22T00:27:36.919Z",
   "referencePeriod": "2026-06",
   "defaultInterestRate": {
     "creditType": "realEstate",
-    "modalityKey": "marketFixed",
-    "method": "average-lowest-20-market-fixed-monthly",
+    "modalityKey": "marketTr",
+    "method": "median-market-tr-annual",
     "referencePeriod": "2026-06",
-    "institutionCount": 4,
-    "monthlyRatePercent": 1.145,
-    "annualEquivalentRatePercent": 14.639168
+    "institutionCount": 13,
+    "monthlyRatePercent": 0.912001,
+    "annualEquivalentRatePercent": 11.51
   },
   "creditTypes": {
     "realEstate": {

@@ -68,6 +68,26 @@ const { join } = require('node:path');
       },
       {
         Mes: 'Jun-2026',
+        Modalidade: 'Financiamento imobiliário com taxas de mercado - Pós-fixado referenciado em TR',
+        Posicao: 2,
+        InstituicaoFinanceira: 'BANCO TR MEDIANA S.A.',
+        TaxaJurosAoMes: 0.91,
+        TaxaJurosAoAno: 11.51,
+        cnpj8: '47474747',
+        anoMes: '2026-06',
+      },
+      {
+        Mes: 'Jun-2026',
+        Modalidade: 'Financiamento imobiliário com taxas de mercado - Pós-fixado referenciado em TR',
+        Posicao: 3,
+        InstituicaoFinanceira: 'BANCO TR ALTO S.A.',
+        TaxaJurosAoMes: 1.13,
+        TaxaJurosAoAno: 14.38,
+        cnpj8: '48484848',
+        anoMes: '2026-06',
+      },
+      {
+        Mes: 'Jun-2026',
         Modalidade: 'Financiamento imobiliário com taxas de mercado - Pós-fixado referenciado em IPCA',
         Posicao: 1,
         InstituicaoFinanceira: 'BANCO IPCA S.A.',
@@ -183,14 +203,14 @@ const { join } = require('node:path');
     data.defaultInterestRate,
     {
       creditType: 'realEstate',
-      modalityKey: 'marketFixed',
-      method: 'average-lowest-20-market-fixed-monthly',
+      modalityKey: 'marketTr',
+      method: 'median-market-tr-annual',
       referencePeriod: '2026-06',
-      institutionCount: 2,
-      monthlyRatePercent: 1.05,
-      annualEquivalentRatePercent: 13.35373,
+      institutionCount: 3,
+      monthlyRatePercent: 0.912001,
+      annualEquivalentRatePercent: 11.51,
     },
-    'mantém default pela média das menores taxas imobiliárias prefixadas válidas',
+    'calcula default pela mediana anual das taxas imobiliárias pós-fixadas TR válidas',
   );
 
   assert.throws(

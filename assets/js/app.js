@@ -5,7 +5,7 @@
   const i18n = window.FinancingI18n;
   const STORAGE_KEY = 'financing-simulator:form-state:v1';
   const TR_CACHE_KEY = 'financing-simulator:tr-cache:v1';
-  const BCB_CREDIT_RATES_CACHE_KEY = 'financing-simulator:bcb-credit-rates-cache:v1';
+  const BCB_CREDIT_RATES_CACHE_KEY = 'financing-simulator:bcb-credit-rates-cache:v2';
   const PRIVACY_NOTICE_STORAGE_KEY = 'financing-simulator:privacy-notice-dismissed:v1';
   const appScriptUrl = document.currentScript?.src || document.querySelector('script[src*="assets/js/app.js"]')?.src;
   const ASSET_BASE_URL = appScriptUrl ? new URL('../', appScriptUrl).href : new URL('./assets/', document.baseURI).href;
@@ -316,7 +316,8 @@
       && typeof data.referencePeriod === 'string'
       && defaultRate
       && defaultRate.creditType === 'realEstate'
-      && defaultRate.modalityKey === 'marketFixed'
+      && defaultRate.modalityKey === 'marketTr'
+      && defaultRate.method === 'median-market-tr-annual'
       && Number.isFinite(defaultRate.monthlyRatePercent)
       && defaultRate.monthlyRatePercent > 0
       && Number.isFinite(defaultRate.annualEquivalentRatePercent)

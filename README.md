@@ -15,7 +15,7 @@ O projeto usa HTML, CSS e JavaScript simples, sem etapa de build e sem dependên
   - série mensal personalizada.
 - Maior TR dos últimos 12 meses a partir do JSON local `assets/data/tr-bacen.json`.
 - Taxas médias BCB por instituição para modalidades imobiliárias e veicular a partir do JSON local `assets/data/bcb-credit-rates.json`.
-- Taxa de juros padrão anual efetiva baseada na média das menores taxas prefixadas de mercado do BCB, com cache diário em `localStorage`.
+- Taxa de juros padrão anual efetiva baseada na mediana das taxas imobiliárias de mercado pós-fixadas em TR do BCB, com cache diário em `localStorage`.
 - Amortizações extras pontuais ou recorrentes, com objetivo de reduzir prazo ou reduzir parcelas.
 - Recálculo automático ao alterar campos.
 - Persistência dos últimos valores preenchidos em `localStorage`.
