@@ -4,7 +4,7 @@
     "realEstate": "https://olinda.bcb.gov.br/olinda/servico/taxaJuros/versao/v2/odata/TaxasJurosMensalPorMes?$format=json",
     "vehicle": "https://olinda.bcb.gov.br/olinda/servico/taxaJuros/versao/v2/odata/TaxasJurosDiariaPorInicioPeriodo?$format=json&$top=500&$filter=Modalidade%20eq%20'Aquisi%C3%A7%C3%A3o%20de%20ve%C3%ADculos%20-%20Prefixado'"
   },
-  "generatedAt": "2026-07-22T16:17:44.480Z",
+  "generatedAt": "2026-07-23T11:44:39.418Z",
   "referencePeriod": "2026-06",
   "defaultInterestRate": {
     "creditType": "realEstate",
