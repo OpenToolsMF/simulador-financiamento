@@ -350,7 +350,9 @@ const portugueseSentinels = [
     'comparison.resultsDescription',
     'comparison.chartsKicker',
     'comparison.chartsTitle',
-    'comparison.chartsPlaceholder',
+    'comparison.chartsDescription',
+    'comparison.accumulatedChartTitle',
+    'comparison.paymentChartTitle',
     'comparison.statusLoading',
     'comparison.col.institution',
     'comparison.col.modality',
@@ -363,6 +365,10 @@ const portugueseSentinels = [
     'footer.about',
     'footer.contact',
     'footer.privacy',
+  ];
+  const comparisonAttributeKeys = [
+    'comparison.accumulatedChartAria',
+    'comparison.paymentChartAria',
   ];
 
   for (const { file, language } of comparisonPages) {
@@ -378,6 +384,10 @@ const portugueseSentinels = [
         `${file}: pré-renderiza ${key}`,
       );
     }
+    for (const key of comparisonAttributeKeys) {
+      assert.ok(bodyHtml.includes(dictionary[key]), `${file}: pré-renderiza atributo ${key}`);
+    }
+    assert.ok(!visibleText.includes('Top 10'), `${file}: não mantém texto antigo Top 10`);
     if (language !== 'pt-BR') {
       for (const sentinel of portugueseSentinels) {
         assert.ok(!visibleText.includes(sentinel), `${file}: não mantém fallback em português (${sentinel})`);

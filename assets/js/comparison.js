@@ -3,6 +3,15 @@
 
   const DEFAULT_FINANCED_CENTS = 100000;
   const DEFAULT_TERM = 360;
+  const BEST_CHART_LIMIT = 5;
+  const CHART_HIGHLIGHT_COLORS = [
+    '#176b3a',
+    '#2563eb',
+    '#b45309',
+    '#7c3aed',
+    '#0f766e',
+  ];
+  const WORST_CHART_COLOR = '#b42318';
   const TR_CACHE_KEY = 'financing-simulator:tr-cache:v1';
   const BCB_CREDIT_RATES_CACHE_KEY = 'financing-simulator:bcb-credit-rates-cache:v2';
 
@@ -86,6 +95,53 @@
     };
   }
 
+  function monthlyChartSeries(installments) {
+    let accumulatedPaidCents = 0;
+
+    return installments.map((installment) => {
+      accumulatedPaidCents += installment.totalPaymentCents;
+      return {
+        number: installment.number,
+        paymentCents: installment.totalPaymentCents,
+        accumulatedPaidCents,
+      };
+    });
+  }
+
+  function highlightedChartRow(row, { role, color, dash = [] }) {
+    return {
+      institution: row.institution,
+      modalityKey: row.modalityKey,
+      modalityLabel: row.modalityLabel,
+      annualRatePercent: row.annualRatePercent,
+      effectiveTerm: row.effectiveTerm,
+      tableRank: row.tableRank,
+      highlightRole: role,
+      highlightRank: row.tableRank,
+      highlightColor: color,
+      highlightDash: dash,
+      series: row.series || [],
+    };
+  }
+
+  function highlightChartRows(rows, bestLimit = BEST_CHART_LIMIT) {
+    const bestRows = rows.slice(0, bestLimit).map((row, index) => highlightedChartRow(row, {
+      role: 'best',
+      color: CHART_HIGHLIGHT_COLORS[index % CHART_HIGHLIGHT_COLORS.length],
+    }));
+
+    if (rows.length <= bestLimit) return bestRows;
+
+    return [
+      ...bestRows,
+      highlightedChartRow(rows.at(-1), {
+        role: 'worst',
+        color: WORST_CHART_COLOR,
+        dash: [7, 5],
+      }),
+    ];
+  }
+
   function buildComparisonRows({
     bcbData,
     creditType = 'realEstate',
@@ -94,12 +150,13 @@
     monthlyCorrectionRate,
     system = 'sac',
     finance,
+    bestChartLimit = BEST_CHART_LIMIT,
   }) {
     if (!finance?.simulate || !finance?.monthlyRateFromPercent) {
       throw new Error('FinanceSimulator indisponível.');
     }
 
-    const rows = [];
+    const simulatedRows = [];
     let ignoredCount = 0;
 
     for (const entry of creditRateEntries(bcbData, creditType)) {
@@ -112,27 +169,48 @@
           system,
           finance,
         }));
-        rows.push({
+        simulatedRows.push({
           ...entry,
           totalPaidCents: simulation.stats.totalPaidCents,
           firstPaymentCents: simulation.stats.initialTotalPaymentCents,
           lastPaymentCents: simulation.stats.finalTotalPaymentCents,
           totalInterestCents: simulation.stats.totalInterestCents,
           effectiveTerm: simulation.stats.effectiveTerm,
+          series: monthlyChartSeries(simulation.installments),
         });
       } catch (error) {
         ignoredCount += 1;
       }
     }
 
-    rows.sort((left, right) => (
+    simulatedRows.sort((left, right) => (
       left.totalPaidCents - right.totalPaidCents
       || left.annualRatePercent - right.annualRatePercent
       || left.institution.localeCompare(right.institution, 'pt-BR')
     ));
 
+    simulatedRows.forEach((row, index) => {
+      row.tableRank = index + 1;
+    });
+
+    const chartRows = highlightChartRows(simulatedRows, bestChartLimit);
+    const highlightByRank = new Map(chartRows.map((row) => [row.tableRank, row]));
+    const rows = simulatedRows.map(({ series, ...row }) => {
+      const highlight = highlightByRank.get(row.tableRank);
+      return highlight
+        ? {
+          ...row,
+          highlightRole: highlight.highlightRole,
+          highlightRank: highlight.highlightRank,
+          highlightColor: highlight.highlightColor,
+          highlightDash: highlight.highlightDash,
+        }
+        : row;
+    });
+
     return {
       rows,
+      chartRows,
       ignoredCount,
       referencePeriod: comparisonReferencePeriod(bcbData, creditType),
     };
@@ -141,9 +219,12 @@
   const api = {
     DEFAULT_FINANCED_CENTS,
     DEFAULT_TERM,
+    BEST_CHART_LIMIT,
     highestRecentTrRate,
     creditRateEntries,
     comparisonReferencePeriod,
+    monthlyChartSeries,
+    highlightChartRows,
     buildComparisonRows,
   };
 
@@ -165,6 +246,8 @@
   const assetUrl = (path) => new URL(path, ASSET_BASE_URL).href;
   const TR_DATA_URL = assetUrl('data/tr-bacen.json');
   const BCB_CREDIT_RATES_DATA_URL = assetUrl('data/bcb-credit-rates.json');
+  const CHART_JS_URL = assetUrl('vendor/chartjs/chart.umd.min.js');
+  const CHART_PRELOAD_ROOT_MARGIN = '700px 0px';
 
   const languageSelect = document.querySelector('#language-select');
   const financedValueInput = document.querySelector('#comparison-financed-value');
@@ -175,12 +258,107 @@
   const resultsBody = document.querySelector('#comparison-rates-body');
   const status = document.querySelector('#comparison-status');
   const table = document.querySelector('#comparison-table');
+  const chartSection = document.querySelector('.comparison-chart-section');
+  const chartDescription = document.querySelector('#comparison-charts-description');
+  const chartStatus = document.querySelector('#comparison-charts-status');
+  const chartCanvases = {
+    accumulated: document.querySelector('#comparison-accumulated-chart'),
+    payment: document.querySelector('#comparison-payment-chart'),
+  };
 
   let bcbData = null;
   let autoCalculationTimer = null;
+  let currentResult = null;
+  let charts = {};
+  let chartJsLoadPromise = null;
+  let chartObserver = null;
+  let chartsRequested = false;
+  let chartRenderVersion = 0;
+  let latestRenderedChartVersion = 0;
+  let chartStatusState = 'idle';
 
   function t(key, params) {
     return i18n.t(key, params);
+  }
+
+  function renderChartStatus() {
+    if (!chartStatus) return;
+
+    chartStatus.classList.toggle('chart-status-error', chartStatusState === 'error');
+    chartStatus.setAttribute('aria-busy', chartStatusState === 'loading' ? 'true' : 'false');
+
+    if (chartStatusState === 'loading') {
+      chartStatus.setAttribute('role', 'status');
+      chartStatus.textContent = t('comparison.chartsLoading');
+      return;
+    }
+
+    if (chartStatusState === 'error') {
+      chartStatus.setAttribute('role', 'alert');
+      chartStatus.innerHTML = `${escapeHtml(t('comparison.chartsLoadError'))} <button type="button" class="btn btn-link btn-sm p-0" data-action="retry-comparison-charts">${escapeHtml(t('comparison.chartsRetry'))}</button>`;
+      return;
+    }
+
+    chartStatus.setAttribute('role', 'status');
+    chartStatus.textContent = '';
+  }
+
+  function setChartStatus(state) {
+    chartStatusState = state;
+    renderChartStatus();
+  }
+
+  function loadChartJs() {
+    if (globalScope.Chart) return Promise.resolve(globalScope.Chart);
+    if (chartJsLoadPromise) return chartJsLoadPromise;
+
+    chartJsLoadPromise = new Promise((resolve, reject) => {
+      const existingScript = document.querySelector('script[data-chartjs-loader="true"]');
+      if (existingScript) {
+        existingScript.addEventListener('load', () => {
+          if (globalScope.Chart) resolve(globalScope.Chart);
+          else reject(new Error(`Chart.js loaded but window.Chart is unavailable from ${CHART_JS_URL}`));
+        }, { once: true });
+        existingScript.addEventListener('error', () => reject(new Error(`Unable to load Chart.js from ${CHART_JS_URL}`)), { once: true });
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = CHART_JS_URL;
+      script.async = true;
+      script.dataset.chartjsLoader = 'true';
+
+      script.onload = () => {
+        script.onload = null;
+        script.onerror = null;
+        if (globalScope.Chart) {
+          resolve(globalScope.Chart);
+          return;
+        }
+        script.remove();
+        reject(new Error(`Chart.js loaded but window.Chart is unavailable from ${CHART_JS_URL}`));
+      };
+
+      script.onerror = () => {
+        script.onload = null;
+        script.onerror = null;
+        script.remove();
+        reject(new Error(`Unable to load Chart.js from ${CHART_JS_URL}`));
+      };
+
+      document.body.appendChild(script);
+    }).catch((error) => {
+      chartJsLoadPromise = null;
+      throw error;
+    });
+
+    return chartJsLoadPromise;
+  }
+
+  function disconnectChartObserver() {
+    if (!chartObserver) return;
+    chartObserver.disconnect();
+    chartObserver = null;
   }
 
   function nextLocalMidnightIso() {
@@ -273,6 +451,222 @@
     return i18n.formatRatePercent(value, { minimumFractionDigits: 2, maximumFractionDigits: 4 });
   }
 
+  function formatCurrency(cents) {
+    return i18n.formatCurrency(cents);
+  }
+
+  function centsToReais(cents) {
+    return Math.round(cents) / 100;
+  }
+
+  function bcbModalityLabel(modalityKey, fallback = '') {
+    const label = t(`bcb.modality.${modalityKey}`);
+    return label === `bcb.modality.${modalityKey}` ? fallback : label;
+  }
+
+  function chartRows(result = currentResult) {
+    return Array.isArray(result?.chartRows) ? result.chartRows : [];
+  }
+
+  function renderChartDescription(result = currentResult) {
+    if (!chartDescription) return;
+    const rowCount = Array.isArray(result?.rows) ? result.rows.length : 0;
+    if (!rowCount) {
+      chartDescription.textContent = t('comparison.chartsDescriptionEmpty');
+      return;
+    }
+    chartDescription.textContent = t(
+      rowCount <= BEST_CHART_LIMIT ? 'comparison.chartsDescriptionCount' : 'comparison.chartsDescription',
+      {
+        count: i18n.formatNumber(rowCount),
+        limit: i18n.formatNumber(BEST_CHART_LIMIT),
+      },
+    );
+  }
+
+  function chartDatasetLabel(row) {
+    return t('comparison.chartDatasetLabel', {
+      rank: i18n.formatNumber(row.tableRank || row.highlightRank || 0),
+      institution: row.institution,
+      modality: bcbModalityLabel(row.modalityKey, row.modalityLabel),
+    });
+  }
+
+  function chartLabels(rows) {
+    const maxLength = rows.reduce((largest, row) => Math.max(largest, row.series.length), 0);
+    return Array.from({ length: maxLength }, (_, index) => String(index + 1));
+  }
+
+  function chartData(rows, field) {
+    return rows.map((row) => ({
+      label: chartDatasetLabel(row),
+      data: chartLabels(rows).map((_, pointIndex) => {
+        const point = row.series[pointIndex];
+        return point ? centsToReais(point[field]) : null;
+      }),
+      borderColor: row.highlightColor,
+      borderDash: row.highlightDash || [],
+      borderWidth: 2,
+      pointRadius: 0,
+      pointHitRadius: 8,
+      tension: 0.18,
+      spanGaps: false,
+      comparisonRow: row,
+    }));
+  }
+
+  function chartMoneyLabel(context) {
+    const value = context.parsed.y ?? context.parsed;
+    const row = context.dataset.comparisonRow;
+    if (!row) return `${context.dataset.label}: ${formatCurrency(Math.round(value * 100))}`;
+    return t('comparison.chartTooltipLabel', {
+      rank: i18n.formatNumber(row.tableRank || row.highlightRank || 0),
+      institution: row.institution,
+      modality: bcbModalityLabel(row.modalityKey, row.modalityLabel),
+      value: formatCurrency(Math.round(value * 100)),
+    });
+  }
+
+  function commonChartOptions(yTitle) {
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { intersect: false, mode: 'index' },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            title: (items) => t('comparison.chartInstallmentTooltip', { number: items[0]?.label || '' }),
+            label: chartMoneyLabel,
+          },
+        },
+      },
+      scales: {
+        x: {
+          title: { display: true, text: t('charts.installmentAxis') },
+          ticks: { maxTicksLimit: 12 },
+          grid: { display: false },
+        },
+        y: {
+          beginAtZero: true,
+          title: { display: true, text: yTitle },
+          ticks: { callback: (value) => formatCurrency(Math.round(value * 100)) },
+        },
+      },
+    };
+  }
+
+  function destroyCharts() {
+    Object.values(charts).forEach((chart) => chart.destroy());
+    charts = {};
+  }
+
+  function renderCharts(result) {
+    if (!globalScope.Chart) return;
+    const rows = chartRows(result);
+    destroyCharts();
+
+    if (!rows.length) return;
+
+    const labels = chartLabels(rows);
+    charts.accumulated = new globalScope.Chart(chartCanvases.accumulated, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: chartData(rows, 'accumulatedPaidCents'),
+      },
+      options: commonChartOptions(t('comparison.accumulatedChartAxis')),
+    });
+
+    charts.payment = new globalScope.Chart(chartCanvases.payment, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: chartData(rows, 'paymentCents'),
+      },
+      options: commonChartOptions(t('comparison.paymentChartAxis')),
+    });
+  }
+
+  async function renderPendingChartsWhenReady() {
+    if (!currentResult || !chartCanvases.accumulated || !chartCanvases.payment) return;
+
+    const renderVersion = chartRenderVersion;
+    const result = currentResult;
+    setChartStatus('loading');
+
+    try {
+      await loadChartJs();
+    } catch (error) {
+      if (renderVersion === chartRenderVersion) setChartStatus('error');
+      return;
+    }
+
+    if (renderVersion !== chartRenderVersion || result !== currentResult) return;
+    if (latestRenderedChartVersion === renderVersion) {
+      setChartStatus('idle');
+      return;
+    }
+
+    try {
+      renderCharts(result);
+      latestRenderedChartVersion = renderVersion;
+      setChartStatus('idle');
+    } catch (error) {
+      destroyCharts();
+      if (renderVersion === chartRenderVersion) setChartStatus('error');
+    }
+  }
+
+  function observeChartsWhenNeeded() {
+    if (chartsRequested || chartObserver || !chartSection) return;
+
+    if (!('IntersectionObserver' in globalScope)) {
+      chartsRequested = true;
+      renderPendingChartsWhenReady();
+      return;
+    }
+
+    chartObserver = new globalScope.IntersectionObserver((entries) => {
+      if (!entries.some((entry) => entry.isIntersecting || entry.intersectionRatio > 0)) return;
+      chartsRequested = true;
+      disconnectChartObserver();
+      renderPendingChartsWhenReady();
+    }, {
+      root: null,
+      rootMargin: CHART_PRELOAD_ROOT_MARGIN,
+      threshold: 0,
+    });
+
+    chartObserver.observe(chartSection);
+  }
+
+  function requestChartRender(result) {
+    currentResult = result;
+    chartRenderVersion += 1;
+    renderChartDescription(result);
+
+    if (!result?.chartRows?.length) {
+      destroyCharts();
+      setChartStatus('idle');
+      return;
+    }
+
+    if (globalScope.Chart || chartsRequested) {
+      chartsRequested = true;
+      renderPendingChartsWhenReady();
+      return;
+    }
+
+    observeChartsWhenNeeded();
+  }
+
+  function retryChartRender() {
+    if (!currentResult) return;
+    chartsRequested = true;
+    renderPendingChartsWhenReady();
+  }
+
   function escapeHtml(value) {
     return String(value ?? '')
       .replace(/&/g, '&amp;')
@@ -338,7 +732,10 @@
     setText('#comparison-results-description', 'comparison.resultsDescription');
     setText('#comparison-charts-kicker', 'comparison.chartsKicker');
     setText('#comparison-charts-title', 'comparison.chartsTitle');
-    setText('#comparison-charts-placeholder', 'comparison.chartsPlaceholder');
+    setText('#comparison-accumulated-chart-title', 'comparison.accumulatedChartTitle');
+    setText('#comparison-payment-chart-title', 'comparison.paymentChartTitle');
+    setAttr('#comparison-accumulated-chart', 'aria-label', 'comparison.accumulatedChartAria');
+    setAttr('#comparison-payment-chart', 'aria-label', 'comparison.paymentChartAria');
     setText('#footer-copyright', 'footer.copyright');
     setText('#footer-comparison-link', 'footer.comparison');
     setText('#footer-about-link', 'footer.about');
@@ -374,6 +771,10 @@
       notice.setAttribute('aria-label', t('notice.aria'));
       notice.innerHTML = `<strong>${escapeHtml(t('notice.strong'))}</strong> ${escapeHtml(t('notice.text'))}`;
     }
+
+    renderChartDescription();
+    renderChartStatus();
+    if (globalScope.Chart && currentResult?.chartRows?.length) renderCharts(currentResult);
   }
 
   function readFormConfig() {
@@ -394,11 +795,39 @@
     };
   }
 
+  function chartHighlightLabel(row) {
+    if (row.highlightRole === 'worst') {
+      return t('comparison.chartHighlightWorst', { rank: i18n.formatNumber(row.highlightRank) });
+    }
+    if (row.highlightRole === 'best') {
+      return t('comparison.chartHighlightBest', { rank: i18n.formatNumber(row.highlightRank) });
+    }
+    return '';
+  }
+
+  function renderInstitutionCell(row) {
+    if (!row.highlightRole) return escapeHtml(row.institution);
+
+    const label = chartHighlightLabel(row);
+    return `
+      <span class="comparison-institution-cell">
+        <span
+          class="comparison-chart-marker comparison-chart-marker-${escapeHtml(row.highlightRole)}"
+          style="--comparison-chart-color: ${escapeHtml(row.highlightColor)}"
+          role="img"
+          aria-label="${escapeHtml(label)}"
+          title="${escapeHtml(label)}"
+        ></span>
+        <span>${escapeHtml(row.institution)}</span>
+      </span>
+    `;
+  }
+
   function renderRows(result) {
     resultsBody.innerHTML = result.rows.map((row) => `
       <tr>
-        <th scope="row">${escapeHtml(row.institution)}</th>
-        <td>${escapeHtml(t(`bcb.modality.${row.modalityKey}`) || row.modalityLabel)}</td>
+        <th scope="row">${renderInstitutionCell(row)}</th>
+        <td>${escapeHtml(bcbModalityLabel(row.modalityKey, row.modalityLabel))}</td>
         <td>${escapeHtml(formatRateInput(row.annualRatePercent))}%</td>
         <td>${escapeHtml(i18n.formatCurrency(row.totalPaidCents))}</td>
         <td>${escapeHtml(i18n.formatCurrency(row.firstPaymentCents))}</td>
@@ -426,6 +855,10 @@
       resultsBody.innerHTML = '';
       status.textContent = t('comparison.statusError');
       table.classList.add('d-none');
+      currentResult = null;
+      destroyCharts();
+      renderChartDescription(null);
+      setChartStatus('idle');
       return;
     }
 
@@ -433,6 +866,7 @@
     renderRows(result);
     renderStatus(result);
     table.classList.toggle('d-none', result.rows.length === 0);
+    requestChartRender(result);
   }
 
   function scheduleRecalculation() {
@@ -483,6 +917,10 @@
   });
 
   form.addEventListener('change', scheduleRecalculation);
+  chartStatus?.addEventListener('click', (event) => {
+    if (!event.target.closest('[data-action="retry-comparison-charts"]')) return;
+    retryChartRender();
+  });
   financedValueInput.addEventListener('blur', () => formatMoneyInput(financedValueInput));
   correctionRateInput.addEventListener('blur', () => {
     const rate = parseNumber(correctionRateInput.value);

@@ -61,7 +61,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="../../assets/image/favicon/apple-touch-icon.png">
     <link rel="manifest" href="../../assets/image/favicon/site.webmanifest">
     <link rel="stylesheet" href="../../assets/vendor/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../../assets/css/styles.css?v=20260723-comparison-page">
+    <link rel="stylesheet" href="../../assets/css/styles.css?v=20260724-comparison-charts">
   </head>
   <body>
     <header class="site-header">
@@ -176,15 +176,28 @@
         </div>
       </section>
 
-      <section class="surface-card mb-4" aria-labelledby="comparison-charts-title">
+      <section class="surface-card mb-4 chart-section comparison-chart-section" aria-labelledby="comparison-charts-title">
         <div class="section-heading">
           <div>
             <span id="comparison-charts-kicker" class="section-kicker">Gráficos</span>
-            <h2 id="comparison-charts-title">Gráficos de la comparación</h2>
+            <h2 id="comparison-charts-title">Gráficos comparativos</h2>
+            <p id="comparison-charts-description" class="section-description">Los gráficos destacan las 5 opciones con menor total pagado y la opción con mayor total pagado, según la tabla actual.</p>
           </div>
         </div>
-        <div class="empty-state">
-          <p id="comparison-charts-placeholder" class="mb-0">Los gráficos de esta comparación se agregarán en una próxima etapa.</p>
+        <div id="comparison-charts-status" class="chart-status" role="status" aria-live="polite"></div>
+        <div class="charts-grid">
+          <article class="chart-panel">
+            <h3 id="comparison-accumulated-chart-title">Total pagado acumulado</h3>
+            <div class="chart-wrap">
+              <canvas id="comparison-accumulated-chart" role="img" aria-label="Gráfico del total pagado acumulado en las opciones destacadas"></canvas>
+            </div>
+          </article>
+          <article class="chart-panel">
+            <h3 id="comparison-payment-chart-title">Evolución de la cuota mensual</h3>
+            <div class="chart-wrap">
+              <canvas id="comparison-payment-chart" role="img" aria-label="Gráfico de evolución de la cuota mensual en las opciones destacadas"></canvas>
+            </div>
+          </article>
         </div>
       </section>
 
@@ -206,8 +219,8 @@
     </footer>
 
     <script src="../../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="../../assets/js/i18n.js?v=20260723-comparison-page"></script>
+    <script src="../../assets/js/i18n.js?v=20260724-comparison-charts"></script>
     <script src="../../assets/js/finance.js?v=20260717-privacy-page"></script>
-    <script src="../../assets/js/comparison.js?v=20260723-comparison-page"></script>
+    <script src="../../assets/js/comparison.js?v=20260724-comparison-charts"></script>
   </body>
 </html>

@@ -580,6 +580,27 @@ legend.form-label {
   white-space: nowrap;
 }
 
+.comparison-institution-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.comparison-chart-marker {
+  width: 0.72rem;
+  height: 0.72rem;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: var(--comparison-chart-color, var(--color-primary));
+  box-shadow: 0 0 0 2px #fff, 0 0 0 3px rgba(23, 107, 58, 0.18);
+}
+
+.comparison-chart-marker-worst {
+  background: #fff;
+  border: 2px dashed var(--comparison-chart-color, var(--color-danger));
+  box-shadow: none;
+}
+
 .summary-detail-table th:nth-child(3) {
   text-align: left;
 }
