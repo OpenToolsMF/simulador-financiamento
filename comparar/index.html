@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-8QCFQMHCZ3"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-8QCFQMHCZ3');
+    </script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Compare taxas médias BCB por banco em financiamentos imobiliários e veiculares, simulando total pago, primeira parcela, última parcela e juros com SAC ou Price.">
+    <meta name="google-adsense-account" content="ca-pub-8780410675865678">
+    <title>Comparar financiamentos por banco | Mapa das Parcelas</title>
+    <link rel="canonical" href="https://mapadasparcelas.com.br/comparar/">
+    <link rel="alternate" hreflang="pt-BR" href="https://mapadasparcelas.com.br/comparar/">
+    <link rel="alternate" hreflang="en" href="https://mapadasparcelas.com.br/en/compare/">
+    <link rel="alternate" hreflang="es" href="https://mapadasparcelas.com.br/es/comparar/">
+    <link rel="alternate" hreflang="x-default" href="https://mapadasparcelas.com.br/comparar/">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:site_name" content="Mapa das Parcelas">
+    <meta property="og:title" content="Comparar financiamentos por banco | Mapa das Parcelas">
+    <meta property="og:description" content="Compare taxas médias BCB por banco em financiamentos imobiliários e veiculares, simulando total pago, primeira parcela, última parcela e juros com SAC ou Price.">
+    <meta property="og:url" content="https://mapadasparcelas.com.br/comparar/">
+    <meta property="og:image" content="https://mapadasparcelas.com.br/assets/image/logo.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="600">
+    <meta property="og:image:height" content="600">
+    <meta property="og:image:alt" content="Logo do Mapa das Parcelas">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Comparar financiamentos por banco | Mapa das Parcelas">
+    <meta name="twitter:description" content="Compare taxas médias BCB por banco em financiamentos imobiliários e veiculares, simulando total pago, primeira parcela, última parcela e juros com SAC ou Price.">
+    <meta name="twitter:image" content="https://mapadasparcelas.com.br/assets/image/logo.png">
+    <meta name="twitter:image:alt" content="Logo do Mapa das Parcelas">
+    <script type="application/ld+json">
+      {
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            "@id": "https://mapadasparcelas.com.br/comparar/#application",
+            "name": "Comparar financiamentos por banco | Mapa das Parcelas",
+            "url": "https://mapadasparcelas.com.br/comparar/",
+            "image": "https://mapadasparcelas.com.br/assets/image/logo.png",
+            "description": "Compare taxas médias BCB por banco em financiamentos imobiliários e veiculares, simulando total pago, primeira parcela, última parcela e juros com SAC ou Price.",
+            "applicationCategory": "FinanceApplication",
+            "operatingSystem": "Qualquer sistema com navegador moderno",
+            "inLanguage": "pt-BR",
+            "isAccessibleForFree": true,
+            "isPartOf": {
+                  "@id": "https://mapadasparcelas.com.br/#website"
+            }
+      }
+    </script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8780410675865678" crossorigin="anonymous"></script>
+    <link rel="icon" type="image/svg+xml" href="../assets/image/favicon/favicon.svg">
+    <link rel="icon" type="image/png" sizes="96x96" href="../assets/image/favicon/favicon-96x96.png">
+    <link rel="shortcut icon" href="../assets/image/favicon/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="../assets/image/favicon/apple-touch-icon.png">
+    <link rel="manifest" href="../assets/image/favicon/site.webmanifest">
+    <link rel="stylesheet" href="../assets/vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/styles.css?v=20260723-comparison-page">
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container py-4 py-lg-5">
+        <div class="site-header-content">
+          <div class="site-header-topline">
+            <span class="eyebrow">Comparação financeira</span>
+            <div class="language-switcher">
+              <label for="language-select" class="form-label">Idioma</label>
+              <select id="language-select" class="form-select form-select-sm" aria-label="Idioma">
+                <option value="pt-BR" selected>Português</option>
+                <option value="en">English</option>
+                <option value="es">Español</option>
+              </select>
+            </div>
+          </div>
+          <h1 class="display-6 fw-bold mb-2">Comparar taxas por banco</h1>
+          <p class="lead mb-0">Simule todos os bancos salvos na base local do BCB com os mesmos dados e veja quem gera o menor total pago.</p>
+        </div>
+      </div>
+    </header>
+
+    <main class="container py-4 py-lg-5">
+      <a class="comparison-back-link privacy-back-link" href="../" data-route="simulator">← Voltar ao simulador</a>
+
+      <form id="comparison-form" class="surface-card mb-4" novalidate>
+        <div class="section-heading">
+          <div>
+            <span id="comparison-config-kicker" class="section-kicker">Configuração</span>
+            <h2 id="comparison-config-title">Dados da comparação</h2>
+          </div>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-2 row-cols-xl-5 g-4 financing-config-grid">
+          <div class="col financing-config-field">
+            <div class="field-header">
+              <label for="comparison-credit-type" class="form-label">Tipo de crédito</label>
+            </div>
+            <select id="comparison-credit-type" class="form-select">
+              <option value="realEstate">Imobiliário</option>
+              <option value="vehicle">Veicular</option>
+            </select>
+          </div>
+
+          <div class="col financing-config-field">
+            <div class="field-header">
+              <label for="comparison-financed-value" class="form-label">Valor financiado <span class="required-marker" aria-hidden="true">*</span></label>
+            </div>
+            <div class="input-group">
+              <span class="input-group-text">R$</span>
+              <input id="comparison-financed-value" class="form-control" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00" required>
+            </div>
+          </div>
+
+          <div class="col financing-config-field">
+            <div class="field-header">
+              <label for="comparison-term" class="form-label">Prazo <span class="required-marker" aria-hidden="true">*</span></label>
+            </div>
+            <div class="input-group">
+              <input id="comparison-term" class="form-control" type="number" min="1" max="600" step="1" inputmode="numeric" value="360" required>
+              <span class="input-group-text">meses</span>
+            </div>
+          </div>
+
+          <div class="col financing-config-field">
+            <div class="field-header">
+              <label for="comparison-correction-rate" class="form-label">Correção mensal fixa <span class="required-marker" aria-hidden="true">*</span></label>
+            </div>
+            <div class="input-group">
+              <input id="comparison-correction-rate" class="form-control" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00" required>
+              <span class="input-group-text">%</span>
+            </div>
+          </div>
+
+          <div class="col financing-config-field">
+            <div class="field-header">
+              <label for="comparison-system" class="form-label">Sistema de amortização</label>
+            </div>
+            <select id="comparison-system" class="form-select">
+              <option value="sac">SAC</option>
+              <option value="price">Price</option>
+            </select>
+          </div>
+        </div>
+      </form>
+
+      <section class="surface-card mb-4" aria-labelledby="comparison-results-title">
+        <div class="section-heading">
+          <div>
+            <span id="comparison-results-kicker" class="section-kicker">Bancos</span>
+            <h2 id="comparison-results-title">Comparação por instituição</h2>
+            <p id="comparison-results-description" class="section-description">Tabela ordenada pelo menor valor total pago, usando a mesma correção mensal fixa para todas as linhas.</p>
+          </div>
+        </div>
+
+        <div id="comparison-status" class="form-text mb-3" role="status" aria-live="polite">Carregando taxas médias BCB e TR...</div>
+        <div class="table-responsive">
+          <table id="comparison-table" class="table comparison-table bank-comparison-table align-middle mb-0 d-none">
+            <thead>
+              <tr>
+                <th scope="col">Banco</th>
+                <th scope="col">Modalidade</th>
+                <th scope="col">Taxa a.a.</th>
+                <th scope="col">Valor total pago</th>
+                <th scope="col">Primeira parcela</th>
+                <th scope="col">Última parcela</th>
+                <th scope="col">Juros total pago</th>
+              </tr>
+            </thead>
+            <tbody id="comparison-rates-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="surface-card mb-4" aria-labelledby="comparison-charts-title">
+        <div class="section-heading">
+          <div>
+            <span id="comparison-charts-kicker" class="section-kicker">Gráficos</span>
+            <h2 id="comparison-charts-title">Gráficos da comparação</h2>
+          </div>
+        </div>
+        <div class="empty-state">
+          <p id="comparison-charts-placeholder" class="mb-0">Os gráficos desta comparação serão adicionados em uma próxima etapa.</p>
+        </div>
+      </section>
+
+      <aside class="estimate-notice" aria-label="Aviso importante">
+        <strong>Importante:</strong> Esta ferramenta apresenta apenas uma simulação estimativa, sem validade jurídica, contratual ou financeira. Os resultados dependem exclusivamente dos dados informados e das premissas adotadas, como taxa fixa, períodos mensais, correção monetária projetada e custos extras preenchidos pelo usuário. A simulação não representa proposta de crédito, aprovação, oferta vinculante, recomendação financeira, consultoria jurídica ou as condições efetivamente praticadas por instituições financeiras. Para contratar ou comparar uma operação real, consulte o contrato, o Custo Efetivo Total (CET), tributos, tarifas, seguros, índices de correção e demais condições oficiais fornecidas pela instituição responsável.
+      </aside>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container site-footer-content">
+        <p id="footer-copyright" class="mb-0">© 2026 Mapa das Parcelas</p>
+        <nav class="site-footer-links" aria-label="Links institucionais">
+          <a id="footer-comparison-link" href="./" data-route="comparison" aria-current="page">Comparar bancos</a>
+          <a id="footer-about-link" href="../sobre/" data-route="about">Sobre</a>
+          <a id="footer-contact-link" href="../fale-conosco/" data-route="contact">Fale conosco</a>
+          <a id="footer-privacy-link" href="../privacidade.html" data-route="privacy">Privacidade</a>
+        </nav>
+      </div>
+    </footer>
+
+    <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/i18n.js?v=20260723-comparison-page"></script>
+    <script src="../assets/js/finance.js?v=20260717-privacy-page"></script>
+    <script src="../assets/js/comparison.js?v=20260723-comparison-page"></script>
+  </body>
+</html>

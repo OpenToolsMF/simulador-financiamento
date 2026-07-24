@@ -75,6 +75,10 @@ const simulatorTextKeys = [
   'footer.about',
   'footer.contact',
   'footer.privacy',
+  'homeComparison.kicker',
+  'homeComparison.title',
+  'homeComparison.description',
+  'homeComparison.cta',
   'form.financedValue',
   'form.term',
   'form.interestRate',
@@ -241,6 +245,7 @@ const portugueseSentinels = [
     { file: 'privacidade.html', language: 'pt-BR' },
     { file: 'sobre/index.html', language: 'pt-BR' },
     { file: 'fale-conosco/index.html', language: 'pt-BR' },
+    { file: 'comparar/index.html', language: 'pt-BR' },
   ];
   for (const { file, language } of defaultPages) {
     const html = await readFile(join(projectRoot, file), 'utf8');
@@ -318,6 +323,65 @@ const portugueseSentinels = [
     }
     for (const sentinel of portugueseSentinels) {
       assert.ok(!normalizeHtmlText(bodyHtml).includes(sentinel), `${file}: n\u00e3o mant\u00e9 ${sentinel}`);
+    }
+  }
+
+  const comparisonPages = [
+    { file: 'comparar/index.html', language: 'pt-BR' },
+    { file: 'en/compare/index.html', language: 'en' },
+    { file: 'es/comparar/index.html', language: 'es' },
+  ];
+  const comparisonTextKeys = [
+    'comparison.header.eyebrow',
+    'comparison.header.title',
+    'comparison.header.lead',
+    'comparison.back',
+    'comparison.configKicker',
+    'comparison.configTitle',
+    'comparison.creditType',
+    'comparison.realEstate',
+    'comparison.vehicle',
+    'comparison.financedValue',
+    'comparison.term',
+    'comparison.monthlyCorrectionRate',
+    'comparison.system',
+    'comparison.resultsKicker',
+    'comparison.resultsTitle',
+    'comparison.resultsDescription',
+    'comparison.chartsKicker',
+    'comparison.chartsTitle',
+    'comparison.chartsPlaceholder',
+    'comparison.statusLoading',
+    'comparison.col.institution',
+    'comparison.col.modality',
+    'comparison.col.annualRate',
+    'comparison.col.totalPaid',
+    'comparison.col.firstPayment',
+    'comparison.col.lastPayment',
+    'comparison.col.totalInterest',
+    'footer.comparison',
+    'footer.about',
+    'footer.contact',
+    'footer.privacy',
+  ];
+
+  for (const { file, language } of comparisonPages) {
+    const html = await readFile(join(projectRoot, file), 'utf8');
+    const bodyHtml = extractBody(html);
+    const visibleText = normalizeHtmlText(bodyHtml);
+    const dictionary = i18n.dictionaries[language];
+
+    assertSelectedLanguage(bodyHtml, language, file);
+    for (const key of comparisonTextKeys) {
+      assert.ok(
+        visibleText.includes(normalizeHtmlText(dictionary[key])),
+        `${file}: pré-renderiza ${key}`,
+      );
+    }
+    if (language !== 'pt-BR') {
+      for (const sentinel of portugueseSentinels) {
+        assert.ok(!visibleText.includes(sentinel), `${file}: não mantém fallback em português (${sentinel})`);
+      }
     }
   }
 

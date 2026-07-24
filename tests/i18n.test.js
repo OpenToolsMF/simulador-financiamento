@@ -19,6 +19,11 @@ const expectedContactTitles = {
   en: 'Contact | Installment Map',
   es: 'Contacto | Mapa de cuotas',
 };
+const expectedComparisonTitles = {
+  'pt-BR': 'Comparar financiamentos por banco | Mapa das Parcelas',
+  en: 'Compare financing by bank | Installment Map',
+  es: 'Comparar financiación por banco | Mapa de cuotas',
+};
 assert.deepEqual(languages, ['pt-BR', 'en', 'es'], 'expõe os três idiomas suportados');
 
 const referenceKeys = Object.keys(i18n.dictionaries['pt-BR']).sort();
@@ -50,6 +55,11 @@ for (const language of languages) {
     expectedContactTitles[language],
     `${language}: mantém título específico da página de contato`,
   );
+  assert.equal(
+    i18n.t('comparison.metadata.title'),
+    expectedComparisonTitles[language],
+    `${language}: mantém título específico da página de comparação`,
+  );
   assert.notEqual(i18n.t('faq.1.question'), 'faq.1.question', `${language}: traduz perguntas frequentes`);
   assert.notEqual(i18n.t('faq.15.answer'), 'faq.15.answer', `${language}: traduz todas as respostas do FAQ`);
   assert.ok(i18n.t('validation.monthBetween', { term: 360 }).includes('360'), `${language}: interpola parâmetros`);
@@ -79,12 +89,17 @@ const routeCases = [
   ['/fale-conosco/', { language: 'pt-BR', page: 'contact', basePath: '' }],
   ['/en/about/', { language: 'en', page: 'about', basePath: '' }],
   ['/en/contact/', { language: 'en', page: 'contact', basePath: '' }],
+  ['/en/compare/', { language: 'en', page: 'comparison', basePath: '' }],
   ['/es/acerca-de/', { language: 'es', page: 'about', basePath: '' }],
   ['/es/contacto/', { language: 'es', page: 'contact', basePath: '' }],
+  ['/es/comparar/', { language: 'es', page: 'comparison', basePath: '' }],
+  ['/comparar/', { language: 'pt-BR', page: 'comparison', basePath: '' }],
   ['/repo/en/', { language: 'en', page: 'simulator', basePath: '/repo' }],
   ['/repo/es/privacidad.html', { language: 'es', page: 'privacy', basePath: '/repo' }],
   ['/repo/en/about/', { language: 'en', page: 'about', basePath: '/repo' }],
   ['/repo/es/contacto/', { language: 'es', page: 'contact', basePath: '/repo' }],
+  ['/repo/en/compare/', { language: 'en', page: 'comparison', basePath: '/repo' }],
+  ['/repo/es/comparar/', { language: 'es', page: 'comparison', basePath: '/repo' }],
 ];
 for (const [pathname, expected] of routeCases) {
   assert.deepEqual(i18n.routeInfoForPathname(pathname), expected, `detecta rota ${pathname}`);
@@ -102,6 +117,9 @@ assert.equal(i18n.localizedPathForLanguage('en'), '/repo/en/about/', 'gera URL e
 globalThis.location = { pathname: '/repo/fale-conosco/', origin: 'https://example.test' };
 assert.equal(i18n.localizedPathForLanguage('en'), '/repo/en/contact/', 'gera URL equivalente contato em en');
 assert.equal(i18n.localizedPathForLanguage('es'), '/repo/es/contacto/', 'gera URL equivalente contato em es');
+globalThis.location = { pathname: '/repo/comparar/', origin: 'https://example.test' };
+assert.equal(i18n.localizedPathForLanguage('en'), '/repo/en/compare/', 'gera URL equivalente comparação em en');
+assert.equal(i18n.localizedPathForLanguage('es'), '/repo/es/comparar/', 'gera URL equivalente comparação em es');
 if (originalLocation) globalThis.location = originalLocation;
 else delete globalThis.location;
 

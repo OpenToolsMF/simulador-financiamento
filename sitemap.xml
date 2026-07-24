@@ -2,15 +2,27 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://mapadasparcelas.com.br/</loc>
-    <lastmod>2026-07-21</lastmod>
+    <lastmod>2026-07-23</lastmod>
   </url>
   <url>
     <loc>https://mapadasparcelas.com.br/en/</loc>
-    <lastmod>2026-07-21</lastmod>
+    <lastmod>2026-07-23</lastmod>
   </url>
   <url>
     <loc>https://mapadasparcelas.com.br/es/</loc>
-    <lastmod>2026-07-21</lastmod>
+    <lastmod>2026-07-23</lastmod>
+  </url>
+  <url>
+    <loc>https://mapadasparcelas.com.br/comparar/</loc>
+    <lastmod>2026-07-23</lastmod>
+  </url>
+  <url>
+    <loc>https://mapadasparcelas.com.br/en/compare/</loc>
+    <lastmod>2026-07-23</lastmod>
+  </url>
+  <url>
+    <loc>https://mapadasparcelas.com.br/es/comparar/</loc>
+    <lastmod>2026-07-23</lastmod>
   </url>
   <url>
     <loc>https://mapadasparcelas.com.br/sobre/</loc>

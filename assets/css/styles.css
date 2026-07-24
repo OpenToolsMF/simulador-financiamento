@@ -570,6 +570,16 @@ legend.form-label {
   white-space: nowrap;
 }
 
+.bank-comparison-table th:nth-child(2),
+.bank-comparison-table td:nth-child(2) {
+  text-align: left;
+}
+
+.bank-comparison-table th:nth-child(n+3),
+.bank-comparison-table td:nth-child(n+3) {
+  white-space: nowrap;
+}
+
 .summary-detail-table th:nth-child(3) {
   text-align: left;
 }

@@ -15,6 +15,7 @@ O projeto usa HTML, CSS e JavaScript simples, sem etapa de build e sem dependên
   - série mensal personalizada.
 - Maior TR dos últimos 12 meses a partir do JSON local `assets/data/tr-bacen.json`.
 - Taxas médias BCB por instituição para modalidades imobiliárias e veicular a partir do JSON local `assets/data/bcb-credit-rates.json`.
+- Comparação financeira por banco usando as taxas médias BCB salvas localmente.
 - Taxa de juros padrão anual efetiva baseada na mediana das taxas imobiliárias de mercado pós-fixadas em TR do BCB, com cache diário em `localStorage`.
 - Amortizações extras pontuais ou recorrentes, com objetivo de reduzir prazo ou reduzir parcelas.
 - Recálculo automático ao alterar campos.
@@ -35,6 +36,9 @@ O projeto usa HTML, CSS e JavaScript simples, sem etapa de build e sem dependên
 - `index.html`: página principal da aplicação em `pt-BR`.
 - `en/index.html`: página principal em inglês.
 - `es/index.html`: página principal em espanhol.
+- `comparar/index.html`: comparação financeira por banco em `pt-BR`.
+- `en/compare/index.html`: comparação financeira por banco em inglês.
+- `es/comparar/index.html`: comparação financeira por banco em espanhol.
 - `privacidade.html`: política de privacidade em `pt-BR`.
 - `en/privacy.html`: política de privacidade em inglês.
 - `es/privacidad.html`: política de privacidade em espanhol.
@@ -46,6 +50,7 @@ O projeto usa HTML, CSS e JavaScript simples, sem etapa de build e sem dependên
 - `es/contacto/index.html`: página de contato em espanhol.
 - `assets/css/styles.css`: estilos próprios e estilos de impressão.
 - `assets/js/app.js`: integração da UI, validação, persistência, gráficos, TR/taxas médias BCB e PDF.
+- `assets/js/comparison.js`: tela de comparação financeira por banco.
 - `assets/js/finance.js`: motor financeiro SAC/Price.
 - `assets/js/i18n.js`: traduções, formatação e parsing localizado.
 - `assets/data/tr-bacen.json`: base local versionada com taxas TR mensais.
@@ -80,6 +85,9 @@ Rotas públicas principais:
 http://localhost:8000/
 http://localhost:8000/en/
 http://localhost:8000/es/
+http://localhost:8000/comparar/
+http://localhost:8000/en/compare/
+http://localhost:8000/es/comparar/
 http://localhost:8000/privacidade.html
 http://localhost:8000/en/privacy.html
 http://localhost:8000/es/privacidad.html
@@ -104,11 +112,13 @@ node --check scripts/update-bcb-credit-rates.mjs
 node --check scripts/update-tr-bacen.mjs
 node --check assets/js/i18n.js
 node --check assets/js/app.js
+node --check assets/js/comparison.js
 node --check assets/js/privacy.js
 node --check assets/js/finance.js
 node tests/localized-html.test.js
 node tests/seo-files.test.js
 node tests/i18n.test.js
+node tests/comparison.test.js
 node tests/finance.test.js
 node tests/bcb-credit-rates.test.js
 node tests/tr-bacen.test.js
@@ -128,7 +138,8 @@ Os testes automatizados cobrem principalmente:
 - cenário reportado com correção monetária e amortização extra;
 - dicionários e formatadores básicos de i18n;
 - correspondência entre os corpos HTML pré-renderizados, os dicionários e os dados estruturados localizados;
-- parser e geração dos JSONs locais da TR e das taxas médias BCB.
+- parser e geração dos JSONs locais da TR e das taxas médias BCB;
+- comparação financeira por banco, incluindo ordenação por total pago e uso das taxas anuais BCB.
 - coerência entre páginas públicas, URLs canônicas, sitemap e robots.
 
 Ainda não há testes automatizados de browser/UI para layout, impressão, Chart.js, `localStorage`, cache TR/BCB no navegador ou fluxo visual de PDF. Esses pontos devem ser validados manualmente no navegador.

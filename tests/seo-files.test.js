@@ -92,12 +92,21 @@ function assetReferences(html) {
       es: `${origin}/es/contacto/`,
       'x-default': `${origin}/fale-conosco/`,
     },
+    comparison: {
+      'pt-BR': `${origin}/comparar/`,
+      en: `${origin}/en/compare/`,
+      es: `${origin}/es/comparar/`,
+      'x-default': `${origin}/comparar/`,
+    },
   };
 
   const publicPages = [
     { file: 'index.html', language: 'pt-BR', htmlLang: 'pt-BR', page: 'simulator' },
     { file: 'en/index.html', language: 'en', htmlLang: 'en', page: 'simulator' },
     { file: 'es/index.html', language: 'es', htmlLang: 'es', page: 'simulator' },
+    { file: 'comparar/index.html', language: 'pt-BR', htmlLang: 'pt-BR', page: 'comparison' },
+    { file: 'en/compare/index.html', language: 'en', htmlLang: 'en', page: 'comparison' },
+    { file: 'es/comparar/index.html', language: 'es', htmlLang: 'es', page: 'comparison' },
     { file: 'privacidade.html', language: 'pt-BR', htmlLang: 'pt-BR', page: 'privacy' },
     { file: 'en/privacy.html', language: 'en', htmlLang: 'en', page: 'privacy' },
     { file: 'es/privacidad.html', language: 'es', htmlLang: 'es', page: 'privacy' },
@@ -171,6 +180,11 @@ function assetReferences(html) {
     en: 'Installment Map',
     es: 'Mapa de cuotas',
   };
+  const comparisonApplicationNames = {
+    'pt-BR': 'Comparar financiamentos por banco | Mapa das Parcelas',
+    en: 'Compare financing by bank | Installment Map',
+    es: 'Comparar financiación por banco | Mapa de cuotas',
+  };
 
   for (const page of publicPages.filter(({ page: pageType }) => pageType === 'simulator')) {
     const nodes = structuredDataByFile.get(page.file);
@@ -194,6 +208,21 @@ function assetReferences(html) {
     assert.ok(faq, `${page.file}: possui FAQPage`);
     assert.equal(faq['@id'], `${page.url}#faq`, `${page.file}: FAQ possui @id localizado`);
     assert.equal(faq.inLanguage, page.language, `${page.file}: FAQ possui idioma localizado`);
+  }
+
+  for (const page of publicPages.filter(({ page: pageType }) => pageType === 'comparison')) {
+    const nodes = structuredDataByFile.get(page.file);
+    const application = nodes.find((node) => node['@type'] === 'WebApplication');
+    assert.ok(application, `${page.file}: possui WebApplication`);
+    assert.equal(application['@id'], `${page.url}#application`, `${page.file}: aplicação possui @id localizado`);
+    assert.equal(application.url, page.url, `${page.file}: aplicação possui URL localizada`);
+    assert.equal(application.name, comparisonApplicationNames[page.language], `${page.file}: comparação possui nome localizado`);
+    assert.equal(application.inLanguage, page.language, `${page.file}: comparação possui idioma localizado`);
+    assert.deepEqual(
+      application.isPartOf,
+      { '@id': websiteIdentity['@id'] },
+      `${page.file}: comparação referencia a identidade global do site`,
+    );
   }
 
   for (const page of publicPages.filter(({ page: pageType }) => ['privacy', 'about', 'contact'].includes(pageType))) {

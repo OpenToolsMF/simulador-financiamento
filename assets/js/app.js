@@ -663,9 +663,11 @@
     const privacyLink = document.querySelector('#footer-privacy-link');
     const aboutLink = document.querySelector('#footer-about-link');
     const contactLink = document.querySelector('#footer-contact-link');
+    const comparisonLink = document.querySelector('#home-comparison-link');
     if (aboutLink) aboutLink.setAttribute('href', i18n.localizedPathForLanguage(i18n.getLanguage(), 'about'));
     if (contactLink) contactLink.setAttribute('href', i18n.localizedPathForLanguage(i18n.getLanguage(), 'contact'));
     if (privacyLink) privacyLink.setAttribute('href', i18n.localizedPathForLanguage(i18n.getLanguage(), 'privacy'));
+    if (comparisonLink) comparisonLink.setAttribute('href', i18n.localizedPathForLanguage(i18n.getLanguage(), 'comparison'));
   }
 
   function applyStaticTranslations() {
@@ -690,6 +692,10 @@
     setText('#footer-privacy-link', 'footer.privacy');
     setText('#faq-kicker', 'faq.kicker');
     setText('#faq-title', 'faq.title');
+    setText('#home-comparison-kicker', 'homeComparison.kicker');
+    setText('#home-comparison-title', 'homeComparison.title');
+    setText('#home-comparison-description', 'homeComparison.description');
+    setText('#home-comparison-link', 'homeComparison.cta');
     document.querySelectorAll('[data-faq-item]').forEach((item, index) => {
       const number = index + 1;
       setText('[data-faq-question]', `faq.${number}.question`, item);
