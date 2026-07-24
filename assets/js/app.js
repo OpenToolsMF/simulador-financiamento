@@ -660,8 +660,9 @@
   }
 
   function updateLocalizedLinks() {
-    const comparisonLink = document.querySelector('#home-comparison-link');
-    if (comparisonLink) comparisonLink.setAttribute('href', i18n.localizedPathForLanguage(i18n.getLanguage(), 'comparison'));
+    document.querySelectorAll('#home-comparison-link, #bcb-comparison-link').forEach((link) => {
+      link.setAttribute('href', i18n.localizedPathForLanguage(i18n.getLanguage(), 'comparison'));
+    });
 
     const currentPage = i18n.getCurrentPageKind();
     document.querySelectorAll('.site-footer a[data-route]').forEach((link) => {
@@ -804,6 +805,7 @@
     setText('#bcb-rates-title', 'bcb.title');
     setAttr('#bcb-rates-modal .btn-close', 'aria-label', 'bcb.close');
     setText('#bcb-rates-disclaimer', 'bcb.disclaimer');
+    setText('#bcb-comparison-link', 'bcb.openComparison');
     setText('#bcb-credit-type-label', 'bcb.creditType');
     setText('#bcb-credit-real-estate', 'bcb.realEstate');
     setText('#bcb-credit-vehicle', 'bcb.vehicle');

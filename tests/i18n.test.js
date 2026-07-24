@@ -40,6 +40,7 @@ for (const language of languages) {
   assert.notEqual(i18n.t('results.exportCsvFormatted'), 'results.exportCsvFormatted', `${language}: traduz opção de CSV formatado`);
   assert.notEqual(i18n.t('results.exportCsvRaw'), 'results.exportCsvRaw', `${language}: traduz opção de CSV raw`);
   assert.notEqual(i18n.t('bcb.title'), 'bcb.title', `${language}: traduz modal de taxas médias BCB`);
+  assert.notEqual(i18n.t('bcb.openComparison'), 'bcb.openComparison', `${language}: traduz atalho para comparação no modal BCB`);
   assert.notEqual(i18n.t('footer.simulator'), 'footer.simulator', `${language}: traduz link do simulador no footer`);
   assert.notEqual(i18n.t('footer.copyright'), 'footer.copyright', `${language}: traduz copyright do footer`);
   assert.equal(

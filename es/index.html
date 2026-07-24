@@ -225,7 +225,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="../assets/image/favicon/apple-touch-icon.png">
     <link rel="manifest" href="../assets/image/favicon/site.webmanifest">
     <link rel="stylesheet" href="../assets/vendor/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../assets/css/styles.css?v=20260721-bcb-action">
+    <link rel="stylesheet" href="../assets/css/styles.css?v=20260724-bcb-modal-toolbar">
   </head>
   <body>
     <header class="site-header">
@@ -756,12 +756,15 @@
           </div>
           <div class="modal-body">
             <p id="bcb-rates-disclaimer" class="text-secondary small">Las tasas son promedios históricos publicados por el BCB. No representan oferta, aprobación ni condición contractual.</p>
-            <div class="mb-3">
-              <span id="bcb-credit-type-label" class="form-label d-block">Tipo de crédito</span>
-              <div class="btn-group bcb-credit-type-group" role="group" aria-labelledby="bcb-credit-type-label">
-                <button id="bcb-credit-real-estate" class="btn btn-outline-primary active" type="button" aria-pressed="true">Inmobiliario</button>
-                <button id="bcb-credit-vehicle" class="btn btn-outline-secondary" type="button" aria-pressed="false">Vehicular</button>
+            <div class="bcb-modal-toolbar">
+              <div class="bcb-modal-credit-type">
+                <span id="bcb-credit-type-label" class="form-label d-block">Tipo de crédito</span>
+                <div class="btn-group bcb-credit-type-group" role="group" aria-labelledby="bcb-credit-type-label">
+                  <button id="bcb-credit-real-estate" class="btn btn-outline-primary active" type="button" aria-pressed="true">Inmobiliario</button>
+                  <button id="bcb-credit-vehicle" class="btn btn-outline-secondary" type="button" aria-pressed="false">Vehicular</button>
+                </div>
               </div>
+              <a id="bcb-comparison-link" class="btn btn-outline-primary btn-sm bcb-modal-comparison-link" href="./comparar/" data-route="comparison" data-i18n="bcb.openComparison">Abrir comparación por banco</a>
             </div>
             <div class="row g-3 align-items-end">
               <div class="col-12">
@@ -803,8 +806,8 @@
     </div>
 
     <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="../assets/js/i18n.js?v=20260723-comparison-page"></script>
+    <script src="../assets/js/i18n.js?v=20260724-bcb-comparison-link"></script>
     <script src="../assets/js/finance.js?v=20260717-privacy-page"></script>
-    <script src="../assets/js/app.js?v=20260723-comparison-page"></script>
+    <script src="../assets/js/app.js?v=20260724-bcb-comparison-link"></script>
   </body>
 </html>

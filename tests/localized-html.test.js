@@ -230,6 +230,7 @@ const simulatorTextKeys = [
   'modal.ok',
   'bcb.title',
   'bcb.disclaimer',
+  'bcb.openComparison',
   'bcb.creditType',
   'bcb.realEstate',
   'bcb.vehicle',
