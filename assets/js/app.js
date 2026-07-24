@@ -660,14 +660,15 @@
   }
 
   function updateLocalizedLinks() {
-    const privacyLink = document.querySelector('#footer-privacy-link');
-    const aboutLink = document.querySelector('#footer-about-link');
-    const contactLink = document.querySelector('#footer-contact-link');
     const comparisonLink = document.querySelector('#home-comparison-link');
-    if (aboutLink) aboutLink.setAttribute('href', i18n.localizedPathForLanguage(i18n.getLanguage(), 'about'));
-    if (contactLink) contactLink.setAttribute('href', i18n.localizedPathForLanguage(i18n.getLanguage(), 'contact'));
-    if (privacyLink) privacyLink.setAttribute('href', i18n.localizedPathForLanguage(i18n.getLanguage(), 'privacy'));
     if (comparisonLink) comparisonLink.setAttribute('href', i18n.localizedPathForLanguage(i18n.getLanguage(), 'comparison'));
+
+    const currentPage = i18n.getCurrentPageKind();
+    document.querySelectorAll('.site-footer a[data-route]').forEach((link) => {
+      link.setAttribute('href', i18n.localizedPathForLanguage(i18n.getLanguage(), link.dataset.route));
+      if (link.dataset.route === currentPage) link.setAttribute('aria-current', 'page');
+      else link.removeAttribute('aria-current');
+    });
   }
 
   function applyStaticTranslations() {
@@ -686,10 +687,9 @@
     setText('#privacy-notice-title', 'privacyNotice.title');
     setText('#privacy-notice-text', 'privacyNotice.text');
     setAttr('#privacy-notice-dismiss', 'aria-label', 'privacyNotice.dismissAria');
-    setText('#footer-copyright', 'footer.copyright');
-    setText('#footer-about-link', 'footer.about');
-    setText('#footer-contact-link', 'footer.contact');
-    setText('#footer-privacy-link', 'footer.privacy');
+    document.querySelectorAll('.site-footer [data-i18n]').forEach((element) => {
+      element.textContent = t(element.dataset.i18n);
+    });
     setText('#faq-kicker', 'faq.kicker');
     setText('#faq-title', 'faq.title');
     setText('#home-comparison-kicker', 'homeComparison.kicker');

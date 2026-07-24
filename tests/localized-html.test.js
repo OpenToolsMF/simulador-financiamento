@@ -52,6 +52,43 @@ function extractDataI18nEntries(html) {
     }));
 }
 
+function extractFooter(html) {
+  const match = html.match(/<footer\b[^>]*class=["'][^"']*\bsite-footer\b[^"']*["'][^>]*>([\s\S]*?)<\/footer>/i);
+  assert.ok(match, 'documento possui site-footer');
+  return match[1];
+}
+
+function parseAttributes(tag) {
+  return Object.fromEntries(
+    [...tag.matchAll(/\s([:\w-]+)=["']([^"']*)["']/g)].map((match) => [match[1], match[2]]),
+  );
+}
+
+function assertFooterContract(html, language, currentRoute, file) {
+  const dictionary = i18n.dictionaries[language];
+  const footerHtml = extractFooter(html);
+  const copyright = footerHtml.match(/<p\b[^>]*\bdata-i18n=["']footer\.copyright["'][^>]*>([\s\S]*?)<\/p>/i);
+  assert.ok(copyright, `${file}: footer possui copyright com data-i18n`);
+  assert.equal(normalizeHtmlText(copyright[1]), dictionary['footer.copyright'], `${file}: copyright localizado`);
+
+  const links = [...footerHtml.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/gi)].map((match) => ({
+    attrs: parseAttributes(match[1]),
+    text: normalizeHtmlText(match[2]),
+  }));
+  const expectedRoutes = ['simulator', 'comparison', 'about', 'contact', 'privacy'];
+  assert.deepEqual(links.map((link) => link.attrs['data-route']), expectedRoutes, `${file}: footer mantém ordem padrão`);
+  for (const link of links) {
+    const route = link.attrs['data-route'];
+    const key = `footer.${route}`;
+    assert.equal(link.attrs['data-i18n'], key, `${file}: ${route} usa data-i18n correto`);
+    assert.equal(link.text, dictionary[key], `${file}: ${route} pré-renderiza texto localizado`);
+    assert.ok(link.attrs.href, `${file}: ${route} possui href estático`);
+  }
+  const currentLinks = links.filter((link) => link.attrs['aria-current'] === 'page');
+  assert.equal(currentLinks.length, 1, `${file}: footer tem apenas um aria-current`);
+  assert.equal(currentLinks[0].attrs['data-route'], currentRoute, `${file}: aria-current aponta para a rota atual`);
+}
+
 function assertSelectedLanguage(html, language, file) {
   const selectedOptions = [...html.matchAll(/<option\b[^>]*\bvalue=["']([^"']+)["'][^>]*\bselected\b[^>]*>/gi)]
     .map((match) => match[1]);
@@ -72,6 +109,8 @@ const simulatorTextKeys = [
   'privacyNotice.title',
   'privacyNotice.text',
   'footer.copyright',
+  'footer.simulator',
+  'footer.comparison',
   'footer.about',
   'footer.contact',
   'footer.privacy',
@@ -252,6 +291,29 @@ const portugueseSentinels = [
     assertSelectedLanguage(extractBody(html), language, file);
   }
 
+  const publicFooterPages = [
+    { file: 'index.html', language: 'pt-BR', currentRoute: 'simulator' },
+    { file: 'en/index.html', language: 'en', currentRoute: 'simulator' },
+    { file: 'es/index.html', language: 'es', currentRoute: 'simulator' },
+    { file: 'comparar/index.html', language: 'pt-BR', currentRoute: 'comparison' },
+    { file: 'en/compare/index.html', language: 'en', currentRoute: 'comparison' },
+    { file: 'es/comparar/index.html', language: 'es', currentRoute: 'comparison' },
+    { file: 'privacidade.html', language: 'pt-BR', currentRoute: 'privacy' },
+    { file: 'en/privacy.html', language: 'en', currentRoute: 'privacy' },
+    { file: 'es/privacidad.html', language: 'es', currentRoute: 'privacy' },
+    { file: 'sobre/index.html', language: 'pt-BR', currentRoute: 'about' },
+    { file: 'en/about/index.html', language: 'en', currentRoute: 'about' },
+    { file: 'es/acerca-de/index.html', language: 'es', currentRoute: 'about' },
+    { file: 'fale-conosco/index.html', language: 'pt-BR', currentRoute: 'contact' },
+    { file: 'en/contact/index.html', language: 'en', currentRoute: 'contact' },
+    { file: 'es/contacto/index.html', language: 'es', currentRoute: 'contact' },
+  ];
+
+  for (const { file, language, currentRoute } of publicFooterPages) {
+    const html = await readFile(join(projectRoot, file), 'utf8');
+    assertFooterContract(extractBody(html), language, currentRoute, file);
+  }
+
   const simulatorPages = [
     { file: 'en/index.html', language: 'en' },
     { file: 'es/index.html', language: 'es' },
@@ -361,6 +423,8 @@ const portugueseSentinels = [
     'comparison.col.firstPayment',
     'comparison.col.lastPayment',
     'comparison.col.totalInterest',
+    'footer.copyright',
+    'footer.simulator',
     'footer.comparison',
     'footer.about',
     'footer.contact',

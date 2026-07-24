@@ -15,8 +15,10 @@
     const privacyPath = i18n.localizedPathForLanguage(i18n.getLanguage(), 'privacy');
     const aboutPath = i18n.localizedPathForLanguage(i18n.getLanguage(), 'about');
     const contactPath = i18n.localizedPathForLanguage(i18n.getLanguage(), 'contact');
+    const comparisonPath = i18n.localizedPathForLanguage(i18n.getLanguage(), 'comparison');
     document.querySelector('.privacy-back-link')?.setAttribute('href', simulatorPath);
     document.querySelectorAll('[data-route="simulator"]').forEach((link) => link.setAttribute('href', simulatorPath));
+    document.querySelectorAll('[data-route="comparison"]').forEach((link) => link.setAttribute('href', comparisonPath));
     document.querySelectorAll('[data-route="privacy"]').forEach((link) => link.setAttribute('href', privacyPath));
     document.querySelectorAll('[data-route="about"]').forEach((link) => link.setAttribute('href', aboutPath));
     document.querySelectorAll('[data-route="contact"]').forEach((link) => link.setAttribute('href', contactPath));

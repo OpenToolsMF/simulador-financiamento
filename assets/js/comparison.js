@@ -681,8 +681,13 @@
   }
 
   function updateLocalizedLinks() {
+    const currentPage = i18n.getCurrentPageKind();
     document.querySelectorAll('[data-route]').forEach((link) => {
       link.setAttribute('href', i18n.localizedPathForLanguage(i18n.getLanguage(), link.dataset.route));
+      if (link.closest('.site-footer')) {
+        if (link.dataset.route === currentPage) link.setAttribute('aria-current', 'page');
+        else link.removeAttribute('aria-current');
+      }
     });
   }
 
@@ -736,11 +741,9 @@
     setText('#comparison-payment-chart-title', 'comparison.paymentChartTitle');
     setAttr('#comparison-accumulated-chart', 'aria-label', 'comparison.accumulatedChartAria');
     setAttr('#comparison-payment-chart', 'aria-label', 'comparison.paymentChartAria');
-    setText('#footer-copyright', 'footer.copyright');
-    setText('#footer-comparison-link', 'footer.comparison');
-    setText('#footer-about-link', 'footer.about');
-    setText('#footer-contact-link', 'footer.contact');
-    setText('#footer-privacy-link', 'footer.privacy');
+    document.querySelectorAll('.site-footer [data-i18n]').forEach((element) => {
+      element.textContent = t(element.dataset.i18n);
+    });
 
     document.querySelector('label[for="comparison-credit-type"]').textContent = t('comparison.creditType');
     document.querySelector('label[for="comparison-financed-value"]').innerHTML = requiredLabel('comparison.financedValue');
