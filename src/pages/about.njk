@@ -1,0 +1,46 @@
+---
+layout: layouts/base.njk
+pagination:
+  data: site.pageGroups.about
+  size: 1
+  alias: generatedPage
+permalink: "{{ generatedPage.outputPath }}"
+---
+
+    <main class="container privacy-page-main py-4 py-lg-5">
+      <a class="privacy-back-link" href="{{ "simulator" | pageHref(generatedPage) }}" data-route="simulator" data-i18n="about.back">{{ "about.back" | t(generatedPage.locale) | safe }}</a>
+
+      <article class="surface-card privacy-policy">
+        <p class="small text-secondary" data-i18n="about.updated">{{ "about.updated" | t(generatedPage.locale) | safe }}</p>
+        <p class="privacy-policy-intro" data-i18n="about.intro">{{ "about.intro" | t(generatedPage.locale) | safe }}</p>
+
+        <section class="privacy-policy-section" aria-labelledby="about-purpose-title">
+          <h2 id="about-purpose-title" data-i18n="about.purpose.title">{{ "about.purpose.title" | t(generatedPage.locale) | safe }}</h2>
+          <p data-i18n="about.purpose.body">{{ "about.purpose.body" | t(generatedPage.locale) | safe }}</p>
+        </section>
+
+        <section class="privacy-policy-section" aria-labelledby="about-independence-title">
+          <h2 id="about-independence-title" data-i18n="about.independence.title">{{ "about.independence.title" | t(generatedPage.locale) | safe }}</h2>
+          <p data-i18n="about.independence.body">{{ "about.independence.body" | t(generatedPage.locale) | safe }}</p>
+        </section>
+
+        <section class="privacy-policy-section" aria-labelledby="about-privacy-title">
+          <h2 id="about-privacy-title" data-i18n="about.privacy.title">{{ "about.privacy.title" | t(generatedPage.locale) | safe }}</h2>
+          <p data-i18n="about.privacy.body">{{ "about.privacy.body" | t(generatedPage.locale) | safe }}</p>
+        </section>
+
+        <section class="privacy-policy-section" aria-labelledby="about-limits-title">
+          <h2 id="about-limits-title" data-i18n="about.limits.title">{{ "about.limits.title" | t(generatedPage.locale) | safe }}</h2>
+          <p data-i18n="about.limits.body">{{ "about.limits.body" | t(generatedPage.locale) | safe }}</p>
+        </section>
+
+        <section class="privacy-policy-section" aria-labelledby="about-links-title">
+          <h2 id="about-links-title" data-i18n="about.links.title">{{ "about.links.title" | t(generatedPage.locale) | safe }}</h2>
+          <ul>
+            <li><a href="{{ "simulator" | pageHref(generatedPage) }}" data-route="simulator" data-i18n="about.links.simulator">{{ "about.links.simulator" | t(generatedPage.locale) | safe }}</a></li>
+            <li><a href="{{ "privacy" | pageHref(generatedPage) }}" data-route="privacy" data-i18n="about.links.privacy">{{ "about.links.privacy" | t(generatedPage.locale) | safe }}</a></li>
+            <li><a href="{{ "contact" | pageHref(generatedPage) }}" data-route="contact" data-i18n="about.links.contact">{{ "about.links.contact" | t(generatedPage.locale) | safe }}</a></li>
+          </ul>
+        </section>
+      </article>
+    </main>

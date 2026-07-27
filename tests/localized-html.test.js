@@ -5,7 +5,7 @@ const { readFile } = require('node:fs/promises');
 const { join } = require('node:path');
 const i18n = require('../assets/js/i18n.js');
 
-const projectRoot = join(__dirname, '..');
+const projectRoot = join(__dirname, '..', '_site');
 
 function normalizeHtmlText(value) {
   return value

@@ -1,0 +1,8 @@
+    <footer class="site-footer{{ generatedPage.footerClass }}">
+      <div class="container site-footer-content">
+        <p class="mb-0" data-i18n="footer.copyright">{{ 'footer.copyright' | t(generatedPage.locale) }}</p>
+        <nav class="site-footer-links" aria-label="{{ site.localizedSchema[generatedPage.locale].footerAria }}">
+          {% for route in ['simulator', 'comparison', 'about', 'contact', 'privacy'] %}<a href="{{ route | pageHref(generatedPage) }}" data-route="{{ route }}"{% if route == generatedPage.pageKey %} aria-current="page"{% endif %} data-i18n="footer.{{ route }}">{{ ('footer.' + route) | t(generatedPage.locale) }}</a>
+          {% endfor %}</nav>
+      </div>
+    </footer>

@@ -1,0 +1,11 @@
+---
+permalink: sitemap.xml
+eleventyExcludeFromCollections: true
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{% for generatedPage in site.pages %}  <url>
+    <loc>{{ generatedPage.publicPath | canonicalUrl }}</loc>
+    <lastmod>{{ generatedPage.lastmod }}</lastmod>
+  </url>
+{% endfor %}</urlset>

@@ -1,0 +1,13 @@
+{
+  "name": "mapa-das-parcelas",
+  "private": true,
+  "scripts": {
+    "dev": "eleventy --serve",
+    "build": "eleventy",
+    "test": "node --test tests/*.test.js",
+    "check": "npm run build && npm test"
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "3.1.6"
+  }
+}

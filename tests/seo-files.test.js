@@ -4,7 +4,7 @@ const assert = require('node:assert/strict');
 const { access, readFile } = require('node:fs/promises');
 const { join } = require('node:path');
 
-const projectRoot = join(__dirname, '..');
+const projectRoot = join(__dirname, '..', '_site');
 
 function extractTagValue(source, tagName) {
   const match = source.match(new RegExp(`<${tagName}>([^<]+)</${tagName}>`, 'i'));

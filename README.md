@@ -2,7 +2,7 @@
 
 Mapa das Parcelas é um simulador estático de financiamento para GitHub Pages, com SAC, Price, amortizações extras, correção monetária, custos mensais, gráficos e exportação em PDF pelo navegador.
 
-O projeto usa HTML, CSS e JavaScript simples, sem etapa de build e sem dependências externas via CDN. Todos os assets devem permanecer locais e com caminhos relativos.
+O projeto usa HTML, CSS e JavaScript simples, com Eleventy apenas na etapa de geração estática. Não há framework de interface nem dependências externas via CDN. Todos os assets permanecem locais e com caminhos relativos.
 
 ## Funcionalidades
 
@@ -33,21 +33,12 @@ O projeto usa HTML, CSS e JavaScript simples, sem etapa de build e sem dependên
 
 ## Estrutura
 
-- `index.html`: página principal da aplicação em `pt-BR`.
-- `en/index.html`: página principal em inglês.
-- `es/index.html`: página principal em espanhol.
-- `comparar/index.html`: comparação financeira por banco em `pt-BR`.
-- `en/compare/index.html`: comparação financeira por banco em inglês.
-- `es/comparar/index.html`: comparação financeira por banco em espanhol.
-- `privacidade.html`: política de privacidade em `pt-BR`.
-- `en/privacy.html`: política de privacidade em inglês.
-- `es/privacidad.html`: política de privacidade em espanhol.
-- `sobre/index.html`: página sobre em `pt-BR`.
-- `en/about/index.html`: página sobre em inglês.
-- `es/acerca-de/index.html`: página sobre em espanhol.
-- `fale-conosco/index.html`: página de contato em `pt-BR`.
-- `en/contact/index.html`: página de contato em inglês.
-- `es/contacto/index.html`: página de contato em espanhol.
+- `src/pages/`: cinco templates de conteúdo para simulador, comparação, privacidade, sobre e contato.
+- `src/_includes/`: layout HTML e componentes compartilhados de cabeçalho e rodapé.
+- `src/_data/site.cjs`: domínio, idiomas, rotas, metadados, datas e dados estruturados.
+- `src/sitemap.njk` e `src/robots.njk`: arquivos públicos gerados a partir dos dados do site.
+- `eleventy.config.js`: configuração de build, filtros de URLs relativas e cópia dos arquivos públicos.
+- `_site/`: saída local gerada e não versionada.
 - `assets/css/styles.css`: estilos próprios e estilos de impressão.
 - `assets/js/app.js`: integração da UI, validação, persistência, gráficos, TR/taxas médias BCB e PDF.
 - `assets/js/comparison.js`: tela de comparação financeira por banco.
@@ -65,65 +56,61 @@ O projeto usa HTML, CSS e JavaScript simples, sem etapa de build e sem dependên
 
 ## Executar localmente
 
-Na raiz do projeto:
+Instale as dependências e inicie o servidor do Eleventy:
 
 ```sh
-python3 -m http.server 8000
+npm ci
+npm run dev
 ```
 
 Depois acesse:
 
 ```text
-http://localhost:8000
+http://localhost:8080
 ```
 
-A aplicação não requer instalação de dependências nem etapa de compilação.
+Para gerar somente os arquivos estáticos:
+
+```sh
+npm run build
+```
+
+O resultado completo será escrito em `_site/`.
 
 Rotas públicas principais:
 
 ```text
-http://localhost:8000/
-http://localhost:8000/en/
-http://localhost:8000/es/
-http://localhost:8000/comparar/
-http://localhost:8000/en/compare/
-http://localhost:8000/es/comparar/
-http://localhost:8000/privacidade.html
-http://localhost:8000/en/privacy.html
-http://localhost:8000/es/privacidad.html
-http://localhost:8000/sobre/
-http://localhost:8000/fale-conosco/
-http://localhost:8000/en/about/
-http://localhost:8000/en/contact/
-http://localhost:8000/es/acerca-de/
-http://localhost:8000/es/contacto/
+http://localhost:8080/
+http://localhost:8080/en/
+http://localhost:8080/es/
+http://localhost:8080/comparar/
+http://localhost:8080/en/compare/
+http://localhost:8080/es/comparar/
+http://localhost:8080/privacidade.html
+http://localhost:8080/en/privacy.html
+http://localhost:8080/es/privacidad.html
+http://localhost:8080/sobre/
+http://localhost:8080/fale-conosco/
+http://localhost:8080/en/about/
+http://localhost:8080/en/contact/
+http://localhost:8080/es/acerca-de/
+http://localhost:8080/es/contacto/
 ```
 
 O idioma é definido pela URL quando a rota é explícita. A preferência salva em `localStorage` só é usada quando a URL não define idioma, e o seletor de idioma navega para a página equivalente.
 
-As páginas localizadas devem manter no próprio HTML o corpo pré-renderizado no idioma da rota. `assets/js/i18n.js` continua sendo a fonte canônica das traduções e atualiza os textos dinâmicos, mas crawlers, previews e navegadores sem JavaScript não devem receber fallbacks em português nas rotas `/en/` e `/es/`.
+As páginas localizadas mantêm no próprio HTML o corpo pré-renderizado no idioma da rota. `assets/js/i18n.js` continua sendo a fonte canônica das traduções e atualiza os textos dinâmicos; o build usa os mesmos dicionários para que crawlers, previews e navegadores sem JavaScript não recebam fallbacks em português nas rotas `/en/` e `/es/`.
 
 ## Validação
 
-Com Node.js disponível:
+Com Node.js 20 e as dependências instaladas:
 
 ```sh
-node --check scripts/update-bcb-credit-rates.mjs
-node --check scripts/update-tr-bacen.mjs
-node --check assets/js/i18n.js
-node --check assets/js/app.js
-node --check assets/js/comparison.js
-node --check assets/js/privacy.js
-node --check assets/js/finance.js
-node tests/localized-html.test.js
-node tests/seo-files.test.js
-node tests/i18n.test.js
-node tests/comparison.test.js
-node tests/finance.test.js
-node tests/bcb-credit-rates.test.js
-node tests/tr-bacen.test.js
+npm run check
 git diff --check
 ```
+
+`npm run check` recria `_site/` e executa todos os testes Node. Para validar somente uma parte, os arquivos em `tests/` também podem ser executados individualmente.
 
 Os testes automatizados cobrem principalmente:
 
@@ -155,13 +142,15 @@ node scripts/update-tr-bacen.mjs
 node scripts/update-bcb-credit-rates.mjs
 ```
 
-O workflow `.github/workflows/update-reference-rates.yml` executa as duas atualizações em dias úteis e também pode ser disparado manualmente pelo GitHub Actions. Se houver alteração em `assets/data/tr-bacen.json` ou `assets/data/bcb-credit-rates.json`, ele cria um commit automático com a nova base.
+O workflow `.github/workflows/update-reference-rates.yml` executa as duas atualizações em dias úteis e também pode ser disparado manualmente pelo GitHub Actions. Se houver alteração em `assets/data/tr-bacen.json` ou `assets/data/bcb-credit-rates.json`, ele cria um commit automático e chama o workflow reutilizável de publicação para o SHA recém-criado.
 
 ## Publicação
 
-O projeto é compatível com GitHub Pages porque:
+O GitHub Pages usa o workflow `.github/workflows/deploy-pages.yml`:
 
-- não exige build;
-- não usa CDN para Bootstrap ou Chart.js;
-- usa caminhos relativos para assets;
-- mantém os dados auxiliares em arquivos versionados locais.
+1. instala as dependências com `npm ci`;
+2. gera e testa `_site/` com `npm run check`;
+3. envia `_site/` como artifact do Pages;
+4. publica o artifact somente para `main`, execução manual ou chamada autorizada pelo atualizador de taxas.
+
+Pull requests executam build e testes sem publicar. Nas configurações do repositório, a fonte do GitHub Pages deve ser **GitHub Actions**. O domínio personalizado continua definido por `CNAME` e pela configuração do Pages.

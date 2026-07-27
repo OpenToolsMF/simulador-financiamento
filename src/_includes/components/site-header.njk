@@ -1,0 +1,17 @@
+    <header class="site-header">
+      <div class="container {{ generatedPage.headerPadding }}">
+        <div class="site-header-content">
+          <div class="site-header-topline">
+            <span class="eyebrow"{% if generatedPage.institutional %} data-i18n="{{ generatedPage.headerKeys[0] }}"{% endif %}>{{ generatedPage.headerKeys[0] | t(generatedPage.locale) }}</span>
+            <div class="language-switcher">
+              <label for="language-select" class="form-label"{% if generatedPage.institutional %} data-i18n="language.label"{% endif %}>{{ 'language.label' | t(generatedPage.locale) }}</label>
+              <select id="language-select" class="form-select form-select-sm" aria-label="{{ 'language.label' | t(generatedPage.locale) }}"{% if generatedPage.institutional %} data-i18n-aria-label="language.label"{% endif %}>
+                {% for language in site.locales %}<option value="{{ language }}"{% if generatedPage.institutional %} data-i18n="language.{{ language }}"{% endif %}{% if language == generatedPage.locale %} selected{% endif %}>{{ ('language.' + language) | t(generatedPage.locale) }}</option>
+                {% endfor %}</select>
+            </div>
+          </div>
+          <h1 class="display-6 fw-bold mb-2"{% if generatedPage.institutional %} data-i18n="{{ generatedPage.headerKeys[1] }}"{% endif %}>{{ generatedPage.headerKeys[1] | t(generatedPage.locale) }}</h1>
+          <p class="lead mb-0"{% if generatedPage.institutional %} data-i18n="{{ generatedPage.headerKeys[2] }}"{% endif %}>{{ generatedPage.headerKeys[2] | t(generatedPage.locale) }}</p>
+        </div>
+      </div>
+    </header>

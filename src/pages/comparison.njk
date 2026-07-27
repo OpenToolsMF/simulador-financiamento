@@ -1,0 +1,130 @@
+---
+layout: layouts/base.njk
+pagination:
+  data: site.pageGroups.comparison
+  size: 1
+  alias: generatedPage
+permalink: "{{ generatedPage.outputPath }}"
+---
+
+    <main class="container py-4 py-lg-5">
+      <a class="comparison-back-link privacy-back-link" href="{{ generatedPage | comparisonBackHref }}" data-route="simulator">{{ "comparison.back" | t(generatedPage.locale) | safe }}</a>
+
+      <form id="comparison-form" class="surface-card mb-4" novalidate>
+        <div class="section-heading">
+          <div>
+            <span id="comparison-config-kicker" class="section-kicker">{{ "config.kicker" | t(generatedPage.locale) | safe }}</span>
+            <h2 id="comparison-config-title">{{ "comparison.configTitle" | t(generatedPage.locale) | safe }}</h2>
+          </div>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-2 row-cols-xl-5 g-4 financing-config-grid">
+          <div class="col financing-config-field">
+            <div class="field-header">
+              <label for="comparison-credit-type" class="form-label">{{ "comparison.creditType" | t(generatedPage.locale) | safe }}</label>
+            </div>
+            <select id="comparison-credit-type" class="form-select">
+              <option value="realEstate">{{ "comparison.realEstate" | t(generatedPage.locale) | safe }}</option>
+              <option value="vehicle">{{ "comparison.vehicle" | t(generatedPage.locale) | safe }}</option>
+            </select>
+          </div>
+
+          <div class="col financing-config-field">
+            <div class="field-header">
+              <label for="comparison-financed-value" class="form-label">{{ "comparison.financedValue" | t(generatedPage.locale) | safe }} <span class="required-marker" aria-hidden="true">*</span></label>
+            </div>
+            <div class="input-group">
+              <span class="input-group-text">R$</span>
+              <input id="comparison-financed-value" class="form-control" type="text" inputmode="decimal" autocomplete="off" placeholder="{{ generatedPage.locale | numberPlaceholder }}" required>
+            </div>
+          </div>
+
+          <div class="col financing-config-field">
+            <div class="field-header">
+              <label for="comparison-term" class="form-label">{{ "comparison.term" | t(generatedPage.locale) | safe }} <span class="required-marker" aria-hidden="true">*</span></label>
+            </div>
+            <div class="input-group">
+              <input id="comparison-term" class="form-control" type="number" min="1" max="600" step="1" inputmode="numeric" value="360" required>
+              <span class="input-group-text">{{ "unit.months" | t(generatedPage.locale) | safe }}</span>
+            </div>
+          </div>
+
+          <div class="col financing-config-field">
+            <div class="field-header">
+              <label for="comparison-correction-rate" class="form-label">{{ "comparison.monthlyCorrectionRate" | t(generatedPage.locale) | safe }} <span class="required-marker" aria-hidden="true">*</span></label>
+            </div>
+            <div class="input-group">
+              <input id="comparison-correction-rate" class="form-control" type="text" inputmode="decimal" autocomplete="off" placeholder="{{ generatedPage.locale | numberPlaceholder }}" required>
+              <span class="input-group-text">%</span>
+            </div>
+          </div>
+
+          <div class="col financing-config-field">
+            <div class="field-header">
+              <label for="comparison-system" class="form-label">{{ "comparison.system" | t(generatedPage.locale) | safe }}</label>
+            </div>
+            <select id="comparison-system" class="form-select">
+              <option value="sac">SAC</option>
+              <option value="price">Price</option>
+            </select>
+          </div>
+        </div>
+      </form>
+
+      <section class="surface-card mb-4" aria-labelledby="comparison-results-title">
+        <div class="section-heading">
+          <div>
+            <span id="comparison-results-kicker" class="section-kicker">{{ "comparison.resultsKicker" | t(generatedPage.locale) | safe }}</span>
+            <h2 id="comparison-results-title">{{ "comparison.resultsTitle" | t(generatedPage.locale) | safe }}</h2>
+            <p id="comparison-results-description" class="section-description">{{ "comparison.resultsDescription" | t(generatedPage.locale) | safe }}</p>
+          </div>
+        </div>
+
+        <div id="comparison-status" class="form-text mb-3" role="status" aria-live="polite">{{ "comparison.statusLoading" | t(generatedPage.locale) | safe }}</div>
+        <div class="table-responsive">
+          <table id="comparison-table" class="table comparison-table bank-comparison-table align-middle mb-0 d-none">
+            <thead>
+              <tr>
+                <th scope="col">{{ "comparison.col.institution" | t(generatedPage.locale) | safe }}</th>
+                <th scope="col">{{ "comparison.col.modality" | t(generatedPage.locale) | safe }}</th>
+                <th scope="col">{{ "comparison.col.annualRate" | t(generatedPage.locale) | safe }}</th>
+                <th scope="col">{{ "comparison.col.totalPaid" | t(generatedPage.locale) | safe }}</th>
+                <th scope="col">{{ "comparison.col.firstPayment" | t(generatedPage.locale) | safe }}</th>
+                <th scope="col">{{ "comparison.col.lastPayment" | t(generatedPage.locale) | safe }}</th>
+                <th scope="col">{{ "comparison.col.totalInterest" | t(generatedPage.locale) | safe }}</th>
+              </tr>
+            </thead>
+            <tbody id="comparison-rates-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="surface-card mb-4 chart-section comparison-chart-section" aria-labelledby="comparison-charts-title">
+        <div class="section-heading">
+          <div>
+            <span id="comparison-charts-kicker" class="section-kicker">{{ "comparison.chartsKicker" | t(generatedPage.locale) | safe }}</span>
+            <h2 id="comparison-charts-title">{{ "comparison.chartsTitle" | t(generatedPage.locale) | safe }}</h2>
+            <p id="comparison-charts-description" class="section-description">{{ "comparison.chartsDescription" | t(generatedPage.locale) | safe }}</p>
+          </div>
+        </div>
+        <div id="comparison-charts-status" class="chart-status" role="status" aria-live="polite"></div>
+        <div class="charts-grid">
+          <article class="chart-panel">
+            <h3 id="comparison-accumulated-chart-title">{{ "comparison.accumulatedChartTitle" | t(generatedPage.locale) | safe }}</h3>
+            <div class="chart-wrap">
+              <canvas id="comparison-accumulated-chart" role="img" aria-label="{{ "comparison.accumulatedChartAria" | t(generatedPage.locale) | safe }}"></canvas>
+            </div>
+          </article>
+          <article class="chart-panel">
+            <h3 id="comparison-payment-chart-title">{{ "comparison.paymentChartTitle" | t(generatedPage.locale) | safe }}</h3>
+            <div class="chart-wrap">
+              <canvas id="comparison-payment-chart" role="img" aria-label="{{ "comparison.paymentChartAria" | t(generatedPage.locale) | safe }}"></canvas>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <aside class="estimate-notice" aria-label="{{ "notice.aria" | t(generatedPage.locale) | safe }}">
+        <strong>{{ "notice.strong" | t(generatedPage.locale) }}</strong> {{ site.localizedSchema[generatedPage.locale].comparisonNoticeText }}
+      </aside>
+    </main>

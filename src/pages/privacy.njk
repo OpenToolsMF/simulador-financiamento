@@ -1,0 +1,84 @@
+---
+layout: layouts/base.njk
+pagination:
+  data: site.pageGroups.privacy
+  size: 1
+  alias: generatedPage
+permalink: "{{ generatedPage.outputPath }}"
+---
+
+    <main class="container privacy-page-main py-4 py-lg-5">
+      <a class="privacy-back-link" href="./" data-i18n="privacy.back">{{ "privacy.back" | t(generatedPage.locale) | safe }}</a>
+
+      <article class="surface-card privacy-policy">
+        <p class="small text-secondary" data-i18n="privacy.updated">{{ "privacy.updated" | t(generatedPage.locale) | safe }}</p>
+        <p class="privacy-policy-intro" data-i18n="privacy.intro">{{ "privacy.intro" | t(generatedPage.locale) | safe }}</p>
+
+        <section class="privacy-policy-section" aria-labelledby="privacy-controller-title">
+          <h2 id="privacy-controller-title" data-i18n="privacy.controller.title">{{ "privacy.controller.title" | t(generatedPage.locale) | safe }}</h2>
+          <p><span data-i18n="privacy.controller.body">{{ "privacy.controller.body" | t(generatedPage.locale) | safe }}</span> <a href="mailto:mapadasparcelas@gmail.com">mapadasparcelas@gmail.com</a>.</p>
+        </section>
+
+        <section class="privacy-policy-section" aria-labelledby="privacy-local-title">
+          <h2 id="privacy-local-title" data-i18n="privacy.local.title">{{ "privacy.local.title" | t(generatedPage.locale) | safe }}</h2>
+          <p data-i18n="privacy.local.intro">{{ "privacy.local.intro" | t(generatedPage.locale) | safe }}</p>
+          <ul>
+            <li data-i18n="privacy.local.simulation">{{ "privacy.local.simulation" | t(generatedPage.locale) | safe }}</li>
+            <li data-i18n="privacy.local.language">{{ "privacy.local.language" | t(generatedPage.locale) | safe }}</li>
+            <li data-i18n="privacy.local.notice">{{ "privacy.local.notice" | t(generatedPage.locale) | safe }}</li>
+            <li data-i18n="privacy.local.rates">{{ "privacy.local.rates" | t(generatedPage.locale) | safe }}</li>
+          </ul>
+          <p data-i18n="privacy.local.retention">{{ "privacy.local.retention" | t(generatedPage.locale) | safe }}</p>
+          <p data-i18n="privacy.local.reset">{{ "privacy.local.reset" | t(generatedPage.locale) | safe }}</p>
+          <p data-i18n="privacy.local.deleteAll">{{ "privacy.local.deleteAll" | t(generatedPage.locale) | safe }}</p>
+        </section>
+
+        <section class="privacy-policy-section" aria-labelledby="privacy-technical-title">
+          <h2 id="privacy-technical-title" data-i18n="privacy.technical.title">{{ "privacy.technical.title" | t(generatedPage.locale) | safe }}</h2>
+          <p data-i18n="privacy.technical.github">{{ "privacy.technical.github" | t(generatedPage.locale) | safe }}</p>
+          <p data-i18n="privacy.technical.analytics">{{ "privacy.technical.analytics" | t(generatedPage.locale) | safe }}</p>
+          <p data-i18n="privacy.technical.adsense">{{ "privacy.technical.adsense" | t(generatedPage.locale) | safe }}</p>
+          <p data-i18n="privacy.technical.choices">{{ "privacy.technical.choices" | t(generatedPage.locale) | safe }}</p>
+          <p data-i18n="privacy.technical.resources">{{ "privacy.technical.resources" | t(generatedPage.locale) | safe }}</p>
+          <ul>
+            <li><a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener noreferrer" data-i18n="privacy.resources.google">{{ "privacy.resources.google" | t(generatedPage.locale) | safe }}</a></li>
+            <li><a href="https://support.google.com/analytics/answer/6004245" target="_blank" rel="noopener noreferrer" data-i18n="privacy.resources.analytics">{{ "privacy.resources.analytics" | t(generatedPage.locale) | safe }}</a></li>
+            <li><a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener noreferrer" data-i18n="privacy.resources.github">{{ "privacy.resources.github" | t(generatedPage.locale) | safe }}</a></li>
+          </ul>
+        </section>
+
+        <section class="privacy-policy-section" aria-labelledby="privacy-purposes-title">
+          <h2 id="privacy-purposes-title" data-i18n="privacy.purposes.title">{{ "privacy.purposes.title" | t(generatedPage.locale) | safe }}</h2>
+          <ul>
+            <li data-i18n="privacy.purposes.hosting">{{ "privacy.purposes.hosting" | t(generatedPage.locale) | safe }}</li>
+            <li data-i18n="privacy.purposes.analytics">{{ "privacy.purposes.analytics" | t(generatedPage.locale) | safe }}</li>
+            <li data-i18n="privacy.purposes.ads">{{ "privacy.purposes.ads" | t(generatedPage.locale) | safe }}</li>
+            <li data-i18n="privacy.purposes.preferences">{{ "privacy.purposes.preferences" | t(generatedPage.locale) | safe }}</li>
+          </ul>
+          <p data-i18n="privacy.purposes.basis">{{ "privacy.purposes.basis" | t(generatedPage.locale) | safe }}</p>
+        </section>
+
+        <section class="privacy-policy-section" aria-labelledby="privacy-sharing-title">
+          <h2 id="privacy-sharing-title" data-i18n="privacy.sharing.title">{{ "privacy.sharing.title" | t(generatedPage.locale) | safe }}</h2>
+          <p data-i18n="privacy.sharing.body">{{ "privacy.sharing.body" | t(generatedPage.locale) | safe }}</p>
+          <p data-i18n="privacy.sharing.transfer">{{ "privacy.sharing.transfer" | t(generatedPage.locale) | safe }}</p>
+        </section>
+
+        <section class="privacy-policy-section" aria-labelledby="privacy-retention-title">
+          <h2 id="privacy-retention-title" data-i18n="privacy.retention.title">{{ "privacy.retention.title" | t(generatedPage.locale) | safe }}</h2>
+          <p data-i18n="privacy.retention.local">{{ "privacy.retention.local" | t(generatedPage.locale) | safe }}</p>
+          <p data-i18n="privacy.retention.thirdParty">{{ "privacy.retention.thirdParty" | t(generatedPage.locale) | safe }}</p>
+        </section>
+
+        <section class="privacy-policy-section" aria-labelledby="privacy-rights-title">
+          <h2 id="privacy-rights-title" data-i18n="privacy.rights.title">{{ "privacy.rights.title" | t(generatedPage.locale) | safe }}</h2>
+          <p data-i18n="privacy.rights.body">{{ "privacy.rights.body" | t(generatedPage.locale) | safe }}</p>
+          <p><span data-i18n="privacy.rights.contact">{{ "privacy.rights.contact" | t(generatedPage.locale) | safe }}</span> <a href="mailto:mapadasparcelas@gmail.com">mapadasparcelas@gmail.com</a>.</p>
+        </section>
+
+        <section class="privacy-policy-section" aria-labelledby="privacy-changes-title">
+          <h2 id="privacy-changes-title" data-i18n="privacy.changes.title">{{ "privacy.changes.title" | t(generatedPage.locale) | safe }}</h2>
+          <p data-i18n="privacy.changes.body">{{ "privacy.changes.body" | t(generatedPage.locale) | safe }}</p>
+        </section>
+      </article>
+    </main>

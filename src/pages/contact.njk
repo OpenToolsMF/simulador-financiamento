@@ -1,0 +1,37 @@
+---
+layout: layouts/base.njk
+pagination:
+  data: site.pageGroups.contact
+  size: 1
+  alias: generatedPage
+permalink: "{{ generatedPage.outputPath }}"
+---
+
+    <main class="container privacy-page-main py-4 py-lg-5">
+      <a class="privacy-back-link" href="{{ "simulator" | pageHref(generatedPage) }}" data-route="simulator" data-i18n="contact.back">{{ "contact.back" | t(generatedPage.locale) | safe }}</a>
+
+      <article class="surface-card privacy-policy">
+        <p class="small text-secondary" data-i18n="contact.updated">{{ "contact.updated" | t(generatedPage.locale) | safe }}</p>
+        <p class="privacy-policy-intro" data-i18n="contact.intro">{{ "contact.intro" | t(generatedPage.locale) | safe }}</p>
+
+        <section class="privacy-policy-section" aria-labelledby="contact-email-title">
+          <h2 id="contact-email-title" data-i18n="contact.email.title">{{ "contact.email.title" | t(generatedPage.locale) | safe }}</h2>
+          <p><span data-i18n="contact.email.body">{{ "contact.email.body" | t(generatedPage.locale) | safe }}</span> <a href="mailto:mapadasparcelas@gmail.com">mapadasparcelas@gmail.com</a>.</p>
+        </section>
+
+        <section class="privacy-policy-section" aria-labelledby="contact-scope-title">
+          <h2 id="contact-scope-title" data-i18n="contact.scope.title">{{ "contact.scope.title" | t(generatedPage.locale) | safe }}</h2>
+          <p data-i18n="contact.scope.body">{{ "contact.scope.body" | t(generatedPage.locale) | safe }}</p>
+        </section>
+
+        <section class="privacy-policy-section" aria-labelledby="contact-limits-title">
+          <h2 id="contact-limits-title" data-i18n="contact.limits.title">{{ "contact.limits.title" | t(generatedPage.locale) | safe }}</h2>
+          <p data-i18n="contact.limits.body">{{ "contact.limits.body" | t(generatedPage.locale) | safe }}</p>
+        </section>
+
+        <section class="privacy-policy-section" aria-labelledby="contact-response-title">
+          <h2 id="contact-response-title" data-i18n="contact.response.title">{{ "contact.response.title" | t(generatedPage.locale) | safe }}</h2>
+          <p data-i18n="contact.response.body">{{ "contact.response.body" | t(generatedPage.locale) | safe }}</p>
+        </section>
+      </article>
+    </main>

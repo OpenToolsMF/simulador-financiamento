@@ -11,6 +11,9 @@ permissions:
 jobs:
   update-reference-rates:
     runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.commit.outputs.changed }}
+      commit_sha: ${{ steps.commit.outputs.commit_sha }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -27,9 +30,12 @@ jobs:
         run: node scripts/update-bcb-credit-rates.mjs
 
       - name: Commit changes
+        id: commit
         run: |
           if [ -z "$(git status --porcelain -- assets/data/tr-bacen.json assets/data/bcb-credit-rates.json)" ]; then
             echo "Reference rates data is already up to date."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "commit_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
@@ -38,3 +44,17 @@ jobs:
           git add assets/data/tr-bacen.json assets/data/bcb-credit-rates.json
           git commit -m "chore: update reference rates data"
           git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+          echo "commit_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+  deploy-updated-site:
+    needs: update-reference-rates
+    if: needs.update-reference-rates.outputs.changed == 'true'
+    uses: ./.github/workflows/deploy-pages.yml
+    with:
+      ref: ${{ needs.update-reference-rates.outputs.commit_sha }}
+      deploy: true
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
