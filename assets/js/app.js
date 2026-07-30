@@ -18,6 +18,8 @@
   const CHART_PRELOAD_ROOT_MARGIN = '700px 0px';
   const PRINT_CHART_WIDTH = 1200;
   const PRINT_CHART_HEIGHT = 680;
+  const DEFAULT_FINANCED_VALUE_CENTS = 40_000_000;
+  const DEFAULT_MONTHLY_EXTRA_COST_CENTS = 19_500;
   const PRINT_REPORT_CLEANUP_DELAY_MS = 300000;
   const PRINT_CHART_ORDER = ['debt', 'composition', 'payment', 'costs'];
 
@@ -933,9 +935,17 @@
     firstDueDateInput.value = `${year}-${month}-${day}`;
   }
 
-  function setDefaultFinancedValue() {
-    financedValueInput.value = i18n.formatNumber(1000, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  function setDefaultSimulationValues() {
+    financedValueInput.value = i18n.formatNumber(DEFAULT_FINANCED_VALUE_CENTS / 100, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
     syncMoneyDigits(financedValueInput);
+    monthlyExtraCostInput.value = i18n.formatNumber(DEFAULT_MONTHLY_EXTRA_COST_CENTS / 100, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+    syncMoneyDigits(monthlyExtraCostInput);
   }
 
   function clearInterestRateReferenceHelp() {
@@ -2520,9 +2530,7 @@
     clearPersistedFormState();
     clearErrors();
 
-    setDefaultFinancedValue();
-    monthlyExtraCostInput.value = '';
-    clearMoneyDigits(monthlyExtraCostInput);
+    setDefaultSimulationValues();
     termInput.value = '360';
     interestRateInput.value = '';
     clearInterestRateReferenceHelp();
@@ -2680,7 +2688,7 @@
   const loadedFromUrl = urlState.status === 'valid';
   const restoredState = loadedFromUrl ? false : restoreFormState();
   if (!loadedFromUrl && !restoredState) {
-    setDefaultFinancedValue();
+    setDefaultSimulationValues();
     setFirstDueDateToToday();
   }
   reformatFormValuesForCurrentLanguage();

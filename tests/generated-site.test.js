@@ -74,5 +74,22 @@ async function collectHtmlFiles(directory) {
     await assert.doesNotReject(access(join(siteRoot, asset)), `${asset} foi copiado para o artifact`);
   }
 
+  const appScript = await readFile(join(siteRoot, 'assets/js/app.js'), 'utf8');
+  assert.match(
+    appScript,
+    /const DEFAULT_FINANCED_VALUE_CENTS = 40_000_000;/,
+    'simulador começa com R$ 400 mil financiados',
+  );
+  assert.match(
+    appScript,
+    /const DEFAULT_MONTHLY_EXTRA_COST_CENTS = 19_500;/,
+    'simulador começa com R$ 195 de custos extras mensais',
+  );
+  assert.equal(
+    (appScript.match(/setDefaultSimulationValues\(\);/g) || []).length,
+    2,
+    'valores padrão são usados na primeira visita e ao limpar os dados',
+  );
+
   console.log('Testes do site gerado concluídos com sucesso.');
 })();
