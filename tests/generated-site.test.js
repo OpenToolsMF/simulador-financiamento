@@ -3,26 +3,20 @@
 const assert = require('node:assert/strict');
 const { access, readFile, readdir } = require('node:fs/promises');
 const { join, relative } = require('node:path');
+const site = require('../src/_data/site.cjs');
+const contentRegistry = require('../src/_data/contentRegistry.cjs');
 
 const repositoryRoot = join(__dirname, '..');
 const siteRoot = join(repositoryRoot, '_site');
 
 const expectedHtmlFiles = [
-  'index.html',
-  'en/index.html',
-  'es/index.html',
-  'comparar/index.html',
-  'en/compare/index.html',
-  'es/comparar/index.html',
-  'privacidade.html',
-  'en/privacy.html',
-  'es/privacidad.html',
-  'sobre/index.html',
-  'en/about/index.html',
-  'es/acerca-de/index.html',
-  'fale-conosco/index.html',
-  'en/contact/index.html',
-  'es/contacto/index.html',
+  ...site.pages.map((page) => page.outputPath),
+  ...contentRegistry.guides.flatMap((guide) => (
+    contentRegistry.locales.map((locale) => contentRegistry.outputPathFor('guide', guide.id, locale))
+  )),
+  ...contentRegistry.simulations.flatMap((simulation) => (
+    contentRegistry.locales.map((locale) => contentRegistry.outputPathFor('simulation', simulation.id, locale))
+  )),
 ].sort();
 
 async function collectHtmlFiles(directory) {
@@ -43,7 +37,7 @@ async function collectHtmlFiles(directory) {
   assert.deepEqual(
     (await collectHtmlFiles(siteRoot)).sort(),
     expectedHtmlFiles,
-    'o build gera exatamente as quinze páginas públicas',
+    'o build gera exatamente as 72 páginas públicas registradas',
   );
 
   for (const file of ['CNAME', 'ads.txt', 'robots.txt', 'sitemap.xml']) {
@@ -68,6 +62,9 @@ async function collectHtmlFiles(directory) {
     'assets/js/finance.js',
     'assets/js/i18n.js',
     'assets/js/privacy.js',
+    'assets/js/simulation-state.js',
+    'assets/js/static-content.js',
+    'assets/js/content-index.js',
     'assets/data/tr-bacen.json',
     'assets/data/bcb-credit-rates.json',
     'assets/vendor/bootstrap/css/bootstrap.min.css',

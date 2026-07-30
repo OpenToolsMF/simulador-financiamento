@@ -1,1205 +1,1837 @@
 {
-  "sourceUrl": "https://www.debit.com.br/tabelas/tr-bacen",
-  "generatedAt": "2026-07-30T11:44:29.018Z",
+  "version": 2,
+  "seriesCode": 226,
+  "sourceUrl": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.226/dados",
+  "generatedAt": "2026-07-30T19:49:09.514Z",
   "latest": {
-    "month": "2026-07",
-    "date": "2026-07-01",
+    "startDate": "2026-07-29",
+    "endDate": "2026-08-29",
     "ratePercent": 0.1729
   },
   "rates": [
     {
-      "month": "2000-01",
-      "date": "2000-01-01",
-      "ratePercent": 0.2149
-    },
-    {
-      "month": "2000-02",
-      "date": "2000-02-01",
-      "ratePercent": 0.2328
-    },
-    {
-      "month": "2000-03",
-      "date": "2000-03-01",
-      "ratePercent": 0.2242
-    },
-    {
-      "month": "2000-04",
-      "date": "2000-04-01",
-      "ratePercent": 0.1301
-    },
-    {
-      "month": "2000-05",
-      "date": "2000-05-01",
-      "ratePercent": 0.2492
-    },
-    {
-      "month": "2000-06",
-      "date": "2000-06-01",
-      "ratePercent": 0.214
-    },
-    {
-      "month": "2000-07",
-      "date": "2000-07-01",
-      "ratePercent": 0.1547
-    },
-    {
-      "month": "2000-08",
-      "date": "2000-08-01",
-      "ratePercent": 0.2025
-    },
-    {
-      "month": "2000-09",
-      "date": "2000-09-01",
-      "ratePercent": 0.1038
-    },
-    {
-      "month": "2000-10",
-      "date": "2000-10-01",
-      "ratePercent": 0.1316
-    },
-    {
-      "month": "2000-11",
-      "date": "2000-11-01",
-      "ratePercent": 0.1197
-    },
-    {
-      "month": "2000-12",
-      "date": "2000-12-01",
-      "ratePercent": 0.0991
-    },
-    {
-      "month": "2001-01",
-      "date": "2001-01-01",
-      "ratePercent": 0.1369
-    },
-    {
-      "month": "2001-02",
-      "date": "2001-02-01",
-      "ratePercent": 0.0368
-    },
-    {
-      "month": "2001-03",
-      "date": "2001-03-01",
-      "ratePercent": 0.1724
-    },
-    {
-      "month": "2001-04",
-      "date": "2001-04-01",
-      "ratePercent": 0.1546
-    },
-    {
-      "month": "2001-05",
-      "date": "2001-05-01",
-      "ratePercent": 0.1827
-    },
-    {
-      "month": "2001-06",
-      "date": "2001-06-01",
-      "ratePercent": 0.1458
-    },
-    {
-      "month": "2001-07",
-      "date": "2001-07-01",
-      "ratePercent": 0.2441
-    },
-    {
-      "month": "2001-08",
-      "date": "2001-08-01",
-      "ratePercent": 0.3436
-    },
-    {
-      "month": "2001-09",
-      "date": "2001-09-01",
-      "ratePercent": 0.1627
-    },
-    {
-      "month": "2001-10",
-      "date": "2001-10-01",
-      "ratePercent": 0.2913
-    },
-    {
-      "month": "2001-11",
-      "date": "2001-11-01",
-      "ratePercent": 0.1928
-    },
-    {
-      "month": "2001-12",
-      "date": "2001-12-01",
-      "ratePercent": 0.1983
-    },
-    {
-      "month": "2002-01",
-      "date": "2002-01-01",
-      "ratePercent": 0.2591
-    },
-    {
-      "month": "2002-02",
-      "date": "2002-02-01",
-      "ratePercent": 0.1171
-    },
-    {
-      "month": "2002-03",
-      "date": "2002-03-01",
-      "ratePercent": 0.1758
-    },
-    {
-      "month": "2002-04",
-      "date": "2002-04-01",
-      "ratePercent": 0.2357
-    },
-    {
-      "month": "2002-05",
-      "date": "2002-05-01",
-      "ratePercent": 0.2102
-    },
-    {
-      "month": "2002-06",
-      "date": "2002-06-01",
-      "ratePercent": 0.1582
-    },
-    {
-      "month": "2002-07",
-      "date": "2002-07-01",
-      "ratePercent": 0.2656
-    },
-    {
-      "month": "2002-08",
-      "date": "2002-08-01",
-      "ratePercent": 0.2481
-    },
-    {
-      "month": "2002-09",
-      "date": "2002-09-01",
-      "ratePercent": 0.1955
-    },
-    {
-      "month": "2002-10",
-      "date": "2002-10-01",
-      "ratePercent": 0.2768
-    },
-    {
-      "month": "2002-11",
-      "date": "2002-11-01",
-      "ratePercent": 0.2644
-    },
-    {
-      "month": "2002-12",
-      "date": "2002-12-01",
-      "ratePercent": 0.3609
-    },
-    {
-      "month": "2003-01",
-      "date": "2003-01-01",
-      "ratePercent": 0.4878
-    },
-    {
-      "month": "2003-02",
-      "date": "2003-02-01",
-      "ratePercent": 0.4116
-    },
-    {
-      "month": "2003-03",
-      "date": "2003-03-01",
-      "ratePercent": 0.3782
-    },
-    {
-      "month": "2003-04",
-      "date": "2003-04-01",
-      "ratePercent": 0.4184
-    },
-    {
-      "month": "2003-05",
-      "date": "2003-05-01",
-      "ratePercent": 0.465
-    },
-    {
-      "month": "2003-06",
-      "date": "2003-06-01",
-      "ratePercent": 0.4166
-    },
-    {
-      "month": "2003-07",
-      "date": "2003-07-01",
-      "ratePercent": 0.5465
-    },
-    {
-      "month": "2003-08",
-      "date": "2003-08-01",
-      "ratePercent": 0.4038
-    },
-    {
-      "month": "2003-09",
-      "date": "2003-09-01",
-      "ratePercent": 0.3364
-    },
-    {
-      "month": "2003-10",
-      "date": "2003-10-01",
-      "ratePercent": 0.3213
-    },
-    {
-      "month": "2003-11",
-      "date": "2003-11-01",
-      "ratePercent": 0.1776
-    },
-    {
-      "month": "2003-12",
-      "date": "2003-12-01",
-      "ratePercent": 0.1899
-    },
-    {
-      "month": "2004-01",
-      "date": "2004-01-01",
-      "ratePercent": 0.128
-    },
-    {
-      "month": "2004-02",
-      "date": "2004-02-01",
-      "ratePercent": 0.0458
-    },
-    {
-      "month": "2004-03",
-      "date": "2004-03-01",
-      "ratePercent": 0.1778
-    },
-    {
-      "month": "2004-04",
-      "date": "2004-04-01",
-      "ratePercent": 0.0874
-    },
-    {
-      "month": "2004-06",
-      "date": "2004-06-01",
+      "startDate": "2025-07-30",
+      "endDate": "2025-08-30",
       "ratePercent": 0.1761
     },
     {
-      "month": "2004-07",
-      "date": "2004-07-01",
-      "ratePercent": 0.1952
-    },
-    {
-      "month": "2004-08",
-      "date": "2004-08-01",
-      "ratePercent": 0.2005
-    },
-    {
-      "month": "2004-09",
-      "date": "2004-09-01",
-      "ratePercent": 0.1728
-    },
-    {
-      "month": "2004-10",
-      "date": "2004-10-01",
-      "ratePercent": 0.1108
-    },
-    {
-      "month": "2004-11",
-      "date": "2004-11-01",
-      "ratePercent": 0.1146
-    },
-    {
-      "month": "2004-12",
-      "date": "2004-12-01",
-      "ratePercent": 0.24
-    },
-    {
-      "month": "2005-01",
-      "date": "2005-01-01",
-      "ratePercent": 0.188
-    },
-    {
-      "month": "2005-02",
-      "date": "2005-02-01",
-      "ratePercent": 0.0962
-    },
-    {
-      "month": "2005-03",
-      "date": "2005-03-01",
-      "ratePercent": 0.2635
-    },
-    {
-      "month": "2005-04",
-      "date": "2005-04-01",
-      "ratePercent": 0.2003
-    },
-    {
-      "month": "2005-05",
-      "date": "2005-05-01",
-      "ratePercent": 0.2527
-    },
-    {
-      "month": "2005-06",
-      "date": "2005-06-01",
-      "ratePercent": 0.2993
-    },
-    {
-      "month": "2005-07",
-      "date": "2005-07-01",
-      "ratePercent": 0.2575
-    },
-    {
-      "month": "2005-08",
-      "date": "2005-08-01",
-      "ratePercent": 0.3466
-    },
-    {
-      "month": "2005-09",
-      "date": "2005-09-01",
-      "ratePercent": 0.2637
-    },
-    {
-      "month": "2005-10",
-      "date": "2005-10-01",
-      "ratePercent": 0.21
-    },
-    {
-      "month": "2005-11",
-      "date": "2005-11-01",
-      "ratePercent": 0.1929
-    },
-    {
-      "month": "2005-12",
-      "date": "2005-12-01",
-      "ratePercent": 0.2269
-    },
-    {
-      "month": "2006-01",
-      "date": "2006-01-01",
-      "ratePercent": 0.2326
-    },
-    {
-      "month": "2006-02",
-      "date": "2006-02-01",
-      "ratePercent": 0.0725
-    },
-    {
-      "month": "2006-03",
-      "date": "2006-03-01",
-      "ratePercent": 0.2073
-    },
-    {
-      "month": "2006-04",
-      "date": "2006-04-01",
-      "ratePercent": 0.0855
-    },
-    {
-      "month": "2006-05",
-      "date": "2006-05-01",
-      "ratePercent": 0.1888
-    },
-    {
-      "month": "2006-06",
-      "date": "2006-06-01",
-      "ratePercent": 0.1937
-    },
-    {
-      "month": "2006-07",
-      "date": "2006-07-01",
-      "ratePercent": 0.1751
-    },
-    {
-      "month": "2006-08",
-      "date": "2006-08-01",
-      "ratePercent": 0.2436
-    },
-    {
-      "month": "2006-09",
-      "date": "2006-09-01",
-      "ratePercent": 0.1521
-    },
-    {
-      "month": "2006-10",
-      "date": "2006-10-01",
-      "ratePercent": 0.1875
-    },
-    {
-      "month": "2006-11",
-      "date": "2006-11-01",
-      "ratePercent": 0.1282
-    },
-    {
-      "month": "2006-12",
-      "date": "2006-12-01",
-      "ratePercent": 0.1522
-    },
-    {
-      "month": "2007-01",
-      "date": "2007-01-01",
-      "ratePercent": 0.2189
-    },
-    {
-      "month": "2007-02",
-      "date": "2007-02-01",
-      "ratePercent": 0.0721
-    },
-    {
-      "month": "2007-03",
-      "date": "2007-03-01",
-      "ratePercent": 0.1876
-    },
-    {
-      "month": "2007-04",
-      "date": "2007-04-01",
-      "ratePercent": 0.1272
-    },
-    {
-      "month": "2007-05",
-      "date": "2007-05-01",
-      "ratePercent": 0.1689
-    },
-    {
-      "month": "2007-06",
-      "date": "2007-06-01",
-      "ratePercent": 0.0954
-    },
-    {
-      "month": "2007-07",
-      "date": "2007-07-01",
-      "ratePercent": 0.1469
-    },
-    {
-      "month": "2007-08",
-      "date": "2007-08-01",
-      "ratePercent": 0.1466
-    },
-    {
-      "month": "2007-09",
-      "date": "2007-09-01",
-      "ratePercent": 0.0352
-    },
-    {
-      "month": "2007-10",
-      "date": "2007-10-01",
-      "ratePercent": 0.1142
-    },
-    {
-      "month": "2007-11",
-      "date": "2007-11-01",
-      "ratePercent": 0.059
-    },
-    {
-      "month": "2007-12",
-      "date": "2007-12-01",
-      "ratePercent": 0.064
-    },
-    {
-      "month": "2008-01",
-      "date": "2008-01-01",
-      "ratePercent": 0.101
-    },
-    {
-      "month": "2008-02",
-      "date": "2008-02-01",
-      "ratePercent": 0.0243
-    },
-    {
-      "month": "2008-03",
-      "date": "2008-03-01",
-      "ratePercent": 0.0409
-    },
-    {
-      "month": "2008-04",
-      "date": "2008-04-01",
-      "ratePercent": 0.0955
-    },
-    {
-      "month": "2008-05",
-      "date": "2008-05-01",
-      "ratePercent": 0.0736
-    },
-    {
-      "month": "2008-07",
-      "date": "2008-07-01",
-      "ratePercent": 0.1914
-    },
-    {
-      "month": "2008-08",
-      "date": "2008-08-01",
-      "ratePercent": 0.1574
-    },
-    {
-      "month": "2008-09",
-      "date": "2008-09-01",
-      "ratePercent": 0.197
-    },
-    {
-      "month": "2008-10",
-      "date": "2008-10-01",
-      "ratePercent": 0.2506
-    },
-    {
-      "month": "2008-11",
-      "date": "2008-11-01",
-      "ratePercent": 0.1618
-    },
-    {
-      "month": "2009-01",
-      "date": "2009-01-01",
-      "ratePercent": 0.184
-    },
-    {
-      "month": "2009-02",
-      "date": "2009-02-01",
-      "ratePercent": 0.0451
-    },
-    {
-      "month": "2009-03",
-      "date": "2009-03-01",
-      "ratePercent": 0.1438
-    },
-    {
-      "month": "2009-04",
-      "date": "2009-04-01",
-      "ratePercent": 0.0454
-    },
-    {
-      "month": "2009-05",
-      "date": "2009-05-01",
-      "ratePercent": 0.0449
-    },
-    {
-      "month": "2009-06",
-      "date": "2009-06-01",
-      "ratePercent": 0.0656
-    },
-    {
-      "month": "2009-07",
-      "date": "2009-07-01",
-      "ratePercent": 0.1051
-    },
-    {
-      "month": "2009-08",
-      "date": "2009-08-01",
-      "ratePercent": 0.0197
-    },
-    {
-      "month": "2009-09",
-      "date": "2009-09-01",
-      "ratePercent": 0.12
-    },
-    {
-      "month": "2009-12",
-      "date": "2009-12-01",
-      "ratePercent": 0.0533
-    },
-    {
-      "month": "2010-03",
-      "date": "2010-03-01",
-      "ratePercent": 0.0792
-    },
-    {
-      "month": "2010-05",
-      "date": "2010-05-01",
-      "ratePercent": 0.051
-    },
-    {
-      "month": "2010-06",
-      "date": "2010-06-01",
-      "ratePercent": 0.0589
-    },
-    {
-      "month": "2010-07",
-      "date": "2010-07-01",
-      "ratePercent": 0.1151
-    },
-    {
-      "month": "2010-08",
-      "date": "2010-08-01",
-      "ratePercent": 0.0909
-    },
-    {
-      "month": "2010-09",
-      "date": "2010-09-01",
-      "ratePercent": 0.0702
-    },
-    {
-      "month": "2010-10",
-      "date": "2010-10-01",
-      "ratePercent": 0.0472
-    },
-    {
-      "month": "2010-11",
-      "date": "2010-11-01",
-      "ratePercent": 0.0336
-    },
-    {
-      "month": "2010-12",
-      "date": "2010-12-01",
-      "ratePercent": 0.1406
-    },
-    {
-      "month": "2011-01",
-      "date": "2011-01-01",
-      "ratePercent": 0.0715
-    },
-    {
-      "month": "2011-02",
-      "date": "2011-02-01",
-      "ratePercent": 0.0524
-    },
-    {
-      "month": "2011-03",
-      "date": "2011-03-01",
-      "ratePercent": 0.1212
-    },
-    {
-      "month": "2011-04",
-      "date": "2011-04-01",
-      "ratePercent": 0.0369
-    },
-    {
-      "month": "2011-05",
-      "date": "2011-05-01",
-      "ratePercent": 0.157
-    },
-    {
-      "month": "2011-06",
-      "date": "2011-06-01",
-      "ratePercent": 0.1114
-    },
-    {
-      "month": "2011-07",
-      "date": "2011-07-01",
-      "ratePercent": 0.1229
-    },
-    {
-      "month": "2011-08",
-      "date": "2011-08-01",
-      "ratePercent": 0.2076
-    },
-    {
-      "month": "2011-09",
-      "date": "2011-09-01",
-      "ratePercent": 0.1003
-    },
-    {
-      "month": "2011-10",
-      "date": "2011-10-01",
-      "ratePercent": 0.062
-    },
-    {
-      "month": "2011-11",
-      "date": "2011-11-01",
-      "ratePercent": 0.0645
-    },
-    {
-      "month": "2011-12",
-      "date": "2011-12-01",
-      "ratePercent": 0.0937
-    },
-    {
-      "month": "2012-01",
-      "date": "2012-01-01",
-      "ratePercent": 0.0864
-    },
-    {
-      "month": "2012-03",
-      "date": "2012-03-01",
-      "ratePercent": 0.1068
-    },
-    {
-      "month": "2012-04",
-      "date": "2012-04-01",
-      "ratePercent": 0.0227
-    },
-    {
-      "month": "2012-05",
-      "date": "2012-05-01",
-      "ratePercent": 0.0468
-    },
-    {
-      "month": "2012-07",
-      "date": "2012-07-01",
-      "ratePercent": 0.0144
-    },
-    {
-      "month": "2012-08",
-      "date": "2012-08-01",
-      "ratePercent": 0.0123
-    },
-    {
-      "month": "2013-07",
-      "date": "2013-07-01",
-      "ratePercent": 0.0209
-    },
-    {
-      "month": "2013-09",
-      "date": "2013-09-01",
-      "ratePercent": 0.0079
-    },
-    {
-      "month": "2013-10",
-      "date": "2013-10-01",
-      "ratePercent": 0.092
-    },
-    {
-      "month": "2013-11",
-      "date": "2013-11-01",
-      "ratePercent": 0.0207
-    },
-    {
-      "month": "2013-12",
-      "date": "2013-12-01",
-      "ratePercent": 0.0494
-    },
-    {
-      "month": "2014-01",
-      "date": "2014-01-01",
-      "ratePercent": 0.1126
-    },
-    {
-      "month": "2014-02",
-      "date": "2014-02-01",
-      "ratePercent": 0.0537
-    },
-    {
-      "month": "2014-03",
-      "date": "2014-03-01",
-      "ratePercent": 0.0266
-    },
-    {
-      "month": "2014-04",
-      "date": "2014-04-01",
-      "ratePercent": 0.0459
-    },
-    {
-      "month": "2014-05",
-      "date": "2014-05-01",
-      "ratePercent": 0.0604
-    },
-    {
-      "month": "2014-06",
-      "date": "2014-06-01",
-      "ratePercent": 0.0465
-    },
-    {
-      "month": "2014-07",
-      "date": "2014-07-01",
-      "ratePercent": 0.1054
-    },
-    {
-      "month": "2014-08",
-      "date": "2014-08-01",
-      "ratePercent": 0.0602
-    },
-    {
-      "month": "2014-09",
-      "date": "2014-09-01",
-      "ratePercent": 0.0873
-    },
-    {
-      "month": "2014-11",
-      "date": "2014-11-01",
-      "ratePercent": 0.0483
-    },
-    {
-      "month": "2014-12",
-      "date": "2014-12-01",
-      "ratePercent": 0.1053
-    },
-    {
-      "month": "2015-01",
-      "date": "2015-01-01",
-      "ratePercent": 0.0878
-    },
-    {
-      "month": "2015-02",
-      "date": "2015-02-01",
-      "ratePercent": 0.0168
-    },
-    {
-      "month": "2015-03",
-      "date": "2015-03-01",
-      "ratePercent": 0.1296
-    },
-    {
-      "month": "2015-04",
-      "date": "2015-04-01",
-      "ratePercent": 0.1074
-    },
-    {
-      "month": "2015-05",
-      "date": "2015-05-01",
-      "ratePercent": 0.1153
-    },
-    {
-      "month": "2015-06",
-      "date": "2015-06-01",
-      "ratePercent": 0.1813
-    },
-    {
-      "month": "2015-07",
-      "date": "2015-07-01",
-      "ratePercent": 0.2305
-    },
-    {
-      "month": "2015-08",
-      "date": "2015-08-01",
-      "ratePercent": 0.1867
-    },
-    {
-      "month": "2015-09",
-      "date": "2015-09-01",
-      "ratePercent": 0.192
-    },
-    {
-      "month": "2015-10",
-      "date": "2015-10-01",
-      "ratePercent": 0.179
-    },
-    {
-      "month": "2015-11",
-      "date": "2015-11-01",
-      "ratePercent": 0.1297
-    },
-    {
-      "month": "2015-12",
-      "date": "2015-12-01",
-      "ratePercent": 0.225
-    },
-    {
-      "month": "2016-01",
-      "date": "2016-01-01",
-      "ratePercent": 0.132
-    },
-    {
-      "month": "2016-02",
-      "date": "2016-02-01",
-      "ratePercent": 0.0957
-    },
-    {
-      "month": "2016-03",
-      "date": "2016-03-01",
-      "ratePercent": 0.2168
-    },
-    {
-      "month": "2016-04",
-      "date": "2016-04-01",
-      "ratePercent": 0.1304
-    },
-    {
-      "month": "2016-05",
-      "date": "2016-05-01",
-      "ratePercent": 0.1533
-    },
-    {
-      "month": "2016-06",
-      "date": "2016-06-01",
-      "ratePercent": 0.2043
-    },
-    {
-      "month": "2016-07",
-      "date": "2016-07-01",
-      "ratePercent": 0.1621
-    },
-    {
-      "month": "2016-08",
-      "date": "2016-08-01",
-      "ratePercent": 0.2545
-    },
-    {
-      "month": "2016-09",
-      "date": "2016-09-01",
-      "ratePercent": 0.1575
-    },
-    {
-      "month": "2016-10",
-      "date": "2016-10-01",
-      "ratePercent": 0.1601
-    },
-    {
-      "month": "2016-11",
-      "date": "2016-11-01",
-      "ratePercent": 0.1428
-    },
-    {
-      "month": "2016-12",
-      "date": "2016-12-01",
-      "ratePercent": 0.1849
-    },
-    {
-      "month": "2017-01",
-      "date": "2017-01-01",
-      "ratePercent": 0.17
-    },
-    {
-      "month": "2017-02",
-      "date": "2017-02-01",
-      "ratePercent": 0.0302
-    },
-    {
-      "month": "2017-03",
-      "date": "2017-03-01",
-      "ratePercent": 0.1519
-    },
-    {
-      "month": "2017-05",
-      "date": "2017-05-01",
-      "ratePercent": 0.0764
-    },
-    {
-      "month": "2017-06",
-      "date": "2017-06-01",
-      "ratePercent": 0.0536
-    },
-    {
-      "month": "2017-07",
-      "date": "2017-07-01",
-      "ratePercent": 0.0623
-    },
-    {
-      "month": "2017-08",
-      "date": "2017-08-01",
-      "ratePercent": 0.0509
-    },
-    {
-      "month": "2021-12",
-      "date": "2021-12-01",
-      "ratePercent": 0.0488
-    },
-    {
-      "month": "2022-01",
-      "date": "2022-01-01",
-      "ratePercent": 0.0605
-    },
-    {
-      "month": "2022-03",
-      "date": "2022-03-01",
-      "ratePercent": 0.0971
-    },
-    {
-      "month": "2022-04",
-      "date": "2022-04-01",
-      "ratePercent": 0.0555
-    },
-    {
-      "month": "2022-05",
-      "date": "2022-05-01",
-      "ratePercent": 0.1663
-    },
-    {
-      "month": "2022-06",
-      "date": "2022-06-01",
-      "ratePercent": 0.1484
-    },
-    {
-      "month": "2022-07",
-      "date": "2022-07-01",
-      "ratePercent": 0.1631
-    },
-    {
-      "month": "2022-08",
-      "date": "2022-08-01",
-      "ratePercent": 0.2409
-    },
-    {
-      "month": "2022-09",
-      "date": "2022-09-01",
-      "ratePercent": 0.1805
-    },
-    {
-      "month": "2022-10",
-      "date": "2022-10-01",
-      "ratePercent": 0.1494
-    },
-    {
-      "month": "2022-11",
-      "date": "2022-11-01",
-      "ratePercent": 0.1507
-    },
-    {
-      "month": "2022-12",
-      "date": "2022-12-01",
-      "ratePercent": 0.2072
-    },
-    {
-      "month": "2023-01",
-      "date": "2023-01-01",
-      "ratePercent": 0.2081
-    },
-    {
-      "month": "2023-02",
-      "date": "2023-02-01",
-      "ratePercent": 0.083
-    },
-    {
-      "month": "2023-03",
-      "date": "2023-03-01",
-      "ratePercent": 0.2392
-    },
-    {
-      "month": "2023-04",
-      "date": "2023-04-01",
-      "ratePercent": 0.0821
-    },
-    {
-      "month": "2023-05",
-      "date": "2023-05-01",
-      "ratePercent": 0.2147
-    },
-    {
-      "month": "2023-06",
-      "date": "2023-06-01",
-      "ratePercent": 0.1799
-    },
-    {
-      "month": "2023-07",
-      "date": "2023-07-01",
-      "ratePercent": 0.1581
-    },
-    {
-      "month": "2023-08",
-      "date": "2023-08-01",
-      "ratePercent": 0.216
-    },
-    {
-      "month": "2023-09",
-      "date": "2023-09-01",
-      "ratePercent": 0.113
-    },
-    {
-      "month": "2023-10",
-      "date": "2023-10-01",
-      "ratePercent": 0.1056
-    },
-    {
-      "month": "2023-11",
-      "date": "2023-11-01",
-      "ratePercent": 0.0775
-    },
-    {
-      "month": "2023-12",
-      "date": "2023-12-01",
-      "ratePercent": 0.069
-    },
-    {
-      "month": "2024-01",
-      "date": "2024-01-01",
-      "ratePercent": 0.0875
-    },
-    {
-      "month": "2024-03",
-      "date": "2024-03-01",
-      "ratePercent": 0.0331
-    },
-    {
-      "month": "2024-04",
-      "date": "2024-04-01",
-      "ratePercent": 0.1023
-    },
-    {
-      "month": "2024-05",
-      "date": "2024-05-01",
-      "ratePercent": 0.087
-    },
-    {
-      "month": "2024-06",
-      "date": "2024-06-01",
-      "ratePercent": 0.0365
-    },
-    {
-      "month": "2024-07",
-      "date": "2024-07-01",
-      "ratePercent": 0.0739
-    },
-    {
-      "month": "2024-08",
-      "date": "2024-08-01",
-      "ratePercent": 0.0707
-    },
-    {
-      "month": "2024-09",
-      "date": "2024-09-01",
-      "ratePercent": 0.0675
-    },
-    {
-      "month": "2024-10",
-      "date": "2024-10-01",
-      "ratePercent": 0.0977
-    },
-    {
-      "month": "2024-11",
-      "date": "2024-11-01",
-      "ratePercent": 0.0649
-    },
-    {
-      "month": "2024-12",
-      "date": "2024-12-01",
-      "ratePercent": 0.0822
-    },
-    {
-      "month": "2025-01",
-      "date": "2025-01-01",
-      "ratePercent": 0.169
-    },
-    {
-      "month": "2025-02",
-      "date": "2025-02-01",
-      "ratePercent": 0.1324
-    },
-    {
-      "month": "2025-03",
-      "date": "2025-03-01",
-      "ratePercent": 0.1092
-    },
-    {
-      "month": "2025-05",
-      "date": "2025-05-01",
-      "ratePercent": 0.1712
-    },
-    {
-      "month": "2025-06",
-      "date": "2025-06-01",
-      "ratePercent": 0.1699
-    },
-    {
-      "month": "2025-08",
-      "date": "2025-08-01",
-      "ratePercent": 0.1722
-    },
-    {
-      "month": "2025-09",
-      "date": "2025-09-01",
+      "startDate": "2025-07-31",
+      "endDate": "2025-08-31",
       "ratePercent": 0.1742
     },
     {
-      "month": "2025-11",
-      "date": "2025-11-01",
+      "startDate": "2025-08-01",
+      "endDate": "2025-09-01",
+      "ratePercent": 0.1722
+    },
+    {
+      "startDate": "2025-08-02",
+      "endDate": "2025-09-02",
+      "ratePercent": 0.1722
+    },
+    {
+      "startDate": "2025-08-03",
+      "endDate": "2025-09-03",
+      "ratePercent": 0.1742
+    },
+    {
+      "startDate": "2025-08-04",
+      "endDate": "2025-09-04",
+      "ratePercent": 0.1761
+    },
+    {
+      "startDate": "2025-08-05",
+      "endDate": "2025-09-05",
+      "ratePercent": 0.176
+    },
+    {
+      "startDate": "2025-08-06",
+      "endDate": "2025-09-06",
+      "ratePercent": 0.1761
+    },
+    {
+      "startDate": "2025-08-07",
+      "endDate": "2025-09-07",
+      "ratePercent": 0.1741
+    },
+    {
+      "startDate": "2025-08-08",
+      "endDate": "2025-09-08",
+      "ratePercent": 0.1722
+    },
+    {
+      "startDate": "2025-08-09",
+      "endDate": "2025-09-09",
+      "ratePercent": 0.1722
+    },
+    {
+      "startDate": "2025-08-10",
+      "endDate": "2025-09-10",
+      "ratePercent": 0.1742
+    },
+    {
+      "startDate": "2025-08-11",
+      "endDate": "2025-09-11",
+      "ratePercent": 0.1761
+    },
+    {
+      "startDate": "2025-08-12",
+      "endDate": "2025-09-12",
+      "ratePercent": 0.1761
+    },
+    {
+      "startDate": "2025-08-13",
+      "endDate": "2025-09-13",
+      "ratePercent": 0.1762
+    },
+    {
+      "startDate": "2025-08-14",
+      "endDate": "2025-09-14",
+      "ratePercent": 0.1742
+    },
+    {
+      "startDate": "2025-08-15",
+      "endDate": "2025-09-15",
+      "ratePercent": 0.1708
+    },
+    {
+      "startDate": "2025-08-16",
+      "endDate": "2025-09-16",
+      "ratePercent": 0.1723
+    },
+    {
+      "startDate": "2025-08-17",
+      "endDate": "2025-09-17",
+      "ratePercent": 0.1742
+    },
+    {
+      "startDate": "2025-08-18",
+      "endDate": "2025-09-18",
+      "ratePercent": 0.1762
+    },
+    {
+      "startDate": "2025-08-19",
+      "endDate": "2025-09-19",
+      "ratePercent": 0.1762
+    },
+    {
+      "startDate": "2025-08-20",
+      "endDate": "2025-09-20",
+      "ratePercent": 0.1762
+    },
+    {
+      "startDate": "2025-08-21",
+      "endDate": "2025-09-21",
+      "ratePercent": 0.1742
+    },
+    {
+      "startDate": "2025-08-22",
+      "endDate": "2025-09-22",
+      "ratePercent": 0.1723
+    },
+    {
+      "startDate": "2025-08-23",
+      "endDate": "2025-09-23",
+      "ratePercent": 0.1723
+    },
+    {
+      "startDate": "2025-08-24",
+      "endDate": "2025-09-24",
+      "ratePercent": 0.1743
+    },
+    {
+      "startDate": "2025-08-25",
+      "endDate": "2025-09-25",
+      "ratePercent": 0.1762
+    },
+    {
+      "startDate": "2025-08-26",
+      "endDate": "2025-09-26",
+      "ratePercent": 0.176
+    },
+    {
+      "startDate": "2025-08-27",
+      "endDate": "2025-09-27",
+      "ratePercent": 0.1761
+    },
+    {
+      "startDate": "2025-08-28",
+      "endDate": "2025-09-28",
+      "ratePercent": 0.1743
+    },
+    {
+      "startDate": "2025-08-29",
+      "endDate": "2025-09-29",
+      "ratePercent": 0.1723
+    },
+    {
+      "startDate": "2025-08-30",
+      "endDate": "2025-09-30",
+      "ratePercent": 0.1723
+    },
+    {
+      "startDate": "2025-08-31",
+      "endDate": "2025-10-01",
+      "ratePercent": 0.1742
+    },
+    {
+      "startDate": "2025-09-01",
+      "endDate": "2025-10-01",
+      "ratePercent": 0.1742
+    },
+    {
+      "startDate": "2025-09-02",
+      "endDate": "2025-10-02",
+      "ratePercent": 0.1742
+    },
+    {
+      "startDate": "2025-09-03",
+      "endDate": "2025-10-03",
+      "ratePercent": 0.1742
+    },
+    {
+      "startDate": "2025-09-04",
+      "endDate": "2025-10-04",
+      "ratePercent": 0.1742
+    },
+    {
+      "startDate": "2025-09-05",
+      "endDate": "2025-10-05",
+      "ratePercent": 0.1722
+    },
+    {
+      "startDate": "2025-09-06",
+      "endDate": "2025-10-06",
+      "ratePercent": 0.1703
+    },
+    {
+      "startDate": "2025-09-07",
+      "endDate": "2025-10-07",
+      "ratePercent": 0.1722
+    },
+    {
+      "startDate": "2025-09-08",
+      "endDate": "2025-10-08",
+      "ratePercent": 0.1741
+    },
+    {
+      "startDate": "2025-09-09",
+      "endDate": "2025-10-09",
+      "ratePercent": 0.1742
+    },
+    {
+      "startDate": "2025-09-10",
+      "endDate": "2025-10-10",
+      "ratePercent": 0.1741
+    },
+    {
+      "startDate": "2025-09-11",
+      "endDate": "2025-10-11",
+      "ratePercent": 0.1741
+    },
+    {
+      "startDate": "2025-09-12",
+      "endDate": "2025-10-12",
+      "ratePercent": 0.1721
+    },
+    {
+      "startDate": "2025-09-13",
+      "endDate": "2025-10-13",
+      "ratePercent": 0.1702
+    },
+    {
+      "startDate": "2025-09-14",
+      "endDate": "2025-10-14",
+      "ratePercent": 0.1721
+    },
+    {
+      "startDate": "2025-09-15",
+      "endDate": "2025-10-15",
+      "ratePercent": 0.174
+    },
+    {
+      "startDate": "2025-09-16",
+      "endDate": "2025-10-16",
+      "ratePercent": 0.174
+    },
+    {
+      "startDate": "2025-09-17",
+      "endDate": "2025-10-17",
+      "ratePercent": 0.174
+    },
+    {
+      "startDate": "2025-09-18",
+      "endDate": "2025-10-18",
+      "ratePercent": 0.174
+    },
+    {
+      "startDate": "2025-09-19",
+      "endDate": "2025-10-19",
+      "ratePercent": 0.172
+    },
+    {
+      "startDate": "2025-09-20",
+      "endDate": "2025-10-20",
+      "ratePercent": 0.1701
+    },
+    {
+      "startDate": "2025-09-21",
+      "endDate": "2025-10-21",
+      "ratePercent": 0.172
+    },
+    {
+      "startDate": "2025-09-22",
+      "endDate": "2025-10-22",
+      "ratePercent": 0.1739
+    },
+    {
+      "startDate": "2025-09-23",
+      "endDate": "2025-10-23",
+      "ratePercent": 0.1739
+    },
+    {
+      "startDate": "2025-09-24",
+      "endDate": "2025-10-24",
+      "ratePercent": 0.1739
+    },
+    {
+      "startDate": "2025-09-25",
+      "endDate": "2025-10-25",
+      "ratePercent": 0.1739
+    },
+    {
+      "startDate": "2025-09-26",
+      "endDate": "2025-10-26",
+      "ratePercent": 0.1719
+    },
+    {
+      "startDate": "2025-09-27",
+      "endDate": "2025-10-27",
+      "ratePercent": 0.17
+    },
+    {
+      "startDate": "2025-09-28",
+      "endDate": "2025-10-28",
+      "ratePercent": 0.1719
+    },
+    {
+      "startDate": "2025-09-29",
+      "endDate": "2025-10-29",
+      "ratePercent": 0.1738
+    },
+    {
+      "startDate": "2025-09-30",
+      "endDate": "2025-10-30",
+      "ratePercent": 0.1739
+    },
+    {
+      "startDate": "2025-10-01",
+      "endDate": "2025-11-01",
+      "ratePercent": 0.1758
+    },
+    {
+      "startDate": "2025-10-02",
+      "endDate": "2025-11-02",
+      "ratePercent": 0.1739
+    },
+    {
+      "startDate": "2025-10-03",
+      "endDate": "2025-11-03",
+      "ratePercent": 0.172
+    },
+    {
+      "startDate": "2025-10-04",
+      "endDate": "2025-11-04",
+      "ratePercent": 0.172
+    },
+    {
+      "startDate": "2025-10-05",
+      "endDate": "2025-11-05",
+      "ratePercent": 0.174
+    },
+    {
+      "startDate": "2025-10-06",
+      "endDate": "2025-11-06",
+      "ratePercent": 0.1759
+    },
+    {
+      "startDate": "2025-10-07",
+      "endDate": "2025-11-07",
+      "ratePercent": 0.176
+    },
+    {
+      "startDate": "2025-10-08",
+      "endDate": "2025-11-08",
+      "ratePercent": 0.176
+    },
+    {
+      "startDate": "2025-10-09",
+      "endDate": "2025-11-09",
+      "ratePercent": 0.1741
+    },
+    {
+      "startDate": "2025-10-10",
+      "endDate": "2025-11-10",
+      "ratePercent": 0.1721
+    },
+    {
+      "startDate": "2025-10-11",
+      "endDate": "2025-11-11",
+      "ratePercent": 0.172
+    },
+    {
+      "startDate": "2025-10-12",
+      "endDate": "2025-11-12",
+      "ratePercent": 0.174
+    },
+    {
+      "startDate": "2025-10-13",
+      "endDate": "2025-11-13",
+      "ratePercent": 0.1759
+    },
+    {
+      "startDate": "2025-10-14",
+      "endDate": "2025-11-14",
+      "ratePercent": 0.176
+    },
+    {
+      "startDate": "2025-10-15",
+      "endDate": "2025-11-15",
+      "ratePercent": 0.1759
+    },
+    {
+      "startDate": "2025-10-16",
+      "endDate": "2025-11-16",
+      "ratePercent": 0.174
+    },
+    {
+      "startDate": "2025-10-17",
+      "endDate": "2025-11-17",
+      "ratePercent": 0.172
+    },
+    {
+      "startDate": "2025-10-18",
+      "endDate": "2025-11-18",
+      "ratePercent": 0.1721
+    },
+    {
+      "startDate": "2025-10-19",
+      "endDate": "2025-11-19",
+      "ratePercent": 0.174
+    },
+    {
+      "startDate": "2025-10-20",
+      "endDate": "2025-11-20",
+      "ratePercent": 0.176
+    },
+    {
+      "startDate": "2025-10-21",
+      "endDate": "2025-11-21",
+      "ratePercent": 0.1741
+    },
+    {
+      "startDate": "2025-10-22",
+      "endDate": "2025-11-22",
+      "ratePercent": 0.1741
+    },
+    {
+      "startDate": "2025-10-23",
+      "endDate": "2025-11-23",
+      "ratePercent": 0.1721
+    },
+    {
+      "startDate": "2025-10-24",
+      "endDate": "2025-11-24",
+      "ratePercent": 0.1702
+    },
+    {
+      "startDate": "2025-10-25",
+      "endDate": "2025-11-25",
+      "ratePercent": 0.1701
+    },
+    {
+      "startDate": "2025-10-26",
+      "endDate": "2025-11-26",
+      "ratePercent": 0.1721
+    },
+    {
+      "startDate": "2025-10-27",
+      "endDate": "2025-11-27",
+      "ratePercent": 0.174
+    },
+    {
+      "startDate": "2025-10-28",
+      "endDate": "2025-11-28",
+      "ratePercent": 0.1741
+    },
+    {
+      "startDate": "2025-10-29",
+      "endDate": "2025-11-29",
+      "ratePercent": 0.1741
+    },
+    {
+      "startDate": "2025-10-30",
+      "endDate": "2025-11-30",
+      "ratePercent": 0.1721
+    },
+    {
+      "startDate": "2025-10-31",
+      "endDate": "2025-12-01",
+      "ratePercent": 0.1702
+    },
+    {
+      "startDate": "2025-11-01",
+      "endDate": "2025-12-01",
       "ratePercent": 0.1634
     },
     {
-      "month": "2026-01",
-      "date": "2026-01-01",
+      "startDate": "2025-11-02",
+      "endDate": "2025-12-02",
+      "ratePercent": 0.1702
+    },
+    {
+      "startDate": "2025-11-03",
+      "endDate": "2025-12-03",
+      "ratePercent": 0.1722
+    },
+    {
+      "startDate": "2025-11-04",
+      "endDate": "2025-12-04",
+      "ratePercent": 0.1722
+    },
+    {
+      "startDate": "2025-11-05",
+      "endDate": "2025-12-05",
+      "ratePercent": 0.1722
+    },
+    {
+      "startDate": "2025-11-06",
+      "endDate": "2025-12-06",
+      "ratePercent": 0.1722
+    },
+    {
+      "startDate": "2025-11-07",
+      "endDate": "2025-12-07",
+      "ratePercent": 0.1703
+    },
+    {
+      "startDate": "2025-11-08",
+      "endDate": "2025-12-08",
+      "ratePercent": 0.1641
+    },
+    {
+      "startDate": "2025-11-09",
+      "endDate": "2025-12-09",
+      "ratePercent": 0.1703
+    },
+    {
+      "startDate": "2025-11-10",
+      "endDate": "2025-12-10",
+      "ratePercent": 0.1722
+    },
+    {
+      "startDate": "2025-11-11",
+      "endDate": "2025-12-11",
+      "ratePercent": 0.1722
+    },
+    {
+      "startDate": "2025-11-12",
+      "endDate": "2025-12-12",
+      "ratePercent": 0.1722
+    },
+    {
+      "startDate": "2025-11-13",
+      "endDate": "2025-12-13",
+      "ratePercent": 0.1722
+    },
+    {
+      "startDate": "2025-11-14",
+      "endDate": "2025-12-14",
+      "ratePercent": 0.1702
+    },
+    {
+      "startDate": "2025-11-15",
+      "endDate": "2025-12-15",
+      "ratePercent": 0.1642
+    },
+    {
+      "startDate": "2025-11-16",
+      "endDate": "2025-12-16",
+      "ratePercent": 0.1703
+    },
+    {
+      "startDate": "2025-11-17",
+      "endDate": "2025-12-17",
+      "ratePercent": 0.1722
+    },
+    {
+      "startDate": "2025-11-18",
+      "endDate": "2025-12-18",
+      "ratePercent": 0.1728
+    },
+    {
+      "startDate": "2025-11-19",
+      "endDate": "2025-12-19",
+      "ratePercent": 0.1722
+    },
+    {
+      "startDate": "2025-11-20",
+      "endDate": "2025-12-20",
+      "ratePercent": 0.1722
+    },
+    {
+      "startDate": "2025-11-21",
+      "endDate": "2025-12-21",
+      "ratePercent": 0.1722
+    },
+    {
+      "startDate": "2025-11-22",
+      "endDate": "2025-12-22",
+      "ratePercent": 0.1703
+    },
+    {
+      "startDate": "2025-11-23",
+      "endDate": "2025-12-23",
+      "ratePercent": 0.1722
+    },
+    {
+      "startDate": "2025-11-24",
+      "endDate": "2025-12-24",
+      "ratePercent": 0.1742
+    },
+    {
+      "startDate": "2025-11-25",
+      "endDate": "2025-12-25",
+      "ratePercent": 0.1742
+    },
+    {
+      "startDate": "2025-11-26",
+      "endDate": "2025-12-26",
+      "ratePercent": 0.1723
+    },
+    {
+      "startDate": "2025-11-27",
+      "endDate": "2025-12-27",
+      "ratePercent": 0.1723
+    },
+    {
+      "startDate": "2025-11-28",
+      "endDate": "2025-12-28",
+      "ratePercent": 0.1703
+    },
+    {
+      "startDate": "2025-11-29",
+      "endDate": "2025-12-29",
+      "ratePercent": 0.165
+    },
+    {
+      "startDate": "2025-11-30",
+      "endDate": "2025-12-30",
+      "ratePercent": 0.1703
+    },
+    {
+      "startDate": "2025-12-01",
+      "endDate": "2026-01-01",
+      "ratePercent": 0.1742
+    },
+    {
+      "startDate": "2025-12-02",
+      "endDate": "2026-01-02",
+      "ratePercent": 0.1723
+    },
+    {
+      "startDate": "2025-12-03",
+      "endDate": "2026-01-03",
+      "ratePercent": 0.1722
+    },
+    {
+      "startDate": "2025-12-04",
+      "endDate": "2026-01-04",
+      "ratePercent": 0.1703
+    },
+    {
+      "startDate": "2025-12-05",
+      "endDate": "2026-01-05",
+      "ratePercent": 0.1642
+    },
+    {
+      "startDate": "2025-12-06",
+      "endDate": "2026-01-06",
+      "ratePercent": 0.1636
+    },
+    {
+      "startDate": "2025-12-07",
+      "endDate": "2026-01-07",
+      "ratePercent": 0.1702
+    },
+    {
+      "startDate": "2025-12-08",
+      "endDate": "2026-01-08",
+      "ratePercent": 0.1721
+    },
+    {
+      "startDate": "2025-12-09",
+      "endDate": "2026-01-09",
+      "ratePercent": 0.1721
+    },
+    {
+      "startDate": "2025-12-10",
+      "endDate": "2026-01-10",
+      "ratePercent": 0.1721
+    },
+    {
+      "startDate": "2025-12-11",
+      "endDate": "2026-01-11",
+      "ratePercent": 0.1701
+    },
+    {
+      "startDate": "2025-12-12",
+      "endDate": "2026-01-12",
+      "ratePercent": 0.1613
+    },
+    {
+      "startDate": "2025-12-13",
+      "endDate": "2026-01-13",
+      "ratePercent": 0.1602
+    },
+    {
+      "startDate": "2025-12-14",
+      "endDate": "2026-01-14",
+      "ratePercent": 0.17
+    },
+    {
+      "startDate": "2025-12-15",
+      "endDate": "2026-01-15",
+      "ratePercent": 0.1719
+    },
+    {
+      "startDate": "2025-12-16",
+      "endDate": "2026-01-16",
+      "ratePercent": 0.1719
+    },
+    {
+      "startDate": "2025-12-17",
+      "endDate": "2026-01-17",
+      "ratePercent": 0.1719
+    },
+    {
+      "startDate": "2025-12-18",
+      "endDate": "2026-01-18",
+      "ratePercent": 0.1699
+    },
+    {
+      "startDate": "2025-12-19",
+      "endDate": "2026-01-19",
+      "ratePercent": 0.1584
+    },
+    {
+      "startDate": "2025-12-20",
+      "endDate": "2026-01-20",
+      "ratePercent": 0.158
+    },
+    {
+      "startDate": "2025-12-21",
+      "endDate": "2026-01-21",
+      "ratePercent": 0.1699
+    },
+    {
+      "startDate": "2025-12-22",
+      "endDate": "2026-01-22",
       "ratePercent": 0.1718
     },
     {
-      "month": "2026-02",
-      "date": "2026-02-01",
+      "startDate": "2025-12-23",
+      "endDate": "2026-01-23",
+      "ratePercent": 0.1718
+    },
+    {
+      "startDate": "2025-12-24",
+      "endDate": "2026-01-24",
+      "ratePercent": 0.172
+    },
+    {
+      "startDate": "2025-12-25",
+      "endDate": "2026-01-25",
+      "ratePercent": 0.1699
+    },
+    {
+      "startDate": "2025-12-26",
+      "endDate": "2026-01-26",
+      "ratePercent": 0.1699
+    },
+    {
+      "startDate": "2025-12-27",
+      "endDate": "2026-01-27",
+      "ratePercent": 0.1699
+    },
+    {
+      "startDate": "2025-12-28",
+      "endDate": "2026-01-28",
+      "ratePercent": 0.1719
+    },
+    {
+      "startDate": "2025-12-29",
+      "endDate": "2026-01-29",
+      "ratePercent": 0.1738
+    },
+    {
+      "startDate": "2025-12-30",
+      "endDate": "2026-01-30",
+      "ratePercent": 0.1738
+    },
+    {
+      "startDate": "2025-12-31",
+      "endDate": "2026-01-31",
+      "ratePercent": 0.1738
+    },
+    {
+      "startDate": "2026-01-01",
+      "endDate": "2026-02-01",
+      "ratePercent": 0.1718
+    },
+    {
+      "startDate": "2026-01-02",
+      "endDate": "2026-02-02",
+      "ratePercent": 0.1718
+    },
+    {
+      "startDate": "2026-01-03",
+      "endDate": "2026-02-03",
+      "ratePercent": 0.1719
+    },
+    {
+      "startDate": "2026-01-04",
+      "endDate": "2026-02-04",
+      "ratePercent": 0.1738
+    },
+    {
+      "startDate": "2026-01-05",
+      "endDate": "2026-02-05",
+      "ratePercent": 0.1757
+    },
+    {
+      "startDate": "2026-01-06",
+      "endDate": "2026-02-06",
+      "ratePercent": 0.1757
+    },
+    {
+      "startDate": "2026-01-07",
+      "endDate": "2026-02-07",
+      "ratePercent": 0.1757
+    },
+    {
+      "startDate": "2026-01-08",
+      "endDate": "2026-02-08",
+      "ratePercent": 0.1737
+    },
+    {
+      "startDate": "2026-01-09",
+      "endDate": "2026-02-09",
+      "ratePercent": 0.1718
+    },
+    {
+      "startDate": "2026-01-10",
+      "endDate": "2026-02-10",
+      "ratePercent": 0.1718
+    },
+    {
+      "startDate": "2026-01-11",
+      "endDate": "2026-02-11",
+      "ratePercent": 0.1738
+    },
+    {
+      "startDate": "2026-01-12",
+      "endDate": "2026-02-12",
+      "ratePercent": 0.1757
+    },
+    {
+      "startDate": "2026-01-13",
+      "endDate": "2026-02-13",
+      "ratePercent": 0.1757
+    },
+    {
+      "startDate": "2026-01-14",
+      "endDate": "2026-02-14",
+      "ratePercent": 0.1757
+    },
+    {
+      "startDate": "2026-01-15",
+      "endDate": "2026-02-15",
+      "ratePercent": 0.1737
+    },
+    {
+      "startDate": "2026-01-16",
+      "endDate": "2026-02-16",
+      "ratePercent": 0.1718
+    },
+    {
+      "startDate": "2026-01-17",
+      "endDate": "2026-02-17",
+      "ratePercent": 0.1699
+    },
+    {
+      "startDate": "2026-01-18",
+      "endDate": "2026-02-18",
+      "ratePercent": 0.1699
+    },
+    {
+      "startDate": "2026-01-19",
+      "endDate": "2026-02-19",
+      "ratePercent": 0.1718
+    },
+    {
+      "startDate": "2026-01-20",
+      "endDate": "2026-02-20",
+      "ratePercent": 0.1718
+    },
+    {
+      "startDate": "2026-01-21",
+      "endDate": "2026-02-21",
+      "ratePercent": 0.1719
+    },
+    {
+      "startDate": "2026-01-22",
+      "endDate": "2026-02-22",
+      "ratePercent": 0.1699
+    },
+    {
+      "startDate": "2026-01-23",
+      "endDate": "2026-02-23",
+      "ratePercent": 0.1566
+    },
+    {
+      "startDate": "2026-01-24",
+      "endDate": "2026-02-24",
+      "ratePercent": 0.1558
+    },
+    {
+      "startDate": "2026-01-25",
+      "endDate": "2026-02-25",
+      "ratePercent": 0.1698
+    },
+    {
+      "startDate": "2026-01-26",
+      "endDate": "2026-02-26",
+      "ratePercent": 0.1717
+    },
+    {
+      "startDate": "2026-01-27",
+      "endDate": "2026-02-27",
+      "ratePercent": 0.1717
+    },
+    {
+      "startDate": "2026-01-28",
+      "endDate": "2026-02-28",
+      "ratePercent": 0.1717
+    },
+    {
+      "startDate": "2026-01-29",
+      "endDate": "2026-03-01",
+      "ratePercent": 0.1699
+    },
+    {
+      "startDate": "2026-01-30",
+      "endDate": "2026-03-01",
+      "ratePercent": 0.158
+    },
+    {
+      "startDate": "2026-01-31",
+      "endDate": "2026-03-01",
       "ratePercent": 0.1207
     },
     {
-      "month": "2026-03",
-      "date": "2026-03-01",
+      "startDate": "2026-02-01",
+      "endDate": "2026-03-01",
+      "ratePercent": 0.1207
+    },
+    {
+      "startDate": "2026-02-02",
+      "endDate": "2026-03-02",
+      "ratePercent": 0.1207
+    },
+    {
+      "startDate": "2026-02-03",
+      "endDate": "2026-03-03",
+      "ratePercent": 0.1193
+    },
+    {
+      "startDate": "2026-02-04",
+      "endDate": "2026-03-04",
+      "ratePercent": 0.1225
+    },
+    {
+      "startDate": "2026-02-05",
+      "endDate": "2026-03-05",
+      "ratePercent": 0.1223
+    },
+    {
+      "startDate": "2026-02-06",
+      "endDate": "2026-03-06",
+      "ratePercent": 0.1224
+    },
+    {
+      "startDate": "2026-02-07",
+      "endDate": "2026-03-07",
+      "ratePercent": 0.1228
+    },
+    {
+      "startDate": "2026-02-08",
+      "endDate": "2026-03-08",
+      "ratePercent": 0.1228
+    },
+    {
+      "startDate": "2026-02-09",
+      "endDate": "2026-03-09",
+      "ratePercent": 0.1228
+    },
+    {
+      "startDate": "2026-02-10",
+      "endDate": "2026-03-10",
+      "ratePercent": 0.1225
+    },
+    {
+      "startDate": "2026-02-11",
+      "endDate": "2026-03-11",
+      "ratePercent": 0.1214
+    },
+    {
+      "startDate": "2026-02-12",
+      "endDate": "2026-03-12",
+      "ratePercent": 0.1196
+    },
+    {
+      "startDate": "2026-02-13",
+      "endDate": "2026-03-13",
+      "ratePercent": 0.119
+    },
+    {
+      "startDate": "2026-02-14",
+      "endDate": "2026-03-14",
+      "ratePercent": 0.1183
+    },
+    {
+      "startDate": "2026-02-15",
+      "endDate": "2026-03-15",
+      "ratePercent": 0.1183
+    },
+    {
+      "startDate": "2026-02-16",
+      "endDate": "2026-03-16",
+      "ratePercent": 0.1183
+    },
+    {
+      "startDate": "2026-02-17",
+      "endDate": "2026-03-17",
+      "ratePercent": 0.1525
+    },
+    {
+      "startDate": "2026-02-18",
+      "endDate": "2026-03-18",
+      "ratePercent": 0.1696
+    },
+    {
+      "startDate": "2026-02-19",
+      "endDate": "2026-03-19",
+      "ratePercent": 0.1695
+    },
+    {
+      "startDate": "2026-02-20",
+      "endDate": "2026-03-20",
+      "ratePercent": 0.1695
+    },
+    {
+      "startDate": "2026-02-21",
+      "endDate": "2026-03-21",
+      "ratePercent": 0.1695
+    },
+    {
+      "startDate": "2026-02-22",
+      "endDate": "2026-03-22",
+      "ratePercent": 0.1695
+    },
+    {
+      "startDate": "2026-02-23",
+      "endDate": "2026-03-23",
+      "ratePercent": 0.1695
+    },
+    {
+      "startDate": "2026-02-24",
+      "endDate": "2026-03-24",
+      "ratePercent": 0.1695
+    },
+    {
+      "startDate": "2026-02-25",
+      "endDate": "2026-03-25",
+      "ratePercent": 0.1694
+    },
+    {
+      "startDate": "2026-02-26",
+      "endDate": "2026-03-26",
+      "ratePercent": 0.1694
+    },
+    {
+      "startDate": "2026-02-27",
+      "endDate": "2026-03-27",
+      "ratePercent": 0.1694
+    },
+    {
+      "startDate": "2026-02-28",
+      "endDate": "2026-03-28",
+      "ratePercent": 0.1697
+    },
+    {
+      "startDate": "2026-03-01",
+      "endDate": "2026-04-01",
       "ratePercent": 0.1735
     },
     {
-      "month": "2026-04",
-      "date": "2026-04-01",
-      "ratePercent": 0.1679
+      "startDate": "2026-03-02",
+      "endDate": "2026-04-02",
+      "ratePercent": 0.1753
     },
     {
-      "month": "2026-05",
-      "date": "2026-05-01",
+      "startDate": "2026-03-03",
+      "endDate": "2026-04-03",
+      "ratePercent": 0.1752
+    },
+    {
+      "startDate": "2026-03-04",
+      "endDate": "2026-04-04",
+      "ratePercent": 0.1733
+    },
+    {
+      "startDate": "2026-03-05",
+      "endDate": "2026-04-05",
+      "ratePercent": 0.1712
+    },
+    {
+      "startDate": "2026-03-06",
+      "endDate": "2026-04-06",
+      "ratePercent": 0.1694
+    },
+    {
+      "startDate": "2026-03-07",
+      "endDate": "2026-04-07",
+      "ratePercent": 0.1694
+    },
+    {
+      "startDate": "2026-03-08",
+      "endDate": "2026-04-08",
+      "ratePercent": 0.1712
+    },
+    {
+      "startDate": "2026-03-09",
+      "endDate": "2026-04-09",
+      "ratePercent": 0.1731
+    },
+    {
+      "startDate": "2026-03-10",
+      "endDate": "2026-04-10",
+      "ratePercent": 0.1731
+    },
+    {
+      "startDate": "2026-03-11",
+      "endDate": "2026-04-11",
+      "ratePercent": 0.1729
+    },
+    {
+      "startDate": "2026-03-12",
+      "endDate": "2026-04-12",
+      "ratePercent": 0.171
+    },
+    {
+      "startDate": "2026-03-13",
+      "endDate": "2026-04-13",
+      "ratePercent": 0.1693
+    },
+    {
+      "startDate": "2026-03-14",
+      "endDate": "2026-04-14",
+      "ratePercent": 0.1693
+    },
+    {
+      "startDate": "2026-03-15",
+      "endDate": "2026-04-15",
+      "ratePercent": 0.1712
+    },
+    {
+      "startDate": "2026-03-16",
+      "endDate": "2026-04-16",
+      "ratePercent": 0.173
+    },
+    {
+      "startDate": "2026-03-17",
+      "endDate": "2026-04-17",
+      "ratePercent": 0.1731
+    },
+    {
+      "startDate": "2026-03-18",
+      "endDate": "2026-04-18",
+      "ratePercent": 0.1729
+    },
+    {
+      "startDate": "2026-03-19",
+      "endDate": "2026-04-19",
+      "ratePercent": 0.171
+    },
+    {
+      "startDate": "2026-03-20",
+      "endDate": "2026-04-20",
+      "ratePercent": 0.1689
+    },
+    {
+      "startDate": "2026-03-21",
+      "endDate": "2026-04-21",
+      "ratePercent": 0.1689
+    },
+    {
+      "startDate": "2026-03-22",
+      "endDate": "2026-04-22",
+      "ratePercent": 0.1689
+    },
+    {
+      "startDate": "2026-03-23",
+      "endDate": "2026-04-23",
+      "ratePercent": 0.1708
+    },
+    {
+      "startDate": "2026-03-24",
+      "endDate": "2026-04-24",
+      "ratePercent": 0.1706
+    },
+    {
+      "startDate": "2026-03-25",
+      "endDate": "2026-04-25",
+      "ratePercent": 0.1705
+    },
+    {
+      "startDate": "2026-03-26",
+      "endDate": "2026-04-26",
       "ratePercent": 0.1687
     },
     {
-      "month": "2026-06",
-      "date": "2026-06-01",
+      "startDate": "2026-03-27",
+      "endDate": "2026-04-27",
+      "ratePercent": 0.1348
+    },
+    {
+      "startDate": "2026-03-28",
+      "endDate": "2026-04-28",
+      "ratePercent": 0.1378
+    },
+    {
+      "startDate": "2026-03-29",
+      "endDate": "2026-04-29",
+      "ratePercent": 0.1687
+    },
+    {
+      "startDate": "2026-03-30",
+      "endDate": "2026-04-30",
+      "ratePercent": 0.1706
+    },
+    {
+      "startDate": "2026-03-31",
+      "endDate": "2026-05-01",
+      "ratePercent": 0.1705
+    },
+    {
+      "startDate": "2026-04-01",
+      "endDate": "2026-05-01",
+      "ratePercent": 0.1679
+    },
+    {
+      "startDate": "2026-04-02",
+      "endDate": "2026-05-02",
+      "ratePercent": 0.1322
+    },
+    {
+      "startDate": "2026-04-03",
+      "endDate": "2026-05-03",
+      "ratePercent": 0.098
+    },
+    {
+      "startDate": "2026-04-04",
+      "endDate": "2026-05-04",
+      "ratePercent": 0.098
+    },
+    {
+      "startDate": "2026-04-05",
+      "endDate": "2026-05-05",
+      "ratePercent": 0.131
+    },
+    {
+      "startDate": "2026-04-06",
+      "endDate": "2026-05-06",
+      "ratePercent": 0.1641
+    },
+    {
+      "startDate": "2026-04-07",
+      "endDate": "2026-05-07",
+      "ratePercent": 0.1665
+    },
+    {
+      "startDate": "2026-04-08",
+      "endDate": "2026-05-08",
+      "ratePercent": 0.1659
+    },
+    {
+      "startDate": "2026-04-09",
+      "endDate": "2026-05-09",
+      "ratePercent": 0.1645
+    },
+    {
+      "startDate": "2026-04-10",
+      "endDate": "2026-05-10",
+      "ratePercent": 0.1299
+    },
+    {
+      "startDate": "2026-04-11",
+      "endDate": "2026-05-11",
+      "ratePercent": 0.097
+    },
+    {
+      "startDate": "2026-04-12",
+      "endDate": "2026-05-12",
+      "ratePercent": 0.1301
+    },
+    {
+      "startDate": "2026-04-13",
+      "endDate": "2026-05-13",
+      "ratePercent": 0.1631
+    },
+    {
+      "startDate": "2026-04-14",
+      "endDate": "2026-05-14",
+      "ratePercent": 0.1625
+    },
+    {
+      "startDate": "2026-04-15",
+      "endDate": "2026-05-15",
+      "ratePercent": 0.1675
+    },
+    {
+      "startDate": "2026-04-16",
+      "endDate": "2026-05-16",
+      "ratePercent": 0.1667
+    },
+    {
+      "startDate": "2026-04-17",
+      "endDate": "2026-05-17",
+      "ratePercent": 0.1372
+    },
+    {
+      "startDate": "2026-04-18",
+      "endDate": "2026-05-18",
+      "ratePercent": 0.1047
+    },
+    {
+      "startDate": "2026-04-19",
+      "endDate": "2026-05-19",
+      "ratePercent": 0.1381
+    },
+    {
+      "startDate": "2026-04-20",
+      "endDate": "2026-05-20",
+      "ratePercent": 0.1687
+    },
+    {
+      "startDate": "2026-04-21",
+      "endDate": "2026-05-21",
+      "ratePercent": 0.1687
+    },
+    {
+      "startDate": "2026-04-22",
+      "endDate": "2026-05-22",
+      "ratePercent": 0.1706
+    },
+    {
+      "startDate": "2026-04-23",
+      "endDate": "2026-05-23",
+      "ratePercent": 0.1706
+    },
+    {
+      "startDate": "2026-04-24",
+      "endDate": "2026-05-24",
+      "ratePercent": 0.1688
+    },
+    {
+      "startDate": "2026-04-25",
+      "endDate": "2026-05-25",
+      "ratePercent": 0.1388
+    },
+    {
+      "startDate": "2026-04-26",
+      "endDate": "2026-05-26",
+      "ratePercent": 0.1688
+    },
+    {
+      "startDate": "2026-04-27",
+      "endDate": "2026-05-27",
+      "ratePercent": 0.1706
+    },
+    {
+      "startDate": "2026-04-28",
+      "endDate": "2026-05-28",
+      "ratePercent": 0.1706
+    },
+    {
+      "startDate": "2026-04-29",
+      "endDate": "2026-05-29",
+      "ratePercent": 0.1707
+    },
+    {
+      "startDate": "2026-04-30",
+      "endDate": "2026-05-30",
+      "ratePercent": 0.1707
+    },
+    {
+      "startDate": "2026-05-01",
+      "endDate": "2026-06-01",
+      "ratePercent": 0.1687
+    },
+    {
+      "startDate": "2026-05-02",
+      "endDate": "2026-06-02",
+      "ratePercent": 0.1706
+    },
+    {
+      "startDate": "2026-05-03",
+      "endDate": "2026-06-03",
+      "ratePercent": 0.1725
+    },
+    {
+      "startDate": "2026-05-04",
+      "endDate": "2026-06-04",
+      "ratePercent": 0.1744
+    },
+    {
+      "startDate": "2026-05-05",
+      "endDate": "2026-06-05",
+      "ratePercent": 0.1726
+    },
+    {
+      "startDate": "2026-05-06",
+      "endDate": "2026-06-06",
+      "ratePercent": 0.1726
+    },
+    {
+      "startDate": "2026-05-07",
+      "endDate": "2026-06-07",
+      "ratePercent": 0.1707
+    },
+    {
+      "startDate": "2026-05-08",
+      "endDate": "2026-06-08",
+      "ratePercent": 0.1689
+    },
+    {
+      "startDate": "2026-05-09",
+      "endDate": "2026-06-09",
+      "ratePercent": 0.1689
+    },
+    {
+      "startDate": "2026-05-10",
+      "endDate": "2026-06-10",
+      "ratePercent": 0.1708
+    },
+    {
+      "startDate": "2026-05-11",
+      "endDate": "2026-06-11",
+      "ratePercent": 0.1727
+    },
+    {
+      "startDate": "2026-05-12",
+      "endDate": "2026-06-12",
+      "ratePercent": 0.1727
+    },
+    {
+      "startDate": "2026-05-13",
+      "endDate": "2026-06-13",
+      "ratePercent": 0.1727
+    },
+    {
+      "startDate": "2026-05-14",
+      "endDate": "2026-06-14",
+      "ratePercent": 0.1708
+    },
+    {
+      "startDate": "2026-05-15",
+      "endDate": "2026-06-15",
+      "ratePercent": 0.169
+    },
+    {
+      "startDate": "2026-05-16",
+      "endDate": "2026-06-16",
+      "ratePercent": 0.1691
+    },
+    {
+      "startDate": "2026-05-17",
+      "endDate": "2026-06-17",
+      "ratePercent": 0.171
+    },
+    {
+      "startDate": "2026-05-18",
+      "endDate": "2026-06-18",
+      "ratePercent": 0.1728
+    },
+    {
+      "startDate": "2026-05-19",
+      "endDate": "2026-06-19",
+      "ratePercent": 0.1728
+    },
+    {
+      "startDate": "2026-05-20",
+      "endDate": "2026-06-20",
+      "ratePercent": 0.1729
+    },
+    {
+      "startDate": "2026-05-21",
+      "endDate": "2026-06-21",
       "ratePercent": 0.1709
     },
     {
-      "month": "2026-07",
-      "date": "2026-07-01",
+      "startDate": "2026-05-22",
+      "endDate": "2026-06-22",
+      "ratePercent": 0.169
+    },
+    {
+      "startDate": "2026-05-23",
+      "endDate": "2026-06-23",
+      "ratePercent": 0.169
+    },
+    {
+      "startDate": "2026-05-24",
+      "endDate": "2026-06-24",
+      "ratePercent": 0.1709
+    },
+    {
+      "startDate": "2026-05-25",
+      "endDate": "2026-06-25",
+      "ratePercent": 0.1727
+    },
+    {
+      "startDate": "2026-05-26",
+      "endDate": "2026-06-26",
+      "ratePercent": 0.1728
+    },
+    {
+      "startDate": "2026-05-27",
+      "endDate": "2026-06-27",
+      "ratePercent": 0.1728
+    },
+    {
+      "startDate": "2026-05-28",
+      "endDate": "2026-06-28",
+      "ratePercent": 0.1709
+    },
+    {
+      "startDate": "2026-05-29",
+      "endDate": "2026-06-29",
+      "ratePercent": 0.169
+    },
+    {
+      "startDate": "2026-05-30",
+      "endDate": "2026-06-30",
+      "ratePercent": 0.169
+    },
+    {
+      "startDate": "2026-05-31",
+      "endDate": "2026-07-01",
+      "ratePercent": 0.1709
+    },
+    {
+      "startDate": "2026-06-01",
+      "endDate": "2026-07-01",
+      "ratePercent": 0.1709
+    },
+    {
+      "startDate": "2026-06-02",
+      "endDate": "2026-07-02",
+      "ratePercent": 0.1708
+    },
+    {
+      "startDate": "2026-06-03",
+      "endDate": "2026-07-03",
+      "ratePercent": 0.1708
+    },
+    {
+      "startDate": "2026-06-04",
+      "endDate": "2026-07-04",
+      "ratePercent": 0.1708
+    },
+    {
+      "startDate": "2026-06-05",
+      "endDate": "2026-07-05",
+      "ratePercent": 0.1708
+    },
+    {
+      "startDate": "2026-06-06",
+      "endDate": "2026-07-06",
+      "ratePercent": 0.1689
+    },
+    {
+      "startDate": "2026-06-07",
+      "endDate": "2026-07-07",
+      "ratePercent": 0.1707
+    },
+    {
+      "startDate": "2026-06-08",
+      "endDate": "2026-07-08",
+      "ratePercent": 0.1726
+    },
+    {
+      "startDate": "2026-06-09",
+      "endDate": "2026-07-09",
+      "ratePercent": 0.1726
+    },
+    {
+      "startDate": "2026-06-10",
+      "endDate": "2026-07-10",
+      "ratePercent": 0.1725
+    },
+    {
+      "startDate": "2026-06-11",
+      "endDate": "2026-07-11",
+      "ratePercent": 0.1725
+    },
+    {
+      "startDate": "2026-06-12",
+      "endDate": "2026-07-12",
+      "ratePercent": 0.1706
+    },
+    {
+      "startDate": "2026-06-13",
+      "endDate": "2026-07-13",
+      "ratePercent": 0.1685
+    },
+    {
+      "startDate": "2026-06-14",
+      "endDate": "2026-07-14",
+      "ratePercent": 0.1704
+    },
+    {
+      "startDate": "2026-06-15",
+      "endDate": "2026-07-15",
+      "ratePercent": 0.1722
+    },
+    {
+      "startDate": "2026-06-16",
+      "endDate": "2026-07-16",
+      "ratePercent": 0.172
+    },
+    {
+      "startDate": "2026-06-17",
+      "endDate": "2026-07-17",
+      "ratePercent": 0.1719
+    },
+    {
+      "startDate": "2026-06-18",
+      "endDate": "2026-07-18",
+      "ratePercent": 0.1717
+    },
+    {
+      "startDate": "2026-06-19",
+      "endDate": "2026-07-19",
+      "ratePercent": 0.1699
+    },
+    {
+      "startDate": "2026-06-20",
+      "endDate": "2026-07-20",
+      "ratePercent": 0.1598
+    },
+    {
+      "startDate": "2026-06-21",
+      "endDate": "2026-07-21",
+      "ratePercent": 0.1699
+    },
+    {
+      "startDate": "2026-06-22",
+      "endDate": "2026-07-22",
+      "ratePercent": 0.1717
+    },
+    {
+      "startDate": "2026-06-23",
+      "endDate": "2026-07-23",
+      "ratePercent": 0.1716
+    },
+    {
+      "startDate": "2026-06-24",
+      "endDate": "2026-07-24",
+      "ratePercent": 0.1716
+    },
+    {
+      "startDate": "2026-06-25",
+      "endDate": "2026-07-25",
+      "ratePercent": 0.1714
+    },
+    {
+      "startDate": "2026-06-26",
+      "endDate": "2026-07-26",
+      "ratePercent": 0.1696
+    },
+    {
+      "startDate": "2026-06-27",
+      "endDate": "2026-07-27",
+      "ratePercent": 0.1524
+    },
+    {
+      "startDate": "2026-06-28",
+      "endDate": "2026-07-28",
+      "ratePercent": 0.1695
+    },
+    {
+      "startDate": "2026-06-29",
+      "endDate": "2026-07-29",
+      "ratePercent": 0.1713
+    },
+    {
+      "startDate": "2026-06-30",
+      "endDate": "2026-07-30",
+      "ratePercent": 0.1711
+    },
+    {
+      "startDate": "2026-07-01",
+      "endDate": "2026-08-01",
+      "ratePercent": 0.1729
+    },
+    {
+      "startDate": "2026-07-02",
+      "endDate": "2026-08-02",
+      "ratePercent": 0.171
+    },
+    {
+      "startDate": "2026-07-03",
+      "endDate": "2026-08-03",
+      "ratePercent": 0.1696
+    },
+    {
+      "startDate": "2026-07-04",
+      "endDate": "2026-08-04",
+      "ratePercent": 0.1695
+    },
+    {
+      "startDate": "2026-07-05",
+      "endDate": "2026-08-05",
+      "ratePercent": 0.1713
+    },
+    {
+      "startDate": "2026-07-06",
+      "endDate": "2026-08-06",
+      "ratePercent": 0.1731
+    },
+    {
+      "startDate": "2026-07-07",
+      "endDate": "2026-08-07",
+      "ratePercent": 0.1731
+    },
+    {
+      "startDate": "2026-07-08",
+      "endDate": "2026-08-08",
+      "ratePercent": 0.1732
+    },
+    {
+      "startDate": "2026-07-09",
+      "endDate": "2026-08-09",
+      "ratePercent": 0.1713
+    },
+    {
+      "startDate": "2026-07-10",
+      "endDate": "2026-08-10",
+      "ratePercent": 0.1695
+    },
+    {
+      "startDate": "2026-07-11",
+      "endDate": "2026-08-11",
+      "ratePercent": 0.1695
+    },
+    {
+      "startDate": "2026-07-12",
+      "endDate": "2026-08-12",
+      "ratePercent": 0.1713
+    },
+    {
+      "startDate": "2026-07-13",
+      "endDate": "2026-08-13",
+      "ratePercent": 0.1731
+    },
+    {
+      "startDate": "2026-07-14",
+      "endDate": "2026-08-14",
+      "ratePercent": 0.173
+    },
+    {
+      "startDate": "2026-07-15",
+      "endDate": "2026-08-15",
+      "ratePercent": 0.173
+    },
+    {
+      "startDate": "2026-07-16",
+      "endDate": "2026-08-16",
+      "ratePercent": 0.1712
+    },
+    {
+      "startDate": "2026-07-17",
+      "endDate": "2026-08-17",
+      "ratePercent": 0.1694
+    },
+    {
+      "startDate": "2026-07-18",
+      "endDate": "2026-08-18",
+      "ratePercent": 0.1694
+    },
+    {
+      "startDate": "2026-07-19",
+      "endDate": "2026-08-19",
+      "ratePercent": 0.1712
+    },
+    {
+      "startDate": "2026-07-20",
+      "endDate": "2026-08-20",
+      "ratePercent": 0.1731
+    },
+    {
+      "startDate": "2026-07-21",
+      "endDate": "2026-08-21",
+      "ratePercent": 0.1732
+    },
+    {
+      "startDate": "2026-07-22",
+      "endDate": "2026-08-22",
+      "ratePercent": 0.1732
+    },
+    {
+      "startDate": "2026-07-23",
+      "endDate": "2026-08-23",
+      "ratePercent": 0.1714
+    },
+    {
+      "startDate": "2026-07-24",
+      "endDate": "2026-08-24",
+      "ratePercent": 0.1695
+    },
+    {
+      "startDate": "2026-07-25",
+      "endDate": "2026-08-25",
+      "ratePercent": 0.1695
+    },
+    {
+      "startDate": "2026-07-26",
+      "endDate": "2026-08-26",
+      "ratePercent": 0.1713
+    },
+    {
+      "startDate": "2026-07-27",
+      "endDate": "2026-08-27",
+      "ratePercent": 0.1732
+    },
+    {
+      "startDate": "2026-07-28",
+      "endDate": "2026-08-28",
+      "ratePercent": 0.173
+    },
+    {
+      "startDate": "2026-07-29",
+      "endDate": "2026-08-29",
       "ratePercent": 0.1729
     }
   ]

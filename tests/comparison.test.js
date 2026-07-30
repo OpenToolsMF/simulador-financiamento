@@ -76,9 +76,9 @@ const bcbData = {
 };
 
 const trReference = comparison.highestRecentTrRate([
-  { month: '2026-01', date: '2026-01-01', ratePercent: 0.11 },
-  { month: '2026-02', date: '2026-02-01', ratePercent: 0.18 },
-  { month: '2026-03', date: '2026-03-01', ratePercent: 0.14 },
+  { startDate: '2026-01-01', endDate: '2026-02-01', ratePercent: 0.11 },
+  { startDate: '2026-02-01', endDate: '2026-03-01', ratePercent: 0.18 },
+  { startDate: '2026-03-01', endDate: '2026-04-01', ratePercent: 0.14 },
 ], 12);
 
 assert.deepEqual(
@@ -88,6 +88,10 @@ assert.deepEqual(
     startMonth: '2026-01',
     endMonth: '2026-03',
     selectedMonth: '2026-02',
+    startDate: '2026-01-01',
+    endDate: '2026-04-01',
+    selectedDate: '2026-02-01',
+    selectedEndDate: '2026-03-01',
     months: 3,
   },
   'seleciona a maior TR do período recente',

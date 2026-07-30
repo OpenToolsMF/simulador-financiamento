@@ -12,7 +12,7 @@
     '#0f766e',
   ];
   const WORST_CHART_COLOR = '#b42318';
-  const TR_CACHE_KEY = 'financing-simulator:tr-cache:v1';
+  const TR_CACHE_KEY = 'financing-simulator:tr-cache:v2';
   const BCB_CREDIT_RATES_CACHE_KEY = 'financing-simulator:bcb-credit-rates-cache:v2';
 
   function sourceRows(payload) {
@@ -22,12 +22,19 @@
   }
 
   function highestRecentTrRate(rates, months = 12) {
-    const recentRates = sourceRows(rates)
-      .filter((rate) => typeof rate?.month === 'string' && typeof rate?.date === 'string' && Number.isFinite(Number(rate?.ratePercent)))
-      .sort((left, right) => left.date.localeCompare(right.date))
-      .slice(-months);
+    const sortedRates = sourceRows(rates)
+      .filter((rate) => (
+        typeof rate?.startDate === 'string'
+        && typeof rate?.endDate === 'string'
+        && Number.isFinite(Number(rate?.ratePercent))
+      ))
+      .sort((left, right) => left.startDate.localeCompare(right.startDate));
 
-    if (recentRates.length === 0) return null;
+    if (sortedRates.length === 0) return null;
+    const threshold = new Date(`${sortedRates.at(-1).startDate}T00:00:00Z`);
+    threshold.setUTCMonth(threshold.getUTCMonth() - months);
+    const thresholdIso = threshold.toISOString().slice(0, 10);
+    const recentRates = sortedRates.filter((rate) => rate.startDate >= thresholdIso);
 
     const selectedRate = recentRates.reduce((highest, rate) => (
       Number(rate.ratePercent) > Number(highest.ratePercent) ? rate : highest
@@ -35,9 +42,13 @@
 
     return {
       ratePercent: Number(selectedRate.ratePercent),
-      startMonth: recentRates[0].month,
-      endMonth: recentRates.at(-1).month,
-      selectedMonth: selectedRate.month,
+      startMonth: recentRates[0].startDate.slice(0, 7),
+      endMonth: recentRates.at(-1).startDate.slice(0, 7),
+      selectedMonth: selectedRate.startDate.slice(0, 7),
+      startDate: recentRates[0].startDate,
+      endDate: recentRates.at(-1).endDate,
+      selectedDate: selectedRate.startDate,
+      selectedEndDate: selectedRate.endDate,
       months: recentRates.length,
     };
   }
@@ -398,7 +409,7 @@
   }
 
   async function loadTrReference() {
-    const cached = readCache(TR_CACHE_KEY, (cache) => cache.version === 2 && validateTrReference(cache.reference));
+    const cached = readCache(TR_CACHE_KEY, (cache) => cache.version === 3 && validateTrReference(cache.reference));
     if (cached) return cached.reference;
 
     const response = await fetch(TR_DATA_URL, { cache: 'no-cache' });
@@ -407,7 +418,7 @@
     const reference = highestRecentTrRate(data.rates, 12);
     if (!reference) throw new Error('TR inválida.');
     writeCache(TR_CACHE_KEY, {
-      version: 2,
+      version: 3,
       reference,
       generatedAt: typeof data.generatedAt === 'string' ? data.generatedAt : '',
       sourceUrl: typeof data.sourceUrl === 'string' ? data.sourceUrl : '',
@@ -684,7 +695,7 @@
     const currentPage = i18n.getCurrentPageKind();
     document.querySelectorAll('[data-route]').forEach((link) => {
       link.setAttribute('href', i18n.localizedPathForLanguage(i18n.getLanguage(), link.dataset.route));
-      if (link.closest('.site-footer')) {
+      if (link.closest('.site-footer, .site-primary-nav')) {
         if (link.dataset.route === currentPage) link.setAttribute('aria-current', 'page');
         else link.removeAttribute('aria-current');
       }
@@ -725,6 +736,7 @@
     setText('.site-header h1', 'comparison.header.title');
     setText('.site-header .lead', 'comparison.header.lead');
     setText('.language-switcher label', 'language.label');
+    setAttr('.site-primary-nav', 'aria-label', 'nav.label');
     setAttr('#language-select', 'aria-label', 'language.label');
     setOptionText('#language-select', 'pt-BR', 'language.pt-BR');
     setOptionText('#language-select', 'en', 'language.en');

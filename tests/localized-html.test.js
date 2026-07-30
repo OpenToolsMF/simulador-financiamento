@@ -75,7 +75,7 @@ function assertFooterContract(html, language, currentRoute, file) {
     attrs: parseAttributes(match[1]),
     text: normalizeHtmlText(match[2]),
   }));
-  const expectedRoutes = ['simulator', 'comparison', 'about', 'contact', 'privacy'];
+  const expectedRoutes = ['simulator', 'comparison', 'guides', 'about', 'contact', 'privacy'];
   assert.deepEqual(links.map((link) => link.attrs['data-route']), expectedRoutes, `${file}: footer mantém ordem padrão`);
   for (const link of links) {
     const route = link.attrs['data-route'];
@@ -299,6 +299,9 @@ const portugueseSentinels = [
     { file: 'comparar/index.html', language: 'pt-BR', currentRoute: 'comparison' },
     { file: 'en/compare/index.html', language: 'en', currentRoute: 'comparison' },
     { file: 'es/comparar/index.html', language: 'es', currentRoute: 'comparison' },
+    { file: 'guias/index.html', language: 'pt-BR', currentRoute: 'guides' },
+    { file: 'en/guides/index.html', language: 'en', currentRoute: 'guides' },
+    { file: 'es/guias/index.html', language: 'es', currentRoute: 'guides' },
     { file: 'privacidade.html', language: 'pt-BR', currentRoute: 'privacy' },
     { file: 'en/privacy.html', language: 'en', currentRoute: 'privacy' },
     { file: 'es/privacidad.html', language: 'es', currentRoute: 'privacy' },

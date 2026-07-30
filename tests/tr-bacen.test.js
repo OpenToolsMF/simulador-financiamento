@@ -1,61 +1,61 @@
 'use strict';
 
 const assert = require('node:assert/strict');
-const { mkdtemp, readFile } = require('node:fs/promises');
+const { mkdtemp, readFile, writeFile } = require('node:fs/promises');
 const { tmpdir } = require('node:os');
 const { join } = require('node:path');
 
 (async () => {
-  const { buildTrData, parseTrRates, SOURCE_URL, updateTrBacen } = await import('../scripts/update-tr-bacen.mjs');
-  const html = await readFile(join(__dirname, 'fixtures/tr-bacen.html'), 'utf8');
+  const {
+    buildTrData,
+    parseTrRates,
+    SERIES_CODE,
+    SOURCE_URL,
+    sourceUrlForDate,
+    updateTrBacen,
+  } = await import('../scripts/update-tr-bacen.mjs');
+  const payload = JSON.parse(await readFile(join(__dirname, 'fixtures/tr-sgs-226.json'), 'utf8'));
 
-  const rates = parseTrRates(html);
-  assert.equal(rates.length, 5, 'extrai apenas taxas TR válidas');
+  const rates = parseTrRates(payload);
+  assert.equal(rates.length, 13, 'mantém apenas a janela móvel de doze meses');
   assert.deepEqual(
-    rates.map((rate) => rate.month),
-    ['2025-04', '2025-05', '2025-06', '2025-08', '2026-07'],
-    'ordena as taxas por mês e ignora acumulados sem TR mensal',
+    rates[0],
+    { startDate: '2025-07-01', endDate: '2025-07-31', ratePercent: 0.169 },
+    'normaliza data, fim do período e percentual',
   );
-  assert.equal(rates.find((rate) => rate.month === '2025-07'), undefined, 'ignora valores acumulados maiores que faixa de TR mensal');
-  assert.equal(rates.at(-1).ratePercent, 0.1729, 'mantém percentual como número');
+  assert.equal(rates.at(-1).startDate, '2026-07-01', 'ordena os períodos por início');
 
-  const data = buildTrData(html, '2026-07-15T12:00:00.000Z');
-  assert.equal(data.sourceUrl, SOURCE_URL, 'registra a URL de origem');
-  assert.equal(data.generatedAt, '2026-07-15T12:00:00.000Z', 'permite generatedAt determinístico');
-  assert.deepEqual(data.latest, {
-    month: '2026-07',
-    date: '2026-07-01',
-    ratePercent: 0.1729,
-  }, 'define latest pelo mês mais recente');
-  assert.equal(data.rates.length, rates.length, 'inclui todas as taxas extraídas');
+  const data = buildTrData(payload, '2026-07-27T12:00:00.000Z');
+  assert.equal(data.version, 2, 'versiona o novo formato oficial');
+  assert.equal(data.seriesCode, SERIES_CODE, 'registra a série oficial');
+  assert.equal(data.sourceUrl, SOURCE_URL, 'registra o endpoint oficial');
+  assert.equal(data.generatedAt, '2026-07-27T12:00:00.000Z', 'aceita generatedAt determinístico');
+  assert.deepEqual(data.latest, rates.at(-1), 'define latest pela observação mais recente');
 
   assert.throws(
-    () => buildTrData('<html></html>', '2026-07-15T12:00:00.000Z'),
-    /Nenhuma taxa TR válida/,
-    'falha quando a página não contém taxas válidas',
+    () => buildTrData([], '2026-07-27T12:00:00.000Z'),
+    /Nenhuma observação válida/,
+    'falha quando a API não contém observações válidas',
   );
 
-  const outputDirectory = await mkdtemp(join(tmpdir(), 'tr-bacen-test-'));
+  const outputDirectory = await mkdtemp(join(tmpdir(), 'tr-sgs-test-'));
   const outputPath = join(outputDirectory, 'tr-bacen.json');
-  await updateTrBacen({
-    outputPath,
-    fetchImpl: async (url) => {
-      assert.equal(url, SOURCE_URL, 'baixa a URL configurada como fonte');
-      return {
-        ok: true,
-        text: async () => html,
-      };
-    },
-  });
+  const now = new Date('2026-07-27T12:00:00.000Z');
+  const fetchImpl = async (url) => {
+    assert.equal(url, sourceUrlForDate(now), 'baixa a janela anual da série SGS configurada');
+    return { ok: true, json: async () => payload };
+  };
 
-  const generated = JSON.parse(await readFile(outputPath, 'utf8'));
-  assert.deepEqual(generated.latest, data.latest, 'grava latest no JSON gerado');
-  assert.deepEqual(
-    generated.rates.map((rate) => rate.month),
-    data.rates.map((rate) => rate.month),
-    'grava as taxas ordenadas no JSON gerado',
-  );
-  assert.equal(typeof generated.latest.ratePercent, 'number', 'grava ratePercent como número');
+  const first = await updateTrBacen({ outputPath, fetchImpl, now });
+  assert.equal(first.changed, true, 'grava a primeira atualização');
+  const firstGenerated = JSON.parse(await readFile(outputPath, 'utf8'));
+  assert.equal(firstGenerated.rates.length, 13, 'grava as observações normalizadas');
 
-  console.log('Testes da TR Bacen concluídos com sucesso.');
+  firstGenerated.generatedAt = '2026-07-27T00:00:00.000Z';
+  await writeFile(outputPath, `${JSON.stringify(firstGenerated, null, 2)}\n`);
+  const second = await updateTrBacen({ outputPath, fetchImpl, now });
+  assert.equal(second.changed, false, 'não regrava dados semanticamente iguais');
+  assert.equal(second.data.generatedAt, '2026-07-27T00:00:00.000Z', 'preserva generatedAt quando não há mudança');
+
+  console.log('Testes da TR SGS 226 concluídos com sucesso.');
 })();

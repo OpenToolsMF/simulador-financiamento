@@ -415,6 +415,20 @@ async function readPreviousVehicleCreditType(outputPath) {
   }
 }
 
+async function readPreviousData(outputPath) {
+  try {
+    return JSON.parse(await readFile(outputPath, 'utf8'));
+  } catch {
+    return null;
+  }
+}
+
+function semanticData(data) {
+  if (!data || typeof data !== 'object') return null;
+  const { generatedAt, ...comparable } = data;
+  return comparable;
+}
+
 function vehicleReferencePeriodLabel(vehicle) {
   return `${vehicle.referencePeriod.startDate} a ${vehicle.referencePeriod.endDate}`;
 }
@@ -445,9 +459,17 @@ export async function updateBcbCreditRates({ fetchImpl = fetch, outputPath = OUT
     logger.warn(`Taxas veiculares BCB preservadas do JSON anterior (${vehicleReferencePeriodLabel(vehicle)}). Motivo: ${vehicleResult.reason.message}`);
   }
 
-  const data = buildBcbCreditRatesDataFromCreditTypes(realEstate, vehicle);
-  await mkdir(dirname(absoluteOutputPath), { recursive: true });
-  await writeFile(absoluteOutputPath, `${JSON.stringify(data, null, 2)}\n`);
+  const previous = await readPreviousData(absoluteOutputPath);
+  const generated = buildBcbCreditRatesDataFromCreditTypes(realEstate, vehicle);
+  const unchanged = previous
+    && JSON.stringify(semanticData(previous)) === JSON.stringify(semanticData(generated));
+  const data = unchanged ? previous : generated;
+
+  if (!unchanged) {
+    await mkdir(dirname(absoluteOutputPath), { recursive: true });
+    await writeFile(absoluteOutputPath, `${JSON.stringify(data, null, 2)}\n`);
+  }
+
   return data;
 }
 

@@ -3,8 +3,9 @@
 
   const finance = window.FinanceSimulator;
   const i18n = window.FinancingI18n;
+  const simulationState = window.FinancingSimulationState;
   const STORAGE_KEY = 'financing-simulator:form-state:v1';
-  const TR_CACHE_KEY = 'financing-simulator:tr-cache:v1';
+  const TR_CACHE_KEY = 'financing-simulator:tr-cache:v2';
   const BCB_CREDIT_RATES_CACHE_KEY = 'financing-simulator:bcb-credit-rates-cache:v2';
   const PRIVACY_NOTICE_STORAGE_KEY = 'financing-simulator:privacy-notice-dismissed:v1';
   const appScriptUrl = document.currentScript?.src || document.querySelector('script[src*="assets/js/app.js"]')?.src;
@@ -81,6 +82,10 @@
   const bcbInstitutionFilter = document.querySelector('#bcb-institution-filter');
   const bcbRatesStatus = document.querySelector('#bcb-rates-status');
   const bcbRatesBody = document.querySelector('#bcb-rates-body');
+  const simulationLinkNotice = document.querySelector('#simulation-link-notice');
+  const simulationLinkMessage = document.querySelector('#simulation-link-message');
+  const restoreSavedSimulationButton = document.querySelector('#restore-saved-simulation');
+  const dismissSimulationLinkNoticeButton = document.querySelector('#dismiss-simulation-link-notice');
 
   let extraSequence = 0;
   let simulatedRows = [];
@@ -106,6 +111,9 @@
   let chartRenderVersion = 0;
   let latestRenderedChartVersion = 0;
   let chartStatusState = 'idle';
+  let suppressFormPersistence = false;
+  let urlSimulationActive = false;
+  let savedStateBeforeUrl = null;
 
   function t(key, params) {
     return i18n.t(key, params);
@@ -239,8 +247,10 @@
       Array.isArray(rates)
       && rates.length > 0
       && rates.every((rate) => (
-        typeof rate.month === 'string'
-        && typeof rate.date === 'string'
+        typeof rate.startDate === 'string'
+        && /^\d{4}-\d{2}-\d{2}$/.test(rate.startDate)
+        && typeof rate.endDate === 'string'
+        && /^\d{4}-\d{2}-\d{2}$/.test(rate.endDate)
         && Number.isFinite(rate.ratePercent)
         && rate.ratePercent >= 0
       )),
@@ -252,11 +262,11 @@
       reference
       && Number.isFinite(reference.ratePercent)
       && reference.ratePercent >= 0
-      && typeof reference.startMonth === 'string'
-      && typeof reference.endMonth === 'string'
-      && typeof reference.selectedMonth === 'string'
-      && Number.isInteger(reference.months)
-      && reference.months > 0
+      && typeof reference.startDate === 'string'
+      && typeof reference.endDate === 'string'
+      && typeof reference.selectedDate === 'string'
+      && Number.isInteger(reference.observationCount)
+      && reference.observationCount > 0
     );
   }
 
@@ -383,7 +393,7 @@
 
     if (
       !cache
-      || cache.version !== 2
+      || cache.version !== 3
       || !validateTrReference(cache.reference)
       || typeof cache.expiresAt !== 'string'
       || Date.parse(cache.expiresAt) <= Date.now()
@@ -397,7 +407,7 @@
   function writeTrCache({ reference, generatedAt, sourceUrl }) {
     try {
       window.localStorage.setItem(TR_CACHE_KEY, JSON.stringify({
-        version: 2,
+        version: 3,
         reference,
         generatedAt: typeof generatedAt === 'string' ? generatedAt : '',
         sourceUrl: typeof sourceUrl === 'string' ? sourceUrl : '',
@@ -410,18 +420,23 @@
   }
 
   function highestRecentTrRate(rates, months = 12) {
-    const recentRates = [...rates]
-      .sort((left, right) => left.date.localeCompare(right.date))
-      .slice(-months);
+    const sortedRates = [...rates].sort((left, right) => left.startDate.localeCompare(right.startDate));
+    const latestDate = sortedRates.at(-1).startDate;
+    const threshold = new Date(`${latestDate}T00:00:00Z`);
+    threshold.setUTCMonth(threshold.getUTCMonth() - months);
+    const thresholdIso = threshold.toISOString().slice(0, 10);
+    const recentRates = sortedRates.filter((rate) => rate.startDate >= thresholdIso);
     const selectedRate = recentRates.reduce((highest, rate) => (
       rate.ratePercent > highest.ratePercent ? rate : highest
     ), recentRates[0]);
     return {
       ratePercent: selectedRate.ratePercent,
-      startMonth: recentRates[0].month,
-      endMonth: recentRates.at(-1).month,
-      selectedMonth: selectedRate.month,
-      months: recentRates.length,
+      startDate: recentRates[0].startDate,
+      endDate: recentRates.at(-1).startDate,
+      selectedDate: selectedRate.startDate,
+      selectedEndDate: selectedRate.endDate,
+      months,
+      observationCount: recentRates.length,
     };
   }
 
@@ -440,14 +455,14 @@
   function setTrReferenceHelp(reference, generatedAt) {
     currentTrReferenceInfo = { reference, generatedAt };
     const rateText = formatRateInput(reference.ratePercent);
-    const periodText = reference.startMonth === reference.endMonth
-      ? formatTrMonth(reference.endMonth)
-      : `${formatTrMonth(reference.startMonth)} ${t('common.rangeSeparator')} ${formatTrMonth(reference.endMonth)}`;
+    const periodText = reference.startDate === reference.endDate
+      ? formatDate(reference.endDate)
+      : `${formatDate(reference.startDate)} ${t('common.rangeSeparator')} ${formatDate(reference.endDate)}`;
     const updatedText = typeof generatedAt === 'string' ? t('tr.updatedAt', { date: formatDate(generatedAt.slice(0, 10)) }) : '';
     const message = t('tr.highestTooltip', {
       months: reference.months,
       period: periodText,
-      selectedMonth: formatTrMonth(reference.selectedMonth),
+      selectedMonth: formatDate(reference.selectedDate),
       rate: rateText,
       updated: updatedText,
     });
@@ -660,15 +675,13 @@
   }
 
   function updateLocalizedLinks() {
-    document.querySelectorAll('#home-comparison-link, #bcb-comparison-link').forEach((link) => {
-      link.setAttribute('href', i18n.localizedPathForLanguage(i18n.getLanguage(), 'comparison'));
-    });
-
     const currentPage = i18n.getCurrentPageKind();
-    document.querySelectorAll('.site-footer a[data-route]').forEach((link) => {
+    document.querySelectorAll('a[data-route]').forEach((link) => {
       link.setAttribute('href', i18n.localizedPathForLanguage(i18n.getLanguage(), link.dataset.route));
-      if (link.dataset.route === currentPage) link.setAttribute('aria-current', 'page');
-      else link.removeAttribute('aria-current');
+      if (link.closest('.site-footer, .site-primary-nav')) {
+        if (link.dataset.route === currentPage) link.setAttribute('aria-current', 'page');
+        else link.removeAttribute('aria-current');
+      }
     });
   }
 
@@ -691,12 +704,22 @@
     document.querySelectorAll('.site-footer [data-i18n]').forEach((element) => {
       element.textContent = t(element.dataset.i18n);
     });
+    document.querySelectorAll('.site-primary-nav [data-i18n]').forEach((element) => {
+      element.textContent = t(element.dataset.i18n);
+    });
+    document.querySelector('.site-primary-nav')?.setAttribute('aria-label', t('nav.label'));
     setText('#faq-kicker', 'faq.kicker');
     setText('#faq-title', 'faq.title');
     setText('#home-comparison-kicker', 'homeComparison.kicker');
     setText('#home-comparison-title', 'homeComparison.title');
     setText('#home-comparison-description', 'homeComparison.description');
     setText('#home-comparison-link', 'homeComparison.cta');
+    setText('#home-guides-kicker', 'guides.homeKicker');
+    setText('#home-guides-title', 'guides.homeTitle');
+    setText('#home-guides-description', 'guides.homeDescription');
+    setText('#home-guides-link', 'guides.homeCta');
+    setText('#restore-saved-simulation', 'simulationLink.restore');
+    setText('#dismiss-simulation-link-notice', 'simulationLink.dismiss');
     document.querySelectorAll('[data-faq-item]').forEach((item, index) => {
       const number = index + 1;
       setText('[data-faq-question]', `faq.${number}.question`, item);
@@ -1059,6 +1082,7 @@
   }
 
   function persistFormState() {
+    if (suppressFormPersistence) return;
     try {
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(captureFormState()));
     } catch (error) {
@@ -1091,15 +1115,20 @@
     }
   }
 
-  function restoreFormState() {
+  function readStoredFormState() {
     let state;
     try {
       state = JSON.parse(window.localStorage.getItem(STORAGE_KEY));
     } catch (error) {
-      return false;
+      return null;
     }
-    if (!state || state.version !== 1) return false;
+    return state && state.version === 1 ? state : null;
+  }
 
+  function applyStoredFormState(state) {
+    if (!state || state.version !== 1) return false;
+    extrasList.innerHTML = '';
+    extraSequence = 0;
     financedValueInput.value = typeof state.financedValue === 'string' ? state.financedValue : '';
     syncMoneyDigits(financedValueInput);
     monthlyExtraCostInput.value = typeof state.monthlyExtraCost === 'string' ? state.monthlyExtraCost : '';
@@ -1123,6 +1152,113 @@
       });
     }
     return true;
+  }
+
+  function restoreFormState() {
+    return applyStoredFormState(readStoredFormState());
+  }
+
+  function localizedMoneyValue(cents) {
+    return i18n.formatNumber(cents / 100, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  }
+
+  function localizedRateValue(ratePercent, digits = 6) {
+    return i18n.formatNumber(ratePercent, {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: digits,
+    });
+  }
+
+  function applyCanonicalSimulationState(state) {
+    extrasList.innerHTML = '';
+    extraSequence = 0;
+    financedValueInput.value = localizedMoneyValue(state.amountCents);
+    syncMoneyDigits(financedValueInput);
+    monthlyExtraCostInput.value = state.monthlyExtraCostCents
+      ? localizedMoneyValue(state.monthlyExtraCostCents)
+      : '';
+    if (monthlyExtraCostInput.value) syncMoneyDigits(monthlyExtraCostInput);
+    else clearMoneyDigits(monthlyExtraCostInput);
+    termInput.value = String(state.term);
+    interestRateInput.value = localizedRateValue(state.ratePercent);
+    ratePeriodInput.value = state.ratePeriod;
+    annualRateTypeInput.value = state.annualRateType;
+    firstDueDateInput.value = state.firstDueDate || '';
+    correctionModeInput.value = state.correction.mode;
+    monthlyCorrectionRateInput.value = state.correction.mode === 'fixed'
+      ? localizedRateValue(state.correction.monthlyRatePercent)
+      : '';
+    monthlyCorrectionSeriesInput.value = state.correction.mode === 'custom'
+      ? state.correction.monthlyRatesPercent.map((rate) => localizedRateValue(rate)).join('\n')
+      : '';
+    form.elements.system.value = state.system;
+
+    state.extraPayments.forEach((extra) => {
+      const standardFrequencies = [1, 2, 3, 6, 12];
+      addExtraPayment({
+        type: extra.type,
+        value: localizedMoneyValue(extra.valueCents),
+        month: extra.month ?? '',
+        startMonth: extra.startMonth ?? '',
+        endMonth: extra.endMonth ?? '',
+        frequency: extra.type === 'recurring' && !standardFrequencies.includes(extra.frequencyMonths)
+          ? 'custom'
+          : String(extra.frequencyMonths || 1),
+        customFrequency: extra.type === 'recurring' && !standardFrequencies.includes(extra.frequencyMonths)
+          ? extra.frequencyMonths
+          : '',
+        goal: extra.goal,
+      }, { focus: false, schedule: false });
+    });
+    updateRatePeriod();
+    updateCorrectionFields();
+    updateExtrasEmptyState();
+  }
+
+  function removeSimulationSearchParameter() {
+    const url = new URL(window.location.href);
+    url.searchParams.delete('sim');
+    window.history.replaceState(window.history.state, '', `${url.pathname}${url.search}${url.hash}`);
+  }
+
+  function showSimulationLinkNotice(key, { invalid = false, canRestore = false } = {}) {
+    if (!simulationLinkNotice || !simulationLinkMessage) return;
+    simulationLinkMessage.textContent = t(key);
+    simulationLinkNotice.classList.remove('d-none');
+    simulationLinkNotice.classList.toggle('is-invalid-link', invalid);
+    restoreSavedSimulationButton?.classList.toggle('d-none', !canRestore);
+  }
+
+  function hideSimulationLinkNotice() {
+    simulationLinkNotice?.classList.add('d-none');
+  }
+
+  function leaveUrlSimulationMode({ removeParameter = true } = {}) {
+    if (!urlSimulationActive) return;
+    urlSimulationActive = false;
+    suppressFormPersistence = false;
+    if (removeParameter) removeSimulationSearchParameter();
+    hideSimulationLinkNotice();
+  }
+
+  function activateUrlSimulationFromLocation() {
+    if (!simulationState) return { status: 'absent' };
+    const decoded = simulationState.readSimulationStateFromSearch(window.location.search);
+    if (decoded.status === 'valid') {
+      savedStateBeforeUrl = readStoredFormState();
+      suppressFormPersistence = true;
+      urlSimulationActive = true;
+      applyCanonicalSimulationState(decoded.state);
+      showSimulationLinkNotice('simulationLink.loaded', {
+        canRestore: Boolean(savedStateBeforeUrl),
+      });
+    } else if (decoded.status === 'invalid') {
+      showSimulationLinkNotice('simulationLink.invalid', { invalid: true });
+    }
+    return decoded;
   }
 
   function readExtraPayments(term, errors, showErrors) {
@@ -1431,10 +1567,12 @@
 
   function handleLanguageChange() {
     const nextLanguage = languageSelect.value;
-    const nextUrl = i18n.localizedUrlForLanguage(nextLanguage, 'simulator');
+    const nextUrl = new URL(i18n.localizedUrlForLanguage(nextLanguage, 'simulator'));
+    const simulationParameter = new URLSearchParams(window.location.search).get('sim');
+    if (simulationParameter) nextUrl.searchParams.set('sim', simulationParameter);
     i18n.setLanguage(nextLanguage);
-    if (nextUrl && nextUrl !== window.location.href) {
-      window.location.assign(nextUrl);
+    if (nextUrl.href !== window.location.href) {
+      window.location.assign(nextUrl.href);
       return;
     }
     applyStaticTranslations();
@@ -2376,6 +2514,7 @@
   }
 
   async function resetFormState() {
+    leaveUrlSimulationMode();
     window.clearTimeout(autoCalculationTimer);
     autoCalculationTimer = null;
     clearPersistedFormState();
@@ -2419,8 +2558,26 @@
     clearPersistedFormState();
   }
 
-  document.querySelector('#add-extra').addEventListener('click', () => addExtraPayment());
+  document.querySelector('#add-extra').addEventListener('click', () => {
+    leaveUrlSimulationMode();
+    addExtraPayment();
+  });
   privacyNoticeDismissButton?.addEventListener('click', dismissPrivacyNotice);
+  dismissSimulationLinkNoticeButton?.addEventListener('click', hideSimulationLinkNotice);
+  restoreSavedSimulationButton?.addEventListener('click', () => {
+    if (!savedStateBeforeUrl) return;
+    suppressFormPersistence = true;
+    applyStoredFormState(savedStateBeforeUrl);
+    removeSimulationSearchParameter();
+    urlSimulationActive = false;
+    suppressFormPersistence = false;
+    hideSimulationLinkNotice();
+    reformatFormValuesForCurrentLanguage();
+    updateRatePeriod();
+    updateCorrectionFields();
+    updateExtrasEmptyState();
+    scheduleAutomaticCalculation();
+  });
   languageSelect.addEventListener('change', handleLanguageChange);
   resetFormButton.addEventListener('click', resetFormState);
   exportPdfButton.addEventListener('click', exportResultsToPdf);
@@ -2455,6 +2612,7 @@
   });
 
   form.addEventListener('input', (event) => {
+    leaveUrlSimulationMode();
     if (event.target.matches('#financed-value, #monthly-extra-cost, [data-field="value"]')) formatMoneyWhileTyping(event.target, event);
     if (event.target === interestRateInput) clearInterestRateReferenceHelp();
     if (event.target === monthlyCorrectionRateInput) updateCorrectionRateHelp();
@@ -2462,6 +2620,7 @@
   });
 
   form.addEventListener('change', (event) => {
+    leaveUrlSimulationMode();
     if ([interestRateInput, ratePeriodInput, annualRateTypeInput].includes(event.target)) clearInterestRateReferenceHelp();
     scheduleAutomaticCalculation();
   });
@@ -2473,6 +2632,7 @@
   extrasList.addEventListener('click', (event) => {
     const removeButton = event.target.closest('[data-action="remove-extra"]');
     if (!removeButton) return;
+    leaveUrlSimulationMode();
     removeButton.closest('[data-extra-card]').remove();
     updateExtrasEmptyState();
     scheduleAutomaticCalculation();
@@ -2516,8 +2676,10 @@
   applyStaticTranslations();
   if (isPrivacyNoticeDismissed()) privacyNotice?.classList.add('d-none');
 
-  const restoredState = restoreFormState();
-  if (!restoredState) {
+  const urlState = activateUrlSimulationFromLocation();
+  const loadedFromUrl = urlState.status === 'valid';
+  const restoredState = loadedFromUrl ? false : restoreFormState();
+  if (!loadedFromUrl && !restoredState) {
     setDefaultFinancedValue();
     setFirstDueDateToToday();
   }
@@ -2525,7 +2687,9 @@
   updateRatePeriod();
   updateCorrectionFields();
   updateExtrasEmptyState();
-  if (restoredState) {
+  if (loadedFromUrl) {
+    scheduleAutomaticCalculation();
+  } else if (restoredState) {
     persistFormState();
     scheduleAutomaticCalculation();
   } else {

@@ -8,6 +8,14 @@ permalink: "{{ generatedPage.outputPath }}"
 ---
 
     <main class="container py-4 py-lg-5">
+      <aside id="simulation-link-notice" class="simulation-link-notice d-none no-print" role="status" aria-live="polite">
+        <p id="simulation-link-message"></p>
+        <div class="d-flex gap-2 flex-wrap">
+          <button id="restore-saved-simulation" class="btn btn-outline-primary btn-sm d-none" type="button">{{ 'simulationLink.restore' | t(generatedPage.locale) }}</button>
+          <button id="dismiss-simulation-link-notice" class="btn btn-outline-secondary btn-sm" type="button">{{ 'simulationLink.dismiss' | t(generatedPage.locale) }}</button>
+        </div>
+      </aside>
+
       <form id="simulation-form" novalidate>
         <section class="surface-card mb-4" aria-labelledby="financing-title">
           <div class="section-heading">
@@ -116,7 +124,7 @@ permalink: "{{ generatedPage.outputPath }}"
                 </span>
                 <span class="field-header-actions">
                   <button id="use-latest-tr" class="btn btn-link btn-sm p-0 tr-action-button" type="button">{{ "form.useTr12m" | t(generatedPage.locale) | safe }}</button>
-                  <a class="small" href="https://www.debit.com.br/tabelas/tr-bacen" target="_blank" rel="noopener noreferrer">{{ "form.viewTr" | t(generatedPage.locale) | safe }}</a>
+                  <a class="small" href="https://api.bcb.gov.br/dados/serie/bcdata.sgs.226/dados/ultimos/12?formato=json" target="_blank" rel="noopener noreferrer">{{ "form.viewTr" | t(generatedPage.locale) | safe }}</a>
                 </span>
               </div>
               <div class="input-group correction-rate-group has-validation">
@@ -368,6 +376,31 @@ permalink: "{{ generatedPage.outputPath }}"
           <div class="section-actions">
             <a id="home-comparison-link" class="btn btn-outline-primary" href="{{ generatedPage | homeComparisonHref }}">{{ "homeComparison.cta" | t(generatedPage.locale) }}</a>
           </div>
+        </div>
+      </section>
+
+      {% set featuredBasics = collections.guides | contentById('financing-basics', generatedPage.locale) %}
+      {% set featuredSystems = collections.guides | contentById('sac-or-price', generatedPage.locale) %}
+      {% set featuredAmortization = collections.guides | contentById('term-or-payment', generatedPage.locale) %}
+      <section class="surface-card no-print mb-4" aria-labelledby="home-guides-title">
+        <div class="section-heading">
+          <div>
+            <span id="home-guides-kicker" class="section-kicker">{{ 'guides.homeKicker' | t(generatedPage.locale) }}</span>
+            <h2 id="home-guides-title">{{ 'guides.homeTitle' | t(generatedPage.locale) }}</h2>
+            <p id="home-guides-description" class="section-description">{{ 'guides.homeDescription' | t(generatedPage.locale) }}</p>
+          </div>
+          <div class="section-actions">
+            <a id="home-guides-link" class="btn btn-outline-primary" href="{{ 'guides' | pageHref(generatedPage) }}" data-route="guides">{{ 'guides.homeCta' | t(generatedPage.locale) }}</a>
+          </div>
+        </div>
+        <div class="content-card-grid content-card-grid-featured home-guides-grid">
+          {% for guide in [featuredBasics, featuredSystems, featuredAmortization] %}
+            <article class="content-card">
+              <span class="content-card-category">{{ ('guides.category.' + guide.data.category) | t(generatedPage.locale) }}</span>
+              <h3><a href="{{ guide.data.contentId | contentHref('guide', generatedPage) }}">{{ guide.data.title }}</a></h3>
+              <p>{{ guide.data.description }}</p>
+            </article>
+          {% endfor %}
         </div>
       </section>
 

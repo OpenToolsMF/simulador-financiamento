@@ -8,4 +8,12 @@ eleventyExcludeFromCollections: true
     <loc>{{ generatedPage.publicPath | canonicalUrl }}</loc>
     <lastmod>{{ generatedPage.lastmod }}</lastmod>
   </url>
+{% endfor %}{% for item in collections.guides %}  <url>
+    <loc>{{ item.data.generatedPage.publicPath | canonicalUrl }}</loc>
+    <lastmod>{{ item.data.generatedPage.lastmod }}</lastmod>
+  </url>
+{% endfor %}{% for item in collections.simulations %}  <url>
+    <loc>{{ item.data.generatedPage.publicPath | canonicalUrl }}</loc>
+    <lastmod>{{ item.data.generatedPage.lastmod }}</lastmod>
+  </url>
 {% endfor %}</urlset>

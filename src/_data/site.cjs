@@ -3,6 +3,8 @@
 const { readFileSync } = require('node:fs');
 const { join } = require('node:path');
 const i18n = require('../../assets/js/i18n.js');
+const contentRegistry = require('./contentRegistry.cjs');
+const scenariosData = require('./scenarios.cjs');
 
 const domain = readFileSync(join(__dirname, '..', '..', 'CNAME'), 'utf8').trim();
 const origin = `https://${domain}`;
@@ -10,6 +12,11 @@ const locales = ['pt-BR', 'en', 'es'];
 const publicRoutes = i18n.publicRoutes;
 const dictionaries = i18n.dictionaries;
 const languageConfig = i18n.languageConfig;
+const guidesLastmod = [
+  '2026-07-27',
+  scenariosData.references.bcb.generatedAt.slice(0, 10),
+  scenariosData.references.tr.generatedAt.slice(0, 10),
+].sort().at(-1);
 
 const pageDefinitions = {
   simulator: {
@@ -17,14 +24,15 @@ const pageDefinitions = {
     headerKeys: ['header.eyebrow', 'header.title', 'header.lead'],
     headerPadding: 'py-4 py-lg-5',
     metadataPrefix: 'metadata',
-    lastmod: '2026-07-23',
-    styleVersion: '20260724-bcb-modal-toolbar',
+    lastmod: '2026-07-27',
+    styleVersion: '20260727-guides',
     footerClass: ' no-print',
     scripts: [
       'assets/vendor/bootstrap/js/bootstrap.bundle.min.js',
-      'assets/js/i18n.js?v=20260724-bcb-comparison-link',
+      'assets/js/i18n.js?v=20260727-guides',
       'assets/js/finance.js?v=20260717-privacy-page',
-      'assets/js/app.js?v=20260724-bcb-comparison-link',
+      'assets/js/simulation-state.js?v=20260727-guides',
+      'assets/js/app.js?v=20260727-guides',
     ],
     adsense: true,
     footerInContent: true,
@@ -35,15 +43,31 @@ const pageDefinitions = {
     headerPadding: 'py-4 py-lg-5',
     metadataPrefix: 'comparison.metadata',
     lastmod: '2026-07-23',
-    styleVersion: '20260724-comparison-charts',
+    styleVersion: '20260727-guides',
     footerClass: '',
     scripts: [
       'assets/vendor/bootstrap/js/bootstrap.bundle.min.js',
-      'assets/js/i18n.js?v=20260724-comparison-charts',
+      'assets/js/i18n.js?v=20260727-guides',
       'assets/js/finance.js?v=20260717-privacy-page',
       'assets/js/comparison.js?v=20260724-comparison-charts',
     ],
     adsense: true,
+  },
+  guides: {
+    bodyClass: 'content-index-body',
+    headerKeys: ['guides.header.eyebrow', 'guides.header.title', 'guides.header.lead'],
+    headerPadding: 'py-4 py-lg-5',
+    metadataPrefix: 'guides.metadata',
+    lastmod: guidesLastmod,
+    styleVersion: '20260727-guides',
+    footerClass: '',
+    scripts: [
+      'assets/js/i18n.js?v=20260727-guides',
+      'assets/js/static-content.js?v=20260727-guides',
+      'assets/js/content-index.js?v=20260727-guides',
+    ],
+    adsense: true,
+    staticContent: true,
   },
   about: {
     bodyClass: 'privacy-page-body',
@@ -78,11 +102,11 @@ const pageDefinitions = {
     headerKeys: ['privacy.header.eyebrow', 'privacy.header.title', 'privacy.header.lead'],
     headerPadding: 'py-4',
     metadataPrefix: 'privacy.metadata',
-    lastmod: '2026-07-21',
-    styleVersion: '20260720-institutional-pages',
+    lastmod: '2026-07-27',
+    styleVersion: '20260727-guides',
     footerClass: '',
     scripts: [
-      'assets/js/i18n.js?v=20260721-bcb-rates-annual',
+      'assets/js/i18n.js?v=20260727-guides',
       'assets/js/privacy.js?v=20260720-institutional-pages',
     ],
     institutional: true,
@@ -106,6 +130,16 @@ const pages = Object.entries(pageDefinitions).flatMap(([pageKey, definition]) =>
     outputPath: outputPathForPublicPath(publicRoutes[pageKey][locale]),
     titleKey: `${definition.metadataPrefix}.title`,
     descriptionKey: `${definition.metadataPrefix}.description`,
+    title: translated(locale, `${definition.metadataPrefix}.title`),
+    description: translated(locale, `${definition.metadataPrefix}.description`),
+    headerEyebrow: translated(locale, definition.headerKeys[0]),
+    headerTitle: translated(locale, definition.headerKeys[1]),
+    headerLead: translated(locale, definition.headerKeys[2]),
+    ogType: 'website',
+    alternates: locales.map((alternateLocale) => ({
+      locale: alternateLocale,
+      publicPath: publicRoutes[pageKey][alternateLocale],
+    })),
   }))
 ));
 
@@ -270,8 +304,8 @@ function institutionalStructuredData(page) {
     '@type': 'WebPage',
     '@id': `${pageUrl}#webpage`,
     url: pageUrl,
-    name: translated(page.locale, page.titleKey),
-    description: translated(page.locale, page.descriptionKey),
+    name: page.title,
+    description: page.description,
     inLanguage: page.locale,
     isPartOf: {
       '@id': `${origin}/#website`,
@@ -285,9 +319,109 @@ function institutionalStructuredData(page) {
   };
 }
 
+function guidesStructuredData(page) {
+  const pageUrl = `${origin}${page.publicPath}`;
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      websiteIdentity(),
+      {
+        '@type': 'CollectionPage',
+        '@id': `${pageUrl}#collection`,
+        url: pageUrl,
+        name: page.title,
+        description: page.description,
+        inLanguage: page.locale,
+        isPartOf: {
+          '@id': `${origin}/#website`,
+        },
+        mainEntity: {
+          '@type': 'ItemList',
+          itemListElement: contentRegistry.itemPublicPaths(page.locale).map((publicPath, index) => ({
+            '@type': 'ListItem',
+            position: index + 1,
+            url: `${origin}${publicPath}`,
+          })),
+        },
+      },
+    ],
+  };
+}
+
+function contentStructuredData(page) {
+  const pageUrl = `${origin}${page.publicPath}`;
+  const hubUrl = `${origin}${publicRoutes.guides[page.locale]}`;
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      websiteIdentity(),
+      {
+        '@type': 'Article',
+        '@id': `${pageUrl}#article`,
+        url: pageUrl,
+      headline: page.headerTitle || page.title,
+        description: page.description,
+        image: `${origin}/assets/image/logo.png`,
+        inLanguage: page.locale,
+        datePublished: page.datePublished,
+        dateModified: page.dateModified,
+        author: {
+          '@type': 'Organization',
+          name: 'Mapa das Parcelas',
+          url: `${origin}/`,
+        },
+        publisher: {
+          '@type': 'Organization',
+          name: 'Mapa das Parcelas',
+          url: `${origin}/`,
+          logo: {
+            '@type': 'ImageObject',
+            url: `${origin}/assets/image/logo.png`,
+          },
+        },
+        isPartOf: {
+          '@id': `${origin}/#website`,
+        },
+        about: {
+          '@type': 'WebApplication',
+          '@id': `${origin}${publicRoutes.simulator[page.locale]}#application`,
+          name: translated(page.locale, 'header.title'),
+          url: `${origin}${publicRoutes.simulator[page.locale]}`,
+        },
+      },
+      {
+        '@type': 'BreadcrumbList',
+        '@id': `${pageUrl}#breadcrumbs`,
+        itemListElement: [
+          {
+            '@type': 'ListItem',
+            position: 1,
+            name: translated(page.locale, 'footer.simulator'),
+            item: `${origin}${publicRoutes.simulator[page.locale]}`,
+          },
+          {
+            '@type': 'ListItem',
+            position: 2,
+            name: translated(page.locale, 'footer.guides'),
+            item: hubUrl,
+          },
+          {
+            '@type': 'ListItem',
+            position: 3,
+            name: page.headerTitle || page.title,
+            item: pageUrl,
+          },
+        ],
+      },
+    ],
+  };
+}
+
 function structuredData(page) {
+  if (page.contentKind) return contentStructuredData(page);
   if (page.pageKey === 'simulator') return simulatorStructuredData(page);
   if (page.pageKey === 'comparison') return comparisonStructuredData(page);
+  if (page.pageKey === 'guides') return guidesStructuredData(page);
   return institutionalStructuredData(page);
 }
 

@@ -1,6 +1,6 @@
 # Mapa das Parcelas
 
-Mapa das Parcelas é um simulador estático de financiamento para GitHub Pages, com SAC, Price, amortizações extras, correção monetária, custos mensais, gráficos e exportação em PDF pelo navegador.
+Mapa das Parcelas é um simulador e uma biblioteca educativa estática para GitHub Pages. O site reúne SAC, Price, amortizações extras, correção monetária, custos mensais, gráficos, exportação em PDF, 12 guias e 6 simulações prontas em três idiomas.
 
 O projeto usa HTML, CSS e JavaScript simples, com Eleventy apenas na etapa de geração estática. Não há framework de interface nem dependências externas via CDN. Todos os assets permanecem locais e com caminhos relativos.
 
@@ -30,12 +30,21 @@ O projeto usa HTML, CSS e JavaScript simples, com Eleventy apenas na etapa de ge
 - Internacionalização em `pt-BR`, `en` e `es`, mantendo moeda em BRL.
 - URLs públicas próprias por idioma, com `canonical`, `hreflang` e sitemap.
 - Páginas institucionais de privacidade, sobre e contato para transparência e requisitos de publicação.
+- Área Guias em PT-BR, inglês e espanhol, com busca local progressiva, filtros, sumários, fórmulas, tabelas e gráficos SVG acessíveis.
+- Seis cenários prontos derivados no build pelo mesmo `FinanceSimulator`.
+- Links de cenário `?sim=1.<base64url-json>` estritamente validados, sem resultados calculados no payload.
+- Um cenário válido da URL prevalece visualmente sem apagar a simulação salva; a edição passa a ser o novo estado e há uma ação explícita para restaurar o anterior.
 
 ## Estrutura
 
-- `src/pages/`: cinco templates de conteúdo para simulador, comparação, privacidade, sobre e contato.
+- `src/pages/`: templates dos hubs e das páginas funcionais/institucionais.
+- `src/content/guides/`: 36 Markdown localizados, organizados por idioma.
+- `src/content/simulations/`: 18 Markdown de exemplos localizados.
 - `src/_includes/`: layout HTML e componentes compartilhados de cabeçalho e rodapé.
 - `src/_data/site.cjs`: domínio, idiomas, rotas, metadados, datas e dados estruturados.
+- `src/_data/contentRegistry.cjs`: catálogo canônico de `contentId`, categorias, ordens e slugs localizados.
+- `src/_data/scenarios.cjs`: cenários calculados pelo motor financeiro durante o build.
+- `src/_data/contentRender.cjs`: tabelas, indicadores, CTAs e SVGs editoriais.
 - `src/sitemap.njk` e `src/robots.njk`: arquivos públicos gerados a partir dos dados do site.
 - `eleventy.config.js`: configuração de build, filtros de URLs relativas e cópia dos arquivos públicos.
 - `_site/`: saída local gerada e não versionada.
@@ -44,7 +53,9 @@ O projeto usa HTML, CSS e JavaScript simples, com Eleventy apenas na etapa de ge
 - `assets/js/comparison.js`: tela de comparação financeira por banco.
 - `assets/js/finance.js`: motor financeiro SAC/Price.
 - `assets/js/i18n.js`: traduções, formatação e parsing localizado.
-- `assets/data/tr-bacen.json`: base local versionada com taxas TR mensais.
+- `assets/js/simulation-state.js`: contrato e validação dos links de cenário.
+- `assets/js/content-index.js`: busca e filtros progressivos no hub.
+- `assets/data/tr-bacen.json`: janela anual versionada da série oficial SGS 226, com início, fim e taxa de cada observação.
 - `assets/data/bcb-credit-rates.json`: base local versionada com taxas médias BCB por instituição para modalidades imobiliárias e veicular.
 - `assets/image/`: logo e favicons.
 - `assets/vendor/bootstrap/`: Bootstrap 5.3.8 local.
@@ -86,6 +97,9 @@ http://localhost:8080/es/
 http://localhost:8080/comparar/
 http://localhost:8080/en/compare/
 http://localhost:8080/es/comparar/
+http://localhost:8080/guias/
+http://localhost:8080/en/guides/
+http://localhost:8080/es/guias/
 http://localhost:8080/privacidade.html
 http://localhost:8080/en/privacy.html
 http://localhost:8080/es/privacidad.html
@@ -100,6 +114,8 @@ http://localhost:8080/es/contacto/
 O idioma é definido pela URL quando a rota é explícita. A preferência salva em `localStorage` só é usada quando a URL não define idioma, e o seletor de idioma navega para a página equivalente.
 
 As páginas localizadas mantêm no próprio HTML o corpo pré-renderizado no idioma da rota. `assets/js/i18n.js` continua sendo a fonte canônica das traduções e atualiza os textos dinâmicos; o build usa os mesmos dicionários para que crawlers, previews e navegadores sem JavaScript não recebam fallbacks em português nas rotas `/en/` e `/es/`.
+
+Os guias e exemplos são escritos em Markdown. Cada tradução compartilha um `contentId` e declara no front matter título, descrição, categoria ou cenário, revisão editorial, dependências de dados, limitações, fontes e relacionamentos. Não coloque números derivados na prosa: use o shortcode `scenarioModule`, que recalcula indicadores, tabelas, gráfico e link para o simulador.
 
 ## Validação
 
@@ -128,12 +144,16 @@ Os testes automatizados cobrem principalmente:
 - parser e geração dos JSONs locais da TR e das taxas médias BCB;
 - comparação financeira por banco, incluindo ordenação por total pago e uso das taxas anuais BCB.
 - coerência entre páginas públicas, URLs canônicas, sitemap e robots.
+- catálogo exato de 12 guias e 6 exemplos por idioma, metadados editoriais e relacionamentos;
+- correspondência entre os números publicados, o `FinanceSimulator` e o cenário decodificado de cada CTA;
+- round-trip e rejeição integral de versões, Base64, tipos, tamanhos, séries e amortizações inválidas;
+- 72 páginas, canonicals, `hreflang`, JSON-LD `CollectionPage`/`ItemList`/`Article`/`BreadcrumbList` e sitemap.
 
-Ainda não há testes automatizados de browser/UI para layout, impressão, Chart.js, `localStorage`, cache TR/BCB no navegador ou fluxo visual de PDF. Esses pontos devem ser validados manualmente no navegador.
+Layout, impressão, Chart.js, foco, `localStorage` e comportamento visual em 390 px devem ser confirmados pelo smoke test no navegador antes da publicação.
 
 ## Atualizar as bases locais de referência
 
-O simulador não consulta a página externa da TR nem a API Olinda do BCB diretamente no navegador. A opção “Usar TR 12m” lê o arquivo local `assets/data/tr-bacen.json`, seleciona a maior TR dos últimos 12 meses disponíveis e preenche a correção mensal fixa. A taxa de juros padrão e o modal “Consultar taxas médias BCB” leem o arquivo local `assets/data/bcb-credit-rates.json`, que inclui taxas imobiliárias mensais e taxas veiculares diárias de aquisição de veículos.
+O navegador não consulta as APIs externas. A opção “Usar TR 12m” lê `assets/data/tr-bacen.json`, cuja origem é a série oficial SGS 226 do BCB, e seleciona a maior observação da janela móvel de doze meses. O simulador repete esse percentual como correção mensal fixa para uma estimativa conservadora; isso não é uma previsão e contratos podem usar datas e critérios diferentes. A taxa de juros padrão e o modal “Consultar taxas médias BCB” leem `assets/data/bcb-credit-rates.json`.
 
 Para atualizar manualmente:
 
@@ -143,6 +163,8 @@ node scripts/update-bcb-credit-rates.mjs
 ```
 
 O workflow `.github/workflows/update-reference-rates.yml` executa as duas atualizações em dias úteis e também pode ser disparado manualmente pelo GitHub Actions. Se houver alteração em `assets/data/tr-bacen.json` ou `assets/data/bcb-credit-rates.json`, ele cria um commit automático e chama o workflow reutilizável de publicação para o SHA recém-criado.
+
+Os atualizadores comparam o conteúdo semântico e preservam `generatedAt` quando as observações não mudam. Assim, não produzem commits ou datas editoriais artificiais.
 
 ## Publicação
 
@@ -154,3 +176,5 @@ O GitHub Pages usa o workflow `.github/workflows/deploy-pages.yml`:
 4. publica o artifact somente para `main`, execução manual ou chamada autorizada pelo atualizador de taxas.
 
 Pull requests executam build e testes sem publicar. Nas configurações do repositório, a fonte do GitHub Pages deve ser **GitHub Actions**. O domínio personalizado continua definido por `CNAME` e pela configuração do Pages.
+
+O artifact contém exatamente 72 páginas HTML, além de `sitemap.xml`, `robots.txt`, `CNAME`, `ads.txt` e assets locais. `_site/` é gerado e não deve ser versionado.

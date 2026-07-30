@@ -1,0 +1,89 @@
+---
+layout: layouts/base.njk
+pagination:
+  data: site.pageGroups.guides
+  size: 1
+  alias: generatedPage
+permalink: "{{ generatedPage.outputPath }}"
+---
+{% set localizedGuides = collections.guides | contentByLocale(generatedPage.locale) %}
+{% set localizedSimulations = collections.simulations | contentByLocale(generatedPage.locale) %}
+    <main class="container py-4 py-lg-5">
+      <section class="surface-card mb-4" aria-labelledby="guides-start-title">
+        <div class="section-heading">
+          <div>
+            <span class="section-kicker">{{ 'guides.startKicker' | t(generatedPage.locale) }}</span>
+            <h2 id="guides-start-title">{{ 'guides.startTitle' | t(generatedPage.locale) }}</h2>
+            <p class="section-description">{{ 'guides.startLead' | t(generatedPage.locale) }}</p>
+          </div>
+        </div>
+        <div class="content-card-grid content-card-grid-featured">
+          {% for guide in localizedGuides %}
+            {% if guide.data.order <= 4 %}
+              <article class="content-card">
+                <span class="content-card-category">{{ ('guides.category.' + guide.data.category) | t(generatedPage.locale) }}</span>
+                <h3><a href="{{ guide.data.contentId | contentHref('guide', generatedPage) }}">{{ guide.data.title }}</a></h3>
+                <p>{{ guide.data.description }}</p>
+                <a class="content-card-action" href="{{ guide.data.contentId | contentHref('guide', generatedPage) }}">{{ 'guides.readGuide' | t(generatedPage.locale) }} →</a>
+              </article>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="surface-card mb-4" aria-labelledby="all-guides-title">
+        <div class="section-heading">
+          <div>
+            <span class="section-kicker">{{ 'guides.allKicker' | t(generatedPage.locale) }}</span>
+            <h2 id="all-guides-title">{{ 'guides.allTitle' | t(generatedPage.locale) }}</h2>
+          </div>
+        </div>
+
+        <div class="guide-search-controls">
+          <div>
+            <label class="form-label" for="guide-search">{{ 'guides.searchLabel' | t(generatedPage.locale) }}</label>
+            <input id="guide-search" class="form-control" type="search" placeholder="{{ 'guides.searchPlaceholder' | t(generatedPage.locale) }}" autocomplete="off">
+          </div>
+          <div class="guide-filter-group" role="group" aria-label="{{ 'guides.filterLabel' | t(generatedPage.locale) }}">
+            {% for category in ['all', 'fundamentals', 'amortization', 'rates', 'contracts'] %}<button class="btn btn-sm {% if category == 'all' %}btn-primary active{% else %}btn-outline-primary{% endif %}" type="button" data-guide-filter="{{ category }}" aria-pressed="{{ 'true' if category == 'all' else 'false' }}">{{ ('guides.category.' + category) | t(generatedPage.locale) }}</button>
+            {% endfor %}</div>
+        </div>
+
+        <div class="content-card-grid" id="guide-card-grid">
+          {% for guide in localizedGuides %}
+            <article class="content-card" data-guide-card data-category="{{ guide.data.category }}" data-search="{{ guide.data.title }} {{ guide.data.description }} {{ guide.data.tags | join(' ') }}">
+              <span class="content-card-category">{{ ('guides.category.' + guide.data.category) | t(generatedPage.locale) }}</span>
+              <h3><a href="{{ guide.data.contentId | contentHref('guide', generatedPage) }}">{{ guide.data.title }}</a></h3>
+              <p>{{ guide.data.description }}</p>
+              <a class="content-card-action" href="{{ guide.data.contentId | contentHref('guide', generatedPage) }}">{{ 'guides.readGuide' | t(generatedPage.locale) }} →</a>
+            </article>
+          {% endfor %}
+        </div>
+        <p id="guide-search-empty" class="empty-state d-none" role="status">{{ 'guides.noResults' | t(generatedPage.locale) }}</p>
+      </section>
+
+      <section class="surface-card" aria-labelledby="ready-simulations-title">
+        <div class="section-heading">
+          <div>
+            <span class="section-kicker">{{ 'guides.simulationsKicker' | t(generatedPage.locale) }}</span>
+            <h2 id="ready-simulations-title">{{ 'guides.simulationsTitle' | t(generatedPage.locale) }}</h2>
+            <p class="section-description">{{ 'guides.simulationsLead' | t(generatedPage.locale) }}</p>
+          </div>
+        </div>
+        <div class="content-card-grid">
+          {% for simulation in localizedSimulations %}
+            {% set scenario = simulation.data.scenarioId | scenarioFor %}
+            <article class="content-card simulation-card" data-simulation-card>
+              <span class="content-card-category">{{ scenario.state.system | upper }} · {{ scenario.state.term }} {{ 'unit.months' | t(generatedPage.locale) }}</span>
+              <h3><a href="{{ simulation.data.contentId | contentHref('simulation', generatedPage) }}">{{ simulation.data.title }}</a></h3>
+              <p>{{ simulation.data.description }}</p>
+              <dl class="simulation-card-metric">
+                <div><dt>{{ 'guides.stat.initialPayment' | t(generatedPage.locale) }}</dt><dd>{{ scenario.result.stats.initialTotalPaymentCents | contentCurrency(generatedPage.locale) }}</dd></div>
+                <div><dt>{{ 'guides.stat.totalInterest' | t(generatedPage.locale) }}</dt><dd>{{ scenario.result.stats.totalInterestCents | contentCurrency(generatedPage.locale) }}</dd></div>
+              </dl>
+              <a class="content-card-action" href="{{ simulation.data.contentId | contentHref('simulation', generatedPage) }}">{{ 'guides.viewSimulation' | t(generatedPage.locale) }} →</a>
+            </article>
+          {% endfor %}
+        </div>
+      </section>
+    </main>

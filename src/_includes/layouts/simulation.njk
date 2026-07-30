@@ -1,0 +1,43 @@
+---
+layout: layouts/base.njk
+---
+    <main class="container content-page-main py-4 py-lg-5">
+      <a class="privacy-back-link" href="{{ 'guides' | pageHref(generatedPage) }}">{{ 'guides.back' | t(locale) }}</a>
+
+      <article class="surface-card content-article simulation-article">
+        <p class="content-updated">{{ 'guides.updated' | t(locale) | replace('{date}', generatedPage.dateModified | contentDate(locale)) }}</p>
+        <div class="guide-prose">
+{{ content | safe }}
+        </div>
+
+        {% scenarioModule scenarioId, generatedPage %}
+
+        <section class="content-callout content-callout-neutral" aria-labelledby="simulation-limitations-title">
+          <h2 id="simulation-limitations-title">{{ 'guides.limitations' | t(locale) }}</h2>
+          <ul>
+            {% for limitation in limitations %}<li>{{ limitation }}</li>
+            {% endfor %}</ul>
+        </section>
+
+        <section class="content-sources" aria-labelledby="simulation-sources-title">
+          <h2 id="simulation-sources-title">{{ 'guides.sources' | t(locale) }}</h2>
+          <ul>
+            {% for source in sources %}<li><a href="{{ source.url }}" target="_blank" rel="noopener noreferrer">{{ source.label }}</a>{% if source.reviewed %} · {{ source.reviewed | contentDate(locale) }}{% endif %}</li>
+            {% endfor %}</ul>
+        </section>
+
+        <aside class="estimate-notice">{{ 'guides.estimateNotice' | t(locale) }}</aside>
+
+        {% if relatedGuideIds and relatedGuideIds.length %}
+          <section class="related-simulation-guides" aria-labelledby="simulation-related-guides-title">
+            <h2 id="simulation-related-guides-title">{{ 'guides.relatedGuides' | t(locale) }}</h2>
+            <ul>
+              {% for relatedId in relatedGuideIds %}
+                {% set related = collections.guides | contentById(relatedId, locale) %}
+                <li><a href="{{ relatedId | contentHref('guide', generatedPage) }}">{{ related.data.title }}</a></li>
+              {% endfor %}
+            </ul>
+          </section>
+        {% endif %}
+      </article>
+    </main>

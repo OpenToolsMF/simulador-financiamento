@@ -8,21 +8,24 @@
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
 
-      gtag('config', 'G-8QCFQMHCZ3');
+      gtag('config', 'G-8QCFQMHCZ3', {
+        page_location: window.location.origin + window.location.pathname,
+        page_path: window.location.pathname
+      });
     </script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="{{ generatedPage.descriptionKey | t(generatedPage.locale) }}">
+    <meta name="description" content="{{ generatedPage.description }}">
     {% if generatedPage.adsense %}<meta name="google-adsense-account" content="ca-pub-8780410675865678">
-    {% endif %}<title>{{ generatedPage.titleKey | t(generatedPage.locale) }}</title>
+    {% endif %}<title>{{ generatedPage.title }}</title>
     <link rel="canonical" href="{{ generatedPage.publicPath | canonicalUrl }}">
-    {% for alternateLocale in site.locales %}<link rel="alternate" hreflang="{{ alternateLocale }}" href="{{ site.publicRoutes[generatedPage.pageKey][alternateLocale] | canonicalUrl }}">
-    {% endfor %}<link rel="alternate" hreflang="x-default" href="{{ site.publicRoutes[generatedPage.pageKey]['pt-BR'] | canonicalUrl }}">
-    <meta property="og:type" content="website">
+    {% for alternate in generatedPage.alternates %}<link rel="alternate" hreflang="{{ alternate.locale }}" href="{{ alternate.publicPath | canonicalUrl }}">
+    {% endfor %}<link rel="alternate" hreflang="x-default" href="{{ generatedPage.alternates[0].publicPath | canonicalUrl }}">
+    <meta property="og:type" content="{{ generatedPage.ogType }}">
     <meta property="og:locale" content="{{ generatedPage.ogLocale }}">
     <meta property="og:site_name" content="{{ 'header.title' | t(generatedPage.locale) }}">
-    <meta property="og:title" content="{{ generatedPage.titleKey | t(generatedPage.locale) }}">
-    <meta property="og:description" content="{{ generatedPage.descriptionKey | t(generatedPage.locale) }}">
+    <meta property="og:title" content="{{ generatedPage.title }}">
+    <meta property="og:description" content="{{ generatedPage.description }}">
     <meta property="og:url" content="{{ generatedPage.publicPath | canonicalUrl }}">
     <meta property="og:image" content="{{ site.origin }}/assets/image/logo.png">
     <meta property="og:image:type" content="image/png">
@@ -30,8 +33,8 @@
     <meta property="og:image:height" content="600">
     <meta property="og:image:alt" content="{{ site.localizedSchema[generatedPage.locale].imageAlt }}">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="{{ generatedPage.titleKey | t(generatedPage.locale) }}">
-    <meta name="twitter:description" content="{{ generatedPage.descriptionKey | t(generatedPage.locale) }}">
+    <meta name="twitter:title" content="{{ generatedPage.title }}">
+    <meta name="twitter:description" content="{{ generatedPage.description }}">
     <meta name="twitter:image" content="{{ site.origin }}/assets/image/logo.png">
     <meta name="twitter:image:alt" content="{{ site.localizedSchema[generatedPage.locale].imageAlt }}">
     <script type="application/ld+json">

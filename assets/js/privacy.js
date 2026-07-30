@@ -16,14 +16,16 @@
     const aboutPath = i18n.localizedPathForLanguage(i18n.getLanguage(), 'about');
     const contactPath = i18n.localizedPathForLanguage(i18n.getLanguage(), 'contact');
     const comparisonPath = i18n.localizedPathForLanguage(i18n.getLanguage(), 'comparison');
+    const guidesPath = i18n.localizedPathForLanguage(i18n.getLanguage(), 'guides');
     document.querySelector('.privacy-back-link')?.setAttribute('href', simulatorPath);
     document.querySelectorAll('[data-route="simulator"]').forEach((link) => link.setAttribute('href', simulatorPath));
     document.querySelectorAll('[data-route="comparison"]').forEach((link) => link.setAttribute('href', comparisonPath));
+    document.querySelectorAll('[data-route="guides"]').forEach((link) => link.setAttribute('href', guidesPath));
     document.querySelectorAll('[data-route="privacy"]').forEach((link) => link.setAttribute('href', privacyPath));
     document.querySelectorAll('[data-route="about"]').forEach((link) => link.setAttribute('href', aboutPath));
     document.querySelectorAll('[data-route="contact"]').forEach((link) => link.setAttribute('href', contactPath));
 
-    document.querySelectorAll('.site-footer a[data-route]').forEach((link) => {
+    document.querySelectorAll('.site-footer a[data-route], .site-primary-nav a[data-route]').forEach((link) => {
       const isCurrentPage = link.dataset.route === pageKey;
       if (isCurrentPage) link.setAttribute('aria-current', 'page');
       else link.removeAttribute('aria-current');

@@ -1,0 +1,78 @@
+---
+layout: layouts/base.njk
+---
+    <main class="container content-page-main py-4 py-lg-5">
+      <a class="privacy-back-link" href="{{ 'guides' | pageHref(generatedPage) }}">{{ 'guides.back' | t(locale) }}</a>
+
+      <div class="content-layout">
+        <aside class="content-toc content-toc-desktop" aria-label="{{ 'guides.toc' | t(locale) }}">
+          <strong>{{ 'guides.toc' | t(locale) }}</strong>
+          <ol>
+            {% for item in toc %}<li><a href="#{{ item.id }}">{{ item.label }}</a></li>
+            {% endfor %}</ol>
+        </aside>
+
+        <article class="surface-card content-article">
+          <p class="content-updated">{{ 'guides.updated' | t(locale) | replace('{date}', generatedPage.dateModified | contentDate(locale)) }}</p>
+
+          <details class="content-toc content-toc-mobile">
+            <summary>{{ 'guides.toc' | t(locale) }}</summary>
+            <ol>
+              {% for item in toc %}<li><a href="#{{ item.id }}">{{ item.label }}</a></li>
+              {% endfor %}</ol>
+          </details>
+
+          <div class="guide-prose">
+{{ content | safe }}
+          </div>
+
+          <section class="content-callout" aria-labelledby="contract-differences-title">
+            <h2 id="contract-differences-title">{{ 'guides.contractDifferences' | t(locale) }}</h2>
+            <ul>
+              {% for note in contractNotes %}<li>{{ note }}</li>
+              {% endfor %}</ul>
+          </section>
+
+          <section class="content-callout content-callout-neutral" aria-labelledby="guide-limitations-title">
+            <h2 id="guide-limitations-title">{{ 'guides.limitations' | t(locale) }}</h2>
+            <ul>
+              {% for limitation in limitations %}<li>{{ limitation }}</li>
+              {% endfor %}</ul>
+          </section>
+
+          <section class="content-sources" aria-labelledby="guide-sources-title">
+            <h2 id="guide-sources-title">{{ 'guides.sources' | t(locale) }}</h2>
+            <ul>
+              {% for source in sources %}<li><a href="{{ source.url }}" target="_blank" rel="noopener noreferrer">{{ source.label }}</a>{% if source.reviewed %} · {{ source.reviewed | contentDate(locale) }}{% endif %}</li>
+              {% endfor %}</ul>
+          </section>
+
+          <aside class="estimate-notice">{{ 'guides.estimateNotice' | t(locale) }}</aside>
+
+          <div class="related-content-grid">
+            {% if relatedGuideIds and relatedGuideIds.length %}
+              <section aria-labelledby="related-guides-title">
+                <h2 id="related-guides-title">{{ 'guides.relatedGuides' | t(locale) }}</h2>
+                <ul>
+                  {% for relatedId in relatedGuideIds %}
+                    {% set related = collections.guides | contentById(relatedId, locale) %}
+                    <li><a href="{{ relatedId | contentHref('guide', generatedPage) }}">{{ related.data.title }}</a></li>
+                  {% endfor %}
+                </ul>
+              </section>
+            {% endif %}
+            {% if relatedSimulationIds and relatedSimulationIds.length %}
+              <section aria-labelledby="related-simulations-title">
+                <h2 id="related-simulations-title">{{ 'guides.relatedSimulations' | t(locale) }}</h2>
+                <ul>
+                  {% for relatedId in relatedSimulationIds %}
+                    {% set related = collections.simulations | contentById(relatedId, locale) %}
+                    <li><a href="{{ relatedId | contentHref('simulation', generatedPage) }}">{{ related.data.title }}</a></li>
+                  {% endfor %}
+                </ul>
+              </section>
+            {% endif %}
+          </div>
+        </article>
+      </div>
+    </main>

@@ -265,6 +265,21 @@ const { join } = require('node:path');
   assert.equal(generated.referencePeriod, data.referencePeriod, 'grava período imobiliário no JSON gerado');
   assert.equal(generated.creditTypes.vehicle.referencePeriod.startDate, '2026-07-01', 'grava período veicular no JSON gerado');
   assert.equal(typeof generated.defaultInterestRate.monthlyRatePercent, 'number', 'grava taxa default como número');
+  generated.generatedAt = '2026-07-21T00:00:00.000Z';
+  await writeFile(outputPath, `${JSON.stringify(generated, null, 2)}\n`);
+  const stableData = await updateBcbCreditRates({
+    outputPath,
+    fetchImpl: async (url) => (
+      url === REAL_ESTATE_SOURCE_URL
+        ? successfulResponse(realEstatePayload)
+        : successfulResponse(vehiclePayload)
+    ),
+  });
+  assert.equal(
+    stableData.generatedAt,
+    '2026-07-21T00:00:00.000Z',
+    'preserva generatedAt quando os dados BCB são semanticamente iguais',
+  );
 
   const retryOutputDirectory = await mkdtemp(join(tmpdir(), 'bcb-credit-rates-retry-test-'));
   const retryOutputPath = join(retryOutputDirectory, 'bcb-credit-rates.json');

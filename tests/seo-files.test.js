@@ -3,6 +3,8 @@
 const assert = require('node:assert/strict');
 const { access, readFile } = require('node:fs/promises');
 const { join } = require('node:path');
+const site = require('../src/_data/site.cjs');
+const contentRegistry = require('../src/_data/contentRegistry.cjs');
 
 const projectRoot = join(__dirname, '..', '_site');
 
@@ -98,38 +100,75 @@ function assetReferences(html) {
       es: `${origin}/es/comparar/`,
       'x-default': `${origin}/comparar/`,
     },
+    guides: {
+      'pt-BR': `${origin}/guias/`,
+      en: `${origin}/en/guides/`,
+      es: `${origin}/es/guias/`,
+      'x-default': `${origin}/guias/`,
+    },
   };
 
-  const publicPages = [
-    { file: 'index.html', language: 'pt-BR', htmlLang: 'pt-BR', page: 'simulator' },
-    { file: 'en/index.html', language: 'en', htmlLang: 'en', page: 'simulator' },
-    { file: 'es/index.html', language: 'es', htmlLang: 'es', page: 'simulator' },
-    { file: 'comparar/index.html', language: 'pt-BR', htmlLang: 'pt-BR', page: 'comparison' },
-    { file: 'en/compare/index.html', language: 'en', htmlLang: 'en', page: 'comparison' },
-    { file: 'es/comparar/index.html', language: 'es', htmlLang: 'es', page: 'comparison' },
-    { file: 'privacidade.html', language: 'pt-BR', htmlLang: 'pt-BR', page: 'privacy' },
-    { file: 'en/privacy.html', language: 'en', htmlLang: 'en', page: 'privacy' },
-    { file: 'es/privacidad.html', language: 'es', htmlLang: 'es', page: 'privacy' },
-    { file: 'sobre/index.html', language: 'pt-BR', htmlLang: 'pt-BR', page: 'about' },
-    { file: 'en/about/index.html', language: 'en', htmlLang: 'en', page: 'about' },
-    { file: 'es/acerca-de/index.html', language: 'es', htmlLang: 'es', page: 'about' },
-    { file: 'fale-conosco/index.html', language: 'pt-BR', htmlLang: 'pt-BR', page: 'contact' },
-    { file: 'en/contact/index.html', language: 'en', htmlLang: 'en', page: 'contact' },
-    { file: 'es/contacto/index.html', language: 'es', htmlLang: 'es', page: 'contact' },
-  ].map((page) => ({
-    ...page,
-    url: routeGroups[page.page][page.language],
+  const fixedPages = site.pages.map((page) => ({
+    file: page.outputPath,
+    language: page.locale,
+    htmlLang: page.htmlLang,
+    page: page.pageKey,
+    url: `${origin}${page.publicPath}`,
+    alternates: routeGroups[page.pageKey],
   }));
+  const contentPages = [
+    ...contentRegistry.guides.flatMap((entry) => contentRegistry.locales.map((locale) => ({
+      file: contentRegistry.outputPathFor('guide', entry.id, locale),
+      language: locale,
+      htmlLang: site.languageConfig[locale].htmlLang,
+      page: 'guide',
+      contentId: entry.id,
+      url: `${origin}${contentRegistry.publicPathFor('guide', entry.id, locale)}`,
+      alternates: Object.fromEntries([
+        ...contentRegistry.locales.map((alternateLocale) => [
+          alternateLocale,
+          `${origin}${contentRegistry.publicPathFor('guide', entry.id, alternateLocale)}`,
+        ]),
+        ['x-default', `${origin}${contentRegistry.publicPathFor('guide', entry.id, 'pt-BR')}`],
+      ]),
+    }))),
+    ...contentRegistry.simulations.flatMap((entry) => contentRegistry.locales.map((locale) => ({
+      file: contentRegistry.outputPathFor('simulation', entry.id, locale),
+      language: locale,
+      htmlLang: site.languageConfig[locale].htmlLang,
+      page: 'simulation',
+      contentId: entry.id,
+      url: `${origin}${contentRegistry.publicPathFor('simulation', entry.id, locale)}`,
+      alternates: Object.fromEntries([
+        ...contentRegistry.locales.map((alternateLocale) => [
+          alternateLocale,
+          `${origin}${contentRegistry.publicPathFor('simulation', entry.id, alternateLocale)}`,
+        ]),
+        ['x-default', `${origin}${contentRegistry.publicPathFor('simulation', entry.id, 'pt-BR')}`],
+      ]),
+    }))),
+  ];
+  const publicPages = [...fixedPages, ...contentPages];
 
   const canonicalUrls = [];
   const manifestUrls = [];
   const structuredDataByFile = new Map();
   for (const page of publicPages) {
     const html = await readFile(join(projectRoot, page.file), 'utf8');
-    const expectedAlternates = routeGroups[page.page];
+    const expectedAlternates = page.alternates;
 
     structuredDataByFile.set(page.file, extractJsonLdNodes(html));
 
+    assert.match(
+      html,
+      /page_location:\s*window\.location\.origin\s*\+\s*window\.location\.pathname/,
+      `${page.file}: GA4 remove query dos dados enviados automaticamente`,
+    );
+    assert.doesNotMatch(
+      html,
+      /page_location:\s*window\.location\.href/,
+      `${page.file}: GA4 não envia parâmetros financeiros da URL`,
+    );
     assert.equal(extractHtmlLang(html), page.htmlLang, `${page.file}: html lang corresponde ao idioma da URL`);
     assert.equal(extractCanonical(html), page.url, `${page.file}: canonical corresponde à URL pública`);
     assert.deepEqual(extractAlternateLinks(html), expectedAlternates, `${page.file}: hreflang completo e recíproco`);
@@ -223,6 +262,30 @@ function assetReferences(html) {
       { '@id': websiteIdentity['@id'] },
       `${page.file}: comparação referencia a identidade global do site`,
     );
+  }
+
+  for (const page of publicPages.filter(({ page: pageType }) => pageType === 'guides')) {
+    const nodes = structuredDataByFile.get(page.file);
+    const collection = nodes.find((node) => node['@type'] === 'CollectionPage');
+    assert.ok(collection, `${page.file}: possui CollectionPage`);
+    assert.equal(collection.url, page.url, `${page.file}: CollectionPage usa a canonical`);
+    assert.equal(collection.inLanguage, page.language, `${page.file}: CollectionPage possui idioma localizado`);
+    assert.equal(collection.mainEntity?.['@type'], 'ItemList', `${page.file}: possui ItemList`);
+    assert.equal(collection.mainEntity.itemListElement.length, 18, `${page.file}: lista os 12 guias e 6 exemplos`);
+  }
+
+  for (const page of publicPages.filter(({ page: pageType }) => ['guide', 'simulation'].includes(pageType))) {
+    const nodes = structuredDataByFile.get(page.file);
+    const article = nodes.find((node) => node['@type'] === 'Article');
+    const breadcrumbs = nodes.find((node) => node['@type'] === 'BreadcrumbList');
+    assert.ok(article, `${page.file}: possui Article`);
+    assert.equal(article.url, page.url, `${page.file}: Article usa a canonical`);
+    assert.equal(article.inLanguage, page.language, `${page.file}: Article possui idioma localizado`);
+    assert.match(article.datePublished, /^\d{4}-\d{2}-\d{2}$/, `${page.file}: informa datePublished`);
+    assert.match(article.dateModified, /^\d{4}-\d{2}-\d{2}$/, `${page.file}: informa dateModified`);
+    assert.ok(breadcrumbs, `${page.file}: possui BreadcrumbList`);
+    assert.equal(breadcrumbs.itemListElement.length, 3, `${page.file}: breadcrumb possui três níveis`);
+    assert.equal(breadcrumbs.itemListElement.at(-1).item, page.url, `${page.file}: breadcrumb termina na canonical`);
   }
 
   for (const page of publicPages.filter(({ page: pageType }) => ['privacy', 'about', 'contact'].includes(pageType))) {
