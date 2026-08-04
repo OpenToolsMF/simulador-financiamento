@@ -2,18 +2,13 @@
   "version": 2,
   "seriesCode": 226,
   "sourceUrl": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.226/dados",
-  "generatedAt": "2026-08-03T12:47:49.243Z",
+  "generatedAt": "2026-08-04T11:53:21.710Z",
   "latest": {
     "startDate": "2026-07-31",
     "endDate": "2026-08-31",
     "ratePercent": 0.1694
   },
   "rates": [
-    {
-      "startDate": "2025-08-03",
-      "endDate": "2025-09-03",
-      "ratePercent": 0.1742
-    },
     {
       "startDate": "2025-08-04",
       "endDate": "2025-09-04",
