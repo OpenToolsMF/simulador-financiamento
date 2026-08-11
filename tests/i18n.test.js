@@ -32,6 +32,35 @@ for (const language of languages) {
   assert.deepEqual(keys, referenceKeys, `${language}: mantém o mesmo conjunto de chaves`);
 }
 
+const faqEditorialExpectations = {
+  'pt-BR': {
+    amortizationQuestion: 'O que são amortização e amortização extra?',
+    simulatorChoice: 'No simulador, você escolhe como cada amortização extra será usada:',
+    removedSacPriceNote: 'Correção monetária, seguros, taxas e pagamentos extras',
+    removedTrQualifier: 'conservadora',
+  },
+  en: {
+    amortizationQuestion: 'What are amortization and extra amortization?',
+    simulatorChoice: 'In the simulator, you choose how each extra amortization is used:',
+    removedSacPriceNote: 'Monetary correction, insurance, fees, and extra payments',
+    removedTrQualifier: 'conservative',
+  },
+  es: {
+    amortizationQuestion: '¿Qué son la amortización y la amortización extra?',
+    simulatorChoice: 'En el simulador, eliges cómo se usa cada amortización extra:',
+    removedSacPriceNote: 'La corrección monetaria, los seguros, las tasas y los pagos extra',
+    removedTrQualifier: 'conservadora',
+  },
+};
+for (const [language, expectation] of Object.entries(faqEditorialExpectations)) {
+  const dictionary = i18n.dictionaries[language];
+  assert.equal(dictionary['faq.2.question'], expectation.amortizationQuestion, `${language}: explica amortização antes do uso extra`);
+  assert.ok(dictionary['faq.2.answer'].includes('extra'), `${language}: diferencia amortização extra`);
+  assert.ok(dictionary['faq.3.answer'].includes(expectation.simulatorChoice), `${language}: explica a escolha por amortização`);
+  assert.ok(!dictionary['faq.1.answer'].includes(expectation.removedSacPriceNote), `${language}: remove observação adicional de SAC e Price`);
+  assert.ok(!dictionary['faq.6.answer'].includes(expectation.removedTrQualifier), `${language}: não chama a estimativa da TR de conservadora`);
+}
+
 for (const language of languages) {
   i18n.setLanguage(language);
   assert.equal(i18n.getLanguage(), language, `${language}: troca idioma`);

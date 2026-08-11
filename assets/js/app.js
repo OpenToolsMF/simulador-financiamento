@@ -4,6 +4,7 @@
   const finance = window.FinanceSimulator;
   const i18n = window.FinancingI18n;
   const simulationState = window.FinancingSimulationState;
+  const chartData = window.FinancingChartData;
   const STORAGE_KEY = 'financing-simulator:form-state:v1';
   const TR_CACHE_KEY = 'financing-simulator:tr-cache:v2';
   const BCB_CREDIT_RATES_CACHE_KEY = 'financing-simulator:bcb-credit-rates-cache:v2';
@@ -1490,16 +1491,8 @@
     return month === 0 ? t('charts.initial') : String(month);
   }
 
-  function rowForMonth(rows, month) {
-    return rows.find((row) => row.number === month) || null;
-  }
-
-  function cumulativeValues(rows, field) {
-    let total = 0;
-    return rows.map((row) => {
-      total += row[field];
-      return centsToReais(total);
-    });
+  function centsSeriesToReais(series) {
+    return series.map((value) => value === null ? null : centsToReais(value));
   }
 
   function chartMoneyLabel(context, label = context.dataset.label) {
@@ -1645,6 +1638,7 @@
       scales: {
         x: {
           stacked,
+          offset: true,
           title: { display: true, text: t('charts.installmentAxis') },
           ticks: { maxTicksLimit: 12 },
           grid: { display: false },
@@ -1716,11 +1710,8 @@
     if (!window.Chart) return;
     destroyCharts();
 
-    const baseRows = comparison.base.installments;
-    const currentRows = comparison.current.installments;
-    const maxTerm = Math.max(baseRows.length, currentRows.length);
-    const monthLabels = Array.from({ length: maxTerm }, (_, index) => String(index + 1));
-    const debtLabels = Array.from({ length: maxTerm + 1 }, (_, index) => chartLabel(index));
+    const prepared = chartData.build(comparison);
+    const sharedLabels = prepared.months.map(chartLabel);
     const color = {
       green: '#176b3a',
       greenSoft: 'rgba(23, 107, 58, 0.12)',
@@ -1733,22 +1724,13 @@
       teal: '#0f766e',
     };
 
-    const baseDebt = [comparison.base.stats.financedCents, ...Array.from({ length: maxTerm }, (_, index) => {
-      const row = rowForMonth(baseRows, index + 1);
-      return row ? row.closingBalanceCents : 0;
-    })].map(centsToReais);
-    const currentDebt = [comparison.current.stats.financedCents, ...Array.from({ length: maxTerm }, (_, index) => {
-      const row = rowForMonth(currentRows, index + 1);
-      return row ? row.closingBalanceCents : 0;
-    })].map(centsToReais);
-
     charts.debt = new window.Chart(chartCanvases.debt, {
       type: 'line',
       data: {
-        labels: debtLabels,
+        labels: sharedLabels,
         datasets: [
-          { label: t('charts.debtWithoutExtras'), data: baseDebt, borderColor: color.slate, backgroundColor: 'rgba(71, 84, 103, 0.08)', borderWidth: 2, pointRadius: 0, pointHitRadius: 8, tension: 0.18 },
-          { label: t('charts.debtWithExtras'), data: currentDebt, borderColor: color.green, backgroundColor: color.greenSoft, borderWidth: 2, pointRadius: 0, pointHitRadius: 8, tension: 0.18 },
+          { label: t('charts.debtWithoutExtras'), data: centsSeriesToReais(prepared.debt.base), borderColor: color.slate, backgroundColor: 'rgba(71, 84, 103, 0.08)', borderWidth: 2, pointRadius: 0, pointHitRadius: 8, tension: 0.18 },
+          { label: t('charts.debtWithExtras'), data: centsSeriesToReais(prepared.debt.current), borderColor: color.green, backgroundColor: color.greenSoft, borderWidth: 2, pointRadius: 0, pointHitRadius: 8, tension: 0.18 },
         ],
       },
       options: chartOptionsForKey('debt'),
@@ -1757,11 +1739,11 @@
     charts.payment = new window.Chart(chartCanvases.payment, {
       type: 'line',
       data: {
-        labels: monthLabels,
+        labels: sharedLabels,
         datasets: [
-          { label: t('charts.paymentWithoutExtras'), data: monthLabels.map((_, index) => rowForMonth(baseRows, index + 1)?.totalPaymentCents ?? null).map((value) => value === null ? null : centsToReais(value)), borderColor: color.slate, borderWidth: 2, pointRadius: 0, pointHitRadius: 8, tension: 0.18 },
-          { label: t('charts.paymentWithExtras'), data: monthLabels.map((_, index) => rowForMonth(currentRows, index + 1)?.totalPaymentCents ?? null).map((value) => value === null ? null : centsToReais(value)), borderColor: color.green, borderWidth: 2, pointRadius: 0, pointHitRadius: 8, tension: 0.18 },
-          { label: t('charts.extraPayments'), data: monthLabels.map((_, index) => centsToReais(rowForMonth(currentRows, index + 1)?.extraPaymentCents ?? 0)), borderColor: color.amber, backgroundColor: 'rgba(180, 83, 9, 0.12)', borderWidth: 2, pointRadius: 0, pointHitRadius: 8, tension: 0.18 },
+          { label: t('charts.paymentWithoutExtras'), data: centsSeriesToReais(prepared.payment.base), borderColor: color.slate, borderWidth: 2, pointRadius: 0, pointHitRadius: 8, tension: 0.18 },
+          { label: t('charts.paymentWithExtras'), data: centsSeriesToReais(prepared.payment.current), borderColor: color.green, borderWidth: 2, pointRadius: 0, pointHitRadius: 8, tension: 0.18 },
+          { label: t('charts.extraPayments'), data: centsSeriesToReais(prepared.payment.extras), borderColor: color.amber, backgroundColor: 'rgba(180, 83, 9, 0.12)', borderWidth: 2, pointRadius: 0, pointHitRadius: 8, tension: 0.18 },
         ],
       },
       options: chartOptionsForKey('payment'),
@@ -1770,28 +1752,27 @@
     charts.composition = new window.Chart(chartCanvases.composition, {
       type: 'bar',
       data: {
-        labels: currentRows.map((row) => String(row.number)),
+        labels: sharedLabels,
         datasets: [
-          { label: t('charts.interest'), data: currentRows.map((row) => centsToReais(row.interestCents)), backgroundColor: color.red, stack: 'payment' },
-          { label: t('charts.regularAmortization'), data: currentRows.map((row) => centsToReais(row.regularAmortizationCents)), backgroundColor: color.green, stack: 'payment' },
-          { label: t('charts.correction'), data: currentRows.map((row) => centsToReais(row.correctionCents)), backgroundColor: color.purple, stack: 'payment' },
-          { label: t('charts.extraAmortization'), data: currentRows.map((row) => centsToReais(row.extraPaymentCents)), backgroundColor: color.amber, stack: 'payment' },
-          { label: t('charts.monthlyExtraCosts'), data: currentRows.map((row) => centsToReais(row.monthlyExtraCostCents)), backgroundColor: color.blue, stack: 'payment' },
+          { label: t('charts.interest'), data: centsSeriesToReais(prepared.composition.interest), backgroundColor: color.red, stack: 'payment' },
+          { label: t('charts.regularAmortization'), data: centsSeriesToReais(prepared.composition.regularAmortization), backgroundColor: color.green, stack: 'payment' },
+          { label: t('charts.correction'), data: centsSeriesToReais(prepared.composition.correction), backgroundColor: color.purple, stack: 'payment' },
+          { label: t('charts.extraAmortization'), data: centsSeriesToReais(prepared.composition.extraAmortization), backgroundColor: color.amber, stack: 'payment' },
+          { label: t('charts.monthlyExtraCosts'), data: centsSeriesToReais(prepared.composition.monthlyExtraCosts), backgroundColor: color.blue, stack: 'payment' },
         ],
       },
       options: chartOptionsForKey('composition'),
     });
 
-    const totalPaidAccumulated = cumulativeValues(currentRows, 'totalPaymentCents');
     charts.costs = new window.Chart(chartCanvases.costs, {
       type: 'line',
       data: {
-        labels: currentRows.map((row) => String(row.number)),
+        labels: sharedLabels,
         datasets: [
-          { label: t('charts.accumulatedInterest'), data: cumulativeValues(currentRows, 'interestCents'), borderColor: color.red, borderWidth: 2, pointRadius: 0, pointHitRadius: 8, tension: 0.18 },
-          { label: t('charts.accumulatedCorrection'), data: cumulativeValues(currentRows, 'correctionCents'), borderColor: color.purple, borderWidth: 2, pointRadius: 0, pointHitRadius: 8, tension: 0.18 },
-          { label: t('charts.accumulatedExtraCosts'), data: cumulativeValues(currentRows, 'monthlyExtraCostCents'), borderColor: color.blue, borderWidth: 2, pointRadius: 0, pointHitRadius: 8, tension: 0.18 },
-          { label: t('charts.accumulatedTotalPaid'), data: totalPaidAccumulated, borderColor: color.teal, backgroundColor: 'rgba(15, 118, 110, 0.1)', borderWidth: 2, pointRadius: 0, pointHitRadius: 8, tension: 0.18, fill: true },
+          { label: t('charts.accumulatedInterest'), data: centsSeriesToReais(prepared.costs.interest), borderColor: color.red, borderWidth: 2, pointRadius: 0, pointHitRadius: 8, tension: 0.18 },
+          { label: t('charts.accumulatedCorrection'), data: centsSeriesToReais(prepared.costs.correction), borderColor: color.purple, borderWidth: 2, pointRadius: 0, pointHitRadius: 8, tension: 0.18 },
+          { label: t('charts.accumulatedExtraCosts'), data: centsSeriesToReais(prepared.costs.monthlyExtraCosts), borderColor: color.blue, borderWidth: 2, pointRadius: 0, pointHitRadius: 8, tension: 0.18 },
+          { label: t('charts.accumulatedTotalPaid'), data: centsSeriesToReais(prepared.costs.totalPaid), borderColor: color.teal, backgroundColor: 'rgba(15, 118, 110, 0.1)', borderWidth: 2, pointRadius: 0, pointHitRadius: 8, tension: 0.18, fill: true },
         ],
       },
       options: chartOptionsForKey('costs'),

@@ -58,6 +58,7 @@ async function collectHtmlFiles(directory) {
   for (const asset of [
     'assets/css/styles.css',
     'assets/js/app.js',
+    'assets/js/chart-data.js',
     'assets/js/comparison.js',
     'assets/js/finance.js',
     'assets/js/i18n.js',
@@ -90,6 +91,14 @@ async function collectHtmlFiles(directory) {
     2,
     'valores padrão são usados na primeira visita e ao limpar os dados',
   );
+
+  for (const page of site.pages.filter((item) => item.pageKey === 'simulator')) {
+    const html = await readFile(join(siteRoot, page.outputPath), 'utf8');
+    const chartDataPosition = html.indexOf('assets/js/chart-data.js?v=20260811-shared-chart-axis');
+    const appPosition = html.indexOf('assets/js/app.js?v=20260811-shared-chart-axis');
+    assert.ok(chartDataPosition >= 0, `${page.locale}: carrega o preparador de dados dos gráficos`);
+    assert.ok(appPosition > chartDataPosition, `${page.locale}: carrega os dados dos gráficos antes do aplicativo`);
+  }
 
   console.log('Testes do site gerado concluídos com sucesso.');
 })();
