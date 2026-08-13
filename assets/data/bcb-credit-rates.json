@@ -4,7 +4,7 @@
     "realEstate": "https://olinda.bcb.gov.br/olinda/servico/taxaJuros/versao/v2/odata/TaxasJurosMensalPorMes?$format=json",
     "vehicle": "https://olinda.bcb.gov.br/olinda/servico/taxaJuros/versao/v2/odata/TaxasJurosDiariaPorInicioPeriodo?$format=json&$top=500&$filter=Modalidade%20eq%20'Aquisi%C3%A7%C3%A3o%20de%20ve%C3%ADculos%20-%20Prefixado'"
   },
-  "generatedAt": "2026-08-06T11:55:26.825Z",
+  "generatedAt": "2026-08-13T10:50:48.081Z",
   "referencePeriod": "2026-06",
   "defaultInterestRate": {
     "creditType": "realEstate",
@@ -212,8 +212,8 @@
       "key": "vehicle",
       "label": "Financiamento veicular",
       "referencePeriod": {
-        "startDate": "2026-07-17",
-        "endDate": "2026-07-23"
+        "startDate": "2026-07-24",
+        "endDate": "2026-07-30"
       },
       "modalities": [
         {
@@ -226,274 +226,281 @@
               "institution": "BCO MERCEDES-BENZ S.A.",
               "cnpj8": "60814191",
               "position": 1,
-              "monthlyRatePercent": 0.68,
-              "annualRatePercent": 8.47
-            },
-            {
-              "institution": "BCO RCI BRASIL S.A.",
-              "cnpj8": "62307848",
-              "position": 2,
-              "monthlyRatePercent": 0.97,
-              "annualRatePercent": 12.28
+              "monthlyRatePercent": 0.65,
+              "annualRatePercent": 8.06
             },
             {
               "institution": "BMW SA CFI",
               "cnpj8": "04452473",
+              "position": 2,
+              "monthlyRatePercent": 0.9,
+              "annualRatePercent": 11.32
+            },
+            {
+              "institution": "BCO RCI BRASIL S.A.",
+              "cnpj8": "62307848",
               "position": 3,
-              "monthlyRatePercent": 0.98,
-              "annualRatePercent": 12.38
+              "monthlyRatePercent": 0.95,
+              "annualRatePercent": 11.97
             },
             {
               "institution": "BCO DA AMAZONIA S.A.",
               "cnpj8": "04902979",
               "position": 4,
-              "monthlyRatePercent": 1.08,
-              "annualRatePercent": 13.82
+              "monthlyRatePercent": 1.09,
+              "annualRatePercent": 13.92
             },
             {
               "institution": "CAIXA ECONOMICA FEDERAL",
               "cnpj8": "00360305",
               "position": 5,
-              "monthlyRatePercent": 1.15,
-              "annualRatePercent": 14.64
-            },
-            {
-              "institution": "BCO DIGIMAIS S.A.",
-              "cnpj8": "92874270",
-              "position": 6,
-              "monthlyRatePercent": 1.3,
-              "annualRatePercent": 16.71
+              "monthlyRatePercent": 1.11,
+              "annualRatePercent": 14.19
             },
             {
               "institution": "BANCO HYUNDAI CAPITAL BRASIL",
               "cnpj8": "30172491",
-              "position": 7,
-              "monthlyRatePercent": 1.3,
-              "annualRatePercent": 16.74
+              "position": 6,
+              "monthlyRatePercent": 1.31,
+              "annualRatePercent": 16.89
             },
             {
               "institution": "BCO GM S.A.",
               "cnpj8": "59274605",
+              "position": 7,
+              "monthlyRatePercent": 1.33,
+              "annualRatePercent": 17.18
+            },
+            {
+              "institution": "BCO PACCAR S.A.",
+              "cnpj8": "28517628",
               "position": 8,
               "monthlyRatePercent": 1.34,
-              "annualRatePercent": 17.34
+              "annualRatePercent": 17.3
             },
             {
               "institution": "BANCO TRATON BRASIL S.A.",
               "cnpj8": "52067630",
               "position": 9,
-              "monthlyRatePercent": 1.49,
-              "annualRatePercent": 19.36
+              "monthlyRatePercent": 1.46,
+              "annualRatePercent": 19.06
+            },
+            {
+              "institution": "SCANIA BCO S.A.",
+              "cnpj8": "11417016",
+              "position": 10,
+              "monthlyRatePercent": 1.48,
+              "annualRatePercent": 19.26
             },
             {
               "institution": "STELLANTIS FINANCIAMENTOS CFI",
               "cnpj8": "03502961",
-              "position": 10,
-              "monthlyRatePercent": 1.55,
-              "annualRatePercent": 20.22
-            },
-            {
-              "institution": "BANCO CNH INDUSTRIAL CAPITAL S.A",
-              "cnpj8": "02992446",
               "position": 11,
-              "monthlyRatePercent": 1.63,
-              "annualRatePercent": 21.45
-            },
-            {
-              "institution": "BCO DO ESTADO DO RS S.A.",
-              "cnpj8": "92702067",
-              "position": 12,
-              "monthlyRatePercent": 1.63,
-              "annualRatePercent": 21.48
+              "monthlyRatePercent": 1.5,
+              "annualRatePercent": 19.56
             },
             {
               "institution": "BCO VOLKSWAGEN S.A",
               "cnpj8": "59109165",
-              "position": 13,
-              "monthlyRatePercent": 1.68,
-              "annualRatePercent": 22.08
+              "position": 12,
+              "monthlyRatePercent": 1.66,
+              "annualRatePercent": 21.82
             },
             {
               "institution": "BANCO INTER",
               "cnpj8": "00416968",
-              "position": 14,
-              "monthlyRatePercent": 1.68,
-              "annualRatePercent": 22.17
-            },
-            {
-              "institution": "BANCO MONEO S.A.",
-              "cnpj8": "07441209",
-              "position": 15,
-              "monthlyRatePercent": 1.69,
-              "annualRatePercent": 22.25
-            },
-            {
-              "institution": "BCO RODOBENS S.A.",
-              "cnpj8": "33603457",
-              "position": 16,
+              "position": 13,
               "monthlyRatePercent": 1.7,
-              "annualRatePercent": 22.35
+              "annualRatePercent": 22.4
             },
             {
               "institution": "SAFRA SCFI S.A.",
               "cnpj8": "45437547",
-              "position": 17,
+              "position": 14,
               "monthlyRatePercent": 1.71,
-              "annualRatePercent": 22.52
+              "annualRatePercent": 22.53
             },
             {
               "institution": "BCO TOYOTA DO BRASIL S.A.",
               "cnpj8": "03215790",
-              "position": 18,
-              "monthlyRatePercent": 1.73,
-              "annualRatePercent": 22.88
-            },
-            {
-              "institution": "BCO DO EST. DO PA S.A.",
-              "cnpj8": "04913711",
-              "position": 19,
-              "monthlyRatePercent": 1.77,
-              "annualRatePercent": 23.48
-            },
-            {
-              "institution": "BCO BRADESCO S.A.",
-              "cnpj8": "60746948",
-              "position": 20,
-              "monthlyRatePercent": 1.8,
-              "annualRatePercent": 23.85
-            },
-            {
-              "institution": "BCO DO BRASIL S.A.",
-              "cnpj8": "00000000",
-              "position": 21,
-              "monthlyRatePercent": 1.82,
-              "annualRatePercent": 24.21
-            },
-            {
-              "institution": "SANTANDER SCFI S.A.",
-              "cnpj8": "07707650",
-              "position": 22,
-              "monthlyRatePercent": 1.83,
-              "annualRatePercent": 24.32
+              "position": 15,
+              "monthlyRatePercent": 1.72,
+              "annualRatePercent": 22.66
             },
             {
               "institution": "SINOSSERRA S/A - SCFI",
               "cnpj8": "22639377",
-              "position": 23,
-              "monthlyRatePercent": 1.84,
-              "annualRatePercent": 24.43
+              "position": 16,
+              "monthlyRatePercent": 1.73,
+              "annualRatePercent": 22.85
             },
             {
-              "institution": "BCO BANESTES S.A.",
-              "cnpj8": "28127603",
+              "institution": "BCO DO EST. DO PA S.A.",
+              "cnpj8": "04913711",
+              "position": 17,
+              "monthlyRatePercent": 1.75,
+              "annualRatePercent": 23.16
+            },
+            {
+              "institution": "BCO RODOBENS S.A.",
+              "cnpj8": "33603457",
+              "position": 18,
+              "monthlyRatePercent": 1.77,
+              "annualRatePercent": 23.37
+            },
+            {
+              "institution": "BCO BRADESCO S.A.",
+              "cnpj8": "60746948",
+              "position": 19,
+              "monthlyRatePercent": 1.78,
+              "annualRatePercent": 23.52
+            },
+            {
+              "institution": "BCO DO BRASIL S.A.",
+              "cnpj8": "00000000",
+              "position": 20,
+              "monthlyRatePercent": 1.79,
+              "annualRatePercent": 23.74
+            },
+            {
+              "institution": "SANTANDER SCFI S.A.",
+              "cnpj8": "07707650",
+              "position": 21,
+              "monthlyRatePercent": 1.81,
+              "annualRatePercent": 24.06
+            },
+            {
+              "institution": "PORTOSEG S.A. CFI",
+              "cnpj8": "04862600",
+              "position": 22,
+              "monthlyRatePercent": 1.85,
+              "annualRatePercent": 24.67
+            },
+            {
+              "institution": "BANCO MONEO S.A.",
+              "cnpj8": "07441209",
+              "position": 23,
+              "monthlyRatePercent": 1.89,
+              "annualRatePercent": 25.22
+            },
+            {
+              "institution": "BCO BRADESCO FINANC. S.A.",
+              "cnpj8": "07207996",
               "position": 24,
-              "monthlyRatePercent": 1.88,
-              "annualRatePercent": 25.08
+              "monthlyRatePercent": 1.91,
+              "annualRatePercent": 25.53
             },
             {
               "institution": "BCO C6 S.A.",
               "cnpj8": "31872495",
               "position": 25,
-              "monthlyRatePercent": 1.97,
-              "annualRatePercent": 26.32
+              "monthlyRatePercent": 1.94,
+              "annualRatePercent": 26
             },
             {
-              "institution": "BCO BRADESCO FINANC. S.A.",
-              "cnpj8": "07207996",
+              "institution": "BRB - CFI S/A",
+              "cnpj8": "33136888",
               "position": 26,
-              "monthlyRatePercent": 1.98,
-              "annualRatePercent": 26.53
+              "monthlyRatePercent": 1.96,
+              "annualRatePercent": 26.25
             },
             {
-              "institution": "PORTOSEG S.A. CFI",
-              "cnpj8": "04862600",
+              "institution": "BANCO CNH INDUSTRIAL CAPITAL S.A",
+              "cnpj8": "02992446",
               "position": 27,
               "monthlyRatePercent": 2.01,
-              "annualRatePercent": 26.96
+              "annualRatePercent": 26.91
             },
             {
               "institution": "BCO BRASILEIRO DE CRÉDITO S.A.",
               "cnpj8": "01852137",
               "position": 28,
-              "monthlyRatePercent": 2.02,
-              "annualRatePercent": 27.16
+              "monthlyRatePercent": 2.01,
+              "annualRatePercent": 27
             },
             {
               "institution": "ITAÚ UNIBANCO HOLDING S.A.",
               "cnpj8": "60872504",
               "position": 29,
-              "monthlyRatePercent": 2.08,
-              "annualRatePercent": 28.03
+              "monthlyRatePercent": 2.04,
+              "annualRatePercent": 27.46
             },
             {
-              "institution": "BRB - CFI S/A",
-              "cnpj8": "33136888",
+              "institution": "BCO BANESTES S.A.",
+              "cnpj8": "28127603",
               "position": 30,
-              "monthlyRatePercent": 2.15,
-              "annualRatePercent": 29.01
+              "monthlyRatePercent": 2.12,
+              "annualRatePercent": 28.59
             },
             {
               "institution": "BCO VOTORANTIM S.A.",
               "cnpj8": "59588111",
               "position": 31,
-              "monthlyRatePercent": 2.26,
-              "annualRatePercent": 30.72
+              "monthlyRatePercent": 2.27,
+              "annualRatePercent": 30.87
             },
             {
               "institution": "BCO HONDA S.A.",
               "cnpj8": "03634220",
               "position": 32,
-              "monthlyRatePercent": 2.39,
-              "annualRatePercent": 32.83
+              "monthlyRatePercent": 2.35,
+              "annualRatePercent": 32.21
             },
             {
               "institution": "BCO YAMAHA MOTOR S.A.",
               "cnpj8": "10371492",
               "position": 33,
-              "monthlyRatePercent": 2.57,
-              "annualRatePercent": 35.55
-            },
-            {
-              "institution": "BANCO PAN",
-              "cnpj8": "59285411",
-              "position": 34,
-              "monthlyRatePercent": 2.94,
-              "annualRatePercent": 41.51
+              "monthlyRatePercent": 2.56,
+              "annualRatePercent": 35.44
             },
             {
               "institution": "AGORACRED S/A SCFI",
               "cnpj8": "36321990",
+              "position": 34,
+              "monthlyRatePercent": 2.77,
+              "annualRatePercent": 38.79
+            },
+            {
+              "institution": "BANCO PAN",
+              "cnpj8": "59285411",
               "position": 35,
-              "monthlyRatePercent": 2.97,
-              "annualRatePercent": 42.08
+              "monthlyRatePercent": 2.88,
+              "annualRatePercent": 40.58
+            },
+            {
+              "institution": "BARU SCFI S/A",
+              "cnpj8": "42723848",
+              "position": 36,
+              "monthlyRatePercent": 2.94,
+              "annualRatePercent": 41.58
             },
             {
               "institution": "FINAMAX S.A. CFI",
               "cnpj8": "00411939",
-              "position": 36,
-              "monthlyRatePercent": 3.14,
-              "annualRatePercent": 44.86
+              "position": 37,
+              "monthlyRatePercent": 3.2,
+              "annualRatePercent": 45.94
             },
             {
               "institution": "BCO DAYCOVAL S.A",
               "cnpj8": "62232889",
-              "position": 37,
-              "monthlyRatePercent": 3.24,
-              "annualRatePercent": 46.66
+              "position": 38,
+              "monthlyRatePercent": 3.23,
+              "annualRatePercent": 46.36
             },
             {
               "institution": "SIMPALA S.A. CFI",
               "cnpj8": "34991938",
-              "position": 38,
-              "monthlyRatePercent": 3.27,
-              "annualRatePercent": 47.06
+              "position": 39,
+              "monthlyRatePercent": 3.34,
+              "annualRatePercent": 48.31
             },
             {
               "institution": "OMNI SA CFI",
               "cnpj8": "92228410",
-              "position": 39,
-              "monthlyRatePercent": 3.39,
-              "annualRatePercent": 49.14
+              "position": 40,
+              "monthlyRatePercent": 3.38,
+              "annualRatePercent": 48.97
             }
           ]
         }
