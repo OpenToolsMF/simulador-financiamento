@@ -316,7 +316,7 @@ function pngDimensions(buffer) {
     const zoomLines = [...zoomChart.matchAll(/<polyline\b[^>]*\bpoints="([^"]+)"/gi)];
     assert.deepEqual(fullLines.map((match) => match[1].trim().split(/\s+/).length), [361, 361], `${locale}: gráfico completo traz Início e 360 meses nas duas séries`);
     assert.deepEqual(zoomLines.map((match) => match[1].trim().split(/\s+/).length), [5, 5], `${locale}: zoom contém exatamente os meses 58 a 62`);
-    assert.match(fullChart, />(?:R\$\s*0(?:,00)?|0\s*(?:BRL|R\$))</, `${locale}: eixo vertical completo começa em zero`);
+    assert.match(fullChart, />(?:R\$\s*0(?:[.,]0+)?|0(?:[.,]0+)?\s*(?:BRL|R\$))</, `${locale}: eixo vertical completo começa em zero`);
     assert.equal((html.match(/<table\b[^>]*timing-installment-table[^>]*>[\s\S]*?<\/table>/i)?.[0].match(/<tbody>[\s\S]*?<\/tbody>/i)?.[0].match(/<tr>/g) || []).length, 4, `${locale}: tabela temporal traz as parcelas 59 a 62`);
     assert.doesNotMatch(html, /chart\.umd|chart\.js/i, `${locale}: página editorial não carrega Chart.js`);
     const publishedRate = render.formatNumber(scenario.state.ratePercent, locale, {
