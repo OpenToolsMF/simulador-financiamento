@@ -97,11 +97,14 @@ async function collectHtmlFiles(directory) {
   assert.match(appScript, /item\.goal}:\$\{rawCurrencyValue\(item\.appliedCents\)}/, 'CSV bruto preserva goal:valor na ordem');
   assert.match(appScript, /restoredFocusTarget = restoredCards\[0\]\?\.querySelector/, 'restauração move o foco para a primeira regra');
   assert.match(appScript, /announceExtraOrder\('extras\.restoredAnnouncement'/, 'restauração anuncia quantidade e ordem das regras');
+  assert.match(appScript, /extrasMixedWarning\.textContent = t\('extras\.mixedWarning'\)/, 'aviso misto não interpola uma lista extensa de meses');
+  assert.match(appScript, /beforeBody: tooltipBeforeBody/, 'tooltip suporta conteúdo antes dos itens');
+  assert.match(appScript, /tooltipBeforeBody: chartCompositionTotalLabel/, 'tooltip da composição mostra o total antes dos itens');
 
   for (const page of site.pages.filter((item) => item.pageKey === 'simulator')) {
     const html = await readFile(join(siteRoot, page.outputPath), 'utf8');
-    const chartDataPosition = html.indexOf('assets/js/chart-data.js?v=20260811-shared-chart-axis');
-    const appPosition = html.indexOf('assets/js/app.js?v=20260821-ordered-extras');
+    const chartDataPosition = html.indexOf('assets/js/chart-data.js?v=20260821-composition-tooltip');
+    const appPosition = html.indexOf('assets/js/app.js?v=20260821-compact-warning-tooltip');
     assert.ok(chartDataPosition >= 0, `${page.locale}: carrega o preparador de dados dos gráficos`);
     assert.ok(appPosition > chartDataPosition, `${page.locale}: carrega os dados dos gráficos antes do aplicativo`);
     assert.match(html, /id="extras-order-help"/, `${page.locale}: explica a ordem dos cartões`);

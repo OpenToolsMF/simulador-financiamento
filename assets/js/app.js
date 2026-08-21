@@ -961,8 +961,7 @@
       extrasMixedWarning.classList.add('d-none');
       return;
     }
-    const monthList = mixedGoalMonths.map((month) => i18n.formatNumber(month)).join(', ');
-    extrasMixedWarning.textContent = t('extras.mixedWarning', { months: monthList });
+    extrasMixedWarning.textContent = t('extras.mixedWarning');
     extrasMixedWarning.classList.remove('d-none');
   }
 
@@ -1557,6 +1556,11 @@
     return `${label}: ${i18n.formatCurrency(Math.round(value * 100))}`;
   }
 
+  function chartCompositionTotalLabel(items) {
+    const total = chartData.sumTooltipItems(items);
+    return `${t('charts.monthlyTotal')}: ${i18n.formatCurrency(Math.round(total * 100))}`;
+  }
+
   function escapeHtml(value) {
     return String(value)
       .replace(/&/g, '&amp;')
@@ -1667,7 +1671,7 @@
     return rows.join('');
   }
 
-  function commonChartOptions({ stacked = false, yTitle = t('charts.valueAxis'), staticImage = false } = {}) {
+  function commonChartOptions({ stacked = false, yTitle = t('charts.valueAxis'), staticImage = false, tooltipBeforeBody } = {}) {
     return {
       responsive: !staticImage,
       maintainAspectRatio: false,
@@ -1688,6 +1692,7 @@
                 const label = items[0]?.label;
                 return label === t('charts.initial') ? t('charts.initialBalance') : t('charts.installmentTooltip', { number: label });
               },
+              beforeBody: tooltipBeforeBody,
               label: chartMoneyLabel,
             },
           },
@@ -1714,7 +1719,12 @@
     const options = {
       debt: () => commonChartOptions({ yTitle: t('charts.debtAxis'), staticImage }),
       payment: () => commonChartOptions({ yTitle: t('charts.paymentAxis'), staticImage }),
-      composition: () => commonChartOptions({ stacked: true, yTitle: t('charts.compositionAxis'), staticImage }),
+      composition: () => commonChartOptions({
+        stacked: true,
+        yTitle: t('charts.compositionAxis'),
+        staticImage,
+        tooltipBeforeBody: chartCompositionTotalLabel,
+      }),
       costs: () => commonChartOptions({ yTitle: t('charts.costsAxis'), staticImage }),
     };
     return options[key]?.() || commonChartOptions({ staticImage });

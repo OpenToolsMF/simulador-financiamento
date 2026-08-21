@@ -45,6 +45,13 @@
     });
   }
 
+  function sumTooltipItems(items) {
+    return (Array.isArray(items) ? items : []).reduce((total, item) => {
+      const value = item?.parsed?.y ?? item?.parsed;
+      return total + (Number.isFinite(value) ? value : 0);
+    }, 0);
+  }
+
   function build(comparison) {
     const base = comparison?.base || {};
     const current = comparison?.current || {};
@@ -81,7 +88,7 @@
     };
   }
 
-  const api = { build };
+  const api = { build, sumTooltipItems };
 
   globalScope.FinancingChartData = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;

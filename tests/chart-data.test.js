@@ -28,6 +28,16 @@ function everySeries(prepared) {
   ];
 }
 
+test('soma somente valores finitos dos itens do tooltip', () => {
+  assert.equal(chartData.sumTooltipItems([
+    { parsed: { y: 1200.5 } },
+    { parsed: { y: 300 } },
+    { parsed: { y: null } },
+    { parsed: { y: Number.NaN } },
+  ]), 1500.5);
+  assert.equal(chartData.sumTooltipItems(), 0);
+});
+
 for (const system of ['sac', 'price']) {
   test(`${system}: mantém um eixo compartilhado sem amortização extra`, () => {
     const prepared = chartData.build(finance.simulateComparison(config(system)));

@@ -24,6 +24,16 @@ const expectedComparisonTitles = {
   en: 'Compare financing by bank | Installment Map',
   es: 'Comparar financiación por banco | Mapa de cuotas',
 };
+const expectedMixedWarnings = {
+  'pt-BR': 'Existem aplicações com objetivos diferentes no mesmo mês. Elas serão processadas de cima para baixo, na ordem dos cartões.',
+  en: 'Applications with different goals occur in the same month. They will be processed from top to bottom in card order.',
+  es: 'Hay aplicaciones con objetivos diferentes en el mismo mes. Se procesarán de arriba abajo, según el orden de las tarjetas.',
+};
+const expectedMonthlyTotals = {
+  'pt-BR': 'Total do mês',
+  en: 'Monthly total',
+  es: 'Total del mes',
+};
 assert.deepEqual(languages, ['pt-BR', 'en', 'es'], 'expõe os três idiomas suportados');
 
 const referenceKeys = Object.keys(i18n.dictionaries['pt-BR']).sort();
@@ -70,7 +80,8 @@ for (const language of languages) {
   assert.notEqual(i18n.t('results.exportCsvRaw'), 'results.exportCsvRaw', `${language}: traduz opção de CSV raw`);
   assert.notEqual(i18n.t('extras.orderHelp'), 'extras.orderHelp', `${language}: explica a ordem das amortizações`);
   assert.notEqual(i18n.t('extras.moveUpAria', { number: 2 }), 'extras.moveUpAria', `${language}: traduz controle de ordenação`);
-  assert.ok(i18n.t('extras.mixedWarning', { months: '12, 24' }).includes('12, 24'), `${language}: lista meses com objetivos mistos`);
+  assert.equal(i18n.t('extras.mixedWarning'), expectedMixedWarnings[language], `${language}: avisa objetivos mistos sem listar meses`);
+  assert.equal(i18n.t('charts.monthlyTotal'), expectedMonthlyTotals[language], `${language}: traduz o total mensal do tooltip`);
   assert.ok(i18n.t('extras.restoredAnnouncement', { count: 2 }).includes('2'), `${language}: anuncia quantidade de regras restauradas`);
   assert.ok(i18n.t('faq.14.answer').includes(language === 'en' ? 'current horizon' : language === 'es' ? 'horizonte vigente' : 'horizonte vigente'), `${language}: redução de parcela preserva o horizonte vigente`);
   assert.notEqual(i18n.t('bcb.title'), 'bcb.title', `${language}: traduz modal de taxas médias BCB`);
