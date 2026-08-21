@@ -3,7 +3,7 @@ layout: layouts/guide.njk
 contentKind: guide
 contentId: annual-to-monthly-rate
 locale: pt-BR
-order: 6
+order: 7
 category: rates
 title: "Como converter taxa anual nominal e efetiva em taxa mensal"
 description: "Diferencie taxa nominal de taxa efetiva e converta corretamente percentuais anuais para a periodicidade mensal."

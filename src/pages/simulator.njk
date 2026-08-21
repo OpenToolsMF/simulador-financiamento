@@ -170,6 +170,7 @@ permalink: "{{ generatedPage.outputPath }}"
               <span class="section-kicker">{{ "extras.kicker" | t(generatedPage.locale) | safe }}</span>
               <h2 id="extras-title">{{ "extras.title" | t(generatedPage.locale) | safe }}</h2>
               <p class="section-description">{{ "extras.description" | t(generatedPage.locale) | safe }}</p>
+              <p id="extras-order-help" class="extras-order-help">{{ "extras.orderHelp" | t(generatedPage.locale) | safe }}</p>
             </div>
             <button id="add-extra" class="btn btn-outline-primary flex-shrink-0" type="button">{{ "extras.add" | t(generatedPage.locale) | safe }}</button>
           </div>
@@ -179,6 +180,8 @@ permalink: "{{ generatedPage.outputPath }}"
             <p class="mb-0">{{ "extras.empty" | t(generatedPage.locale) | safe }}</p>
           </div>
           <div id="extras-list" class="vstack gap-3"></div>
+          <div id="extras-mixed-warning" class="alert alert-warning extras-mixed-warning d-none" role="status" aria-live="polite"></div>
+          <div id="extras-order-status" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></div>
         </section>
 
         <div id="form-alert" class="alert alert-danger d-none" role="alert" aria-live="assertive"></div>
@@ -489,7 +492,15 @@ permalink: "{{ generatedPage.outputPath }}"
       <article class="extra-card" data-extra-card>
         <div class="extra-card-header">
           <div><span class="extra-number"></span><h3>{{ "extras.cardTitle" | t(generatedPage.locale) | safe }}</h3></div>
-          <button class="btn btn-sm btn-link text-danger" type="button" data-action="remove-extra">{{ "extras.remove" | t(generatedPage.locale) | safe }}</button>
+          <div class="extra-card-actions" role="group" aria-label="{{ "extras.orderControlsAria" | t(generatedPage.locale) | safe }}">
+            <button class="btn btn-sm btn-outline-secondary extra-move-button" type="button" data-action="move-extra-up">
+              <span aria-hidden="true">↑</span><span class="visually-hidden" data-action-label>{{ "extras.moveUp" | t(generatedPage.locale) | safe }}</span>
+            </button>
+            <button class="btn btn-sm btn-outline-secondary extra-move-button" type="button" data-action="move-extra-down">
+              <span aria-hidden="true">↓</span><span class="visually-hidden" data-action-label>{{ "extras.moveDown" | t(generatedPage.locale) | safe }}</span>
+            </button>
+            <button class="btn btn-sm btn-link text-danger" type="button" data-action="remove-extra">{{ "extras.remove" | t(generatedPage.locale) | safe }}</button>
+          </div>
         </div>
         <div class="row g-3 align-items-start">
           <div class="col-md-6 col-xl">

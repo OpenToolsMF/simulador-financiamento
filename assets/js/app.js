@@ -51,6 +51,8 @@
   const monthlyCorrectionSeriesInput = document.querySelector('#monthly-correction-series');
   const extrasList = document.querySelector('#extras-list');
   const extrasEmpty = document.querySelector('#extras-empty');
+  const extrasMixedWarning = document.querySelector('#extras-mixed-warning');
+  const extrasOrderStatus = document.querySelector('#extras-order-status');
   const extraTemplate = document.querySelector('#extra-template');
   const formAlert = document.querySelector('#form-alert');
   const results = document.querySelector('#results');
@@ -117,6 +119,7 @@
   let suppressFormPersistence = false;
   let urlSimulationActive = false;
   let savedStateBeforeUrl = null;
+  let mixedGoalMonths = [];
 
   function t(key, params) {
     return i18n.t(key, params);
@@ -594,6 +597,9 @@
   function translateExtraCard(card) {
     setText('.extra-card-header h3', 'extras.cardTitle', card);
     setText('[data-action="remove-extra"]', 'extras.remove', card);
+    setText('[data-action="move-extra-up"] [data-action-label]', 'extras.moveUp', card);
+    setText('[data-action="move-extra-down"] [data-action-label]', 'extras.moveDown', card);
+    setAttr('.extra-card-actions', 'aria-label', 'extras.orderControlsAria', card);
 
     const labelKeys = {
       type: 'extras.type',
@@ -758,6 +764,7 @@
     setText('#extras-title', 'extras.title');
     setText('[aria-labelledby="extras-title"] .section-kicker', 'extras.kicker');
     setText('[aria-labelledby="extras-title"] .section-description', 'extras.description');
+    setText('#extras-order-help', 'extras.orderHelp');
     setText('#add-extra', 'extras.add');
     setText('#extras-empty p', 'extras.empty');
 
@@ -844,6 +851,8 @@
 
     updateSelectOptions();
     extrasList.querySelectorAll('[data-extra-card]').forEach(translateExtraCard);
+    updateExtraOrderUi();
+    renderMixedGoalWarning();
     renderInterestRateReferenceHelp();
     renderBcbRatesModal();
 
@@ -887,14 +896,16 @@
 
   function assignExtraFieldIds(card, id) {
     card.dataset.extraId = id;
-    card.querySelector('.extra-number').textContent = id;
+    const title = card.querySelector('.extra-card-header h3');
+    const number = card.querySelector('.extra-number');
+    if (title) {
+      title.id = `extra-${id}-title`;
+      if (number) number.id = `extra-${id}-number`;
+      card.setAttribute('aria-labelledby', number ? `${number.id} ${title.id}` : title.id);
+    }
     card.querySelectorAll('[data-field]').forEach((field) => {
       const name = field.dataset.field;
-      if (name === 'goal') {
-        field.name = `extra-${id}-goal`;
-        field.id = `extra-${id}-goal-${field.value}`;
-        return;
-      }
+      if (name === 'goal') field.name = `extra-${id}-goal`;
       field.id = `extra-${id}-${name}`;
       const label = card.querySelector(`[data-label="${name}"]`);
       if (label) label.htmlFor = field.id;
@@ -906,6 +917,55 @@
     });
   }
 
+  function announceExtraOrder(key, params) {
+    if (!extrasOrderStatus) return;
+    extrasOrderStatus.textContent = '';
+    window.requestAnimationFrame(() => {
+      extrasOrderStatus.textContent = t(key, params);
+    });
+  }
+
+  function updateExtraOrderUi() {
+    const cards = [...extrasList.querySelectorAll('[data-extra-card]')];
+    cards.forEach((card, index) => {
+      const position = index + 1;
+      card.dataset.extraPosition = String(position);
+      const number = card.querySelector('.extra-number');
+      if (number) number.textContent = String(position);
+
+      const moveUp = card.querySelector('[data-action="move-extra-up"]');
+      const moveDown = card.querySelector('[data-action="move-extra-down"]');
+      const remove = card.querySelector('[data-action="remove-extra"]');
+      if (moveUp) {
+        moveUp.disabled = index === 0;
+        moveUp.setAttribute('aria-label', t('extras.moveUpAria', { number: position }));
+        moveUp.setAttribute('title', t('extras.moveUp'));
+        moveUp.setAttribute('aria-describedby', 'extras-order-help');
+      }
+      if (moveDown) {
+        moveDown.disabled = index === cards.length - 1;
+        moveDown.setAttribute('aria-label', t('extras.moveDownAria', { number: position }));
+        moveDown.setAttribute('title', t('extras.moveDown'));
+        moveDown.setAttribute('aria-describedby', 'extras-order-help');
+      }
+      if (remove) remove.setAttribute('aria-label', t('extras.removeAria', { number: position }));
+    });
+    updateExtrasEmptyState();
+  }
+
+  function renderMixedGoalWarning(months = mixedGoalMonths) {
+    mixedGoalMonths = Array.isArray(months) ? months : [];
+    if (!extrasMixedWarning) return;
+    if (mixedGoalMonths.length === 0) {
+      extrasMixedWarning.textContent = '';
+      extrasMixedWarning.classList.add('d-none');
+      return;
+    }
+    const monthList = mixedGoalMonths.map((month) => i18n.formatNumber(month)).join(', ');
+    extrasMixedWarning.textContent = t('extras.mixedWarning', { months: monthList });
+    extrasMixedWarning.classList.remove('d-none');
+  }
+
   function updateExtraVisibility(card) {
     const recurring = card.querySelector('[data-field="type"]').value === 'recurring';
     card.querySelectorAll('.single-fields').forEach((element) => element.classList.toggle('d-none', recurring));
@@ -915,7 +975,9 @@
   }
 
   function updateExtrasEmptyState() {
-    extrasEmpty.classList.toggle('d-none', Boolean(extrasList.children.length));
+    const hasExtras = Boolean(extrasList.querySelector('[data-extra-card]'));
+    extrasEmpty.classList.toggle('d-none', hasExtras);
+    if (!hasExtras) renderMixedGoalWarning([]);
   }
 
   function syncMoneyDigits(input) {
@@ -1056,7 +1118,7 @@
     }
 
     updateExtraVisibility(card);
-    updateExtrasEmptyState();
+    updateExtraOrderUi();
     if (focus) card.querySelector('[data-field="value"]').focus();
     if (schedule) scheduleAutomaticCalculation();
     return card;
@@ -1162,6 +1224,7 @@
         }
       });
     }
+    updateExtraOrderUi();
     return true;
   }
 
@@ -1226,7 +1289,7 @@
     });
     updateRatePeriod();
     updateCorrectionFields();
-    updateExtrasEmptyState();
+    updateExtraOrderUi();
   }
 
   function removeSimulationSearchParameter() {
@@ -1351,13 +1414,7 @@
     }
 
     const extraPayments = readExtraPayments(term, errors, showErrors);
-    if (errors.length === 0) {
-      const conflictMonth = finance.findGoalConflict(extraPayments, term);
-      if (conflictMonth) {
-        if (showErrors) showGeneralError(t('validation.extraGoalConflictWithMonth', { month: conflictMonth }));
-        errors.push(formAlert);
-      }
-    }
+    renderMixedGoalWarning(finance.findMixedGoalMonths(extraPayments, term));
 
     if (errors.length > 0) {
       if (showErrors) {
@@ -1898,6 +1955,72 @@
     return installmentFilter.value === 'extras' ? simulatedRows.filter((row) => row.extraPaymentCents > 0) : simulatedRows;
   }
 
+  function extraGoalLabel(goal) {
+    if (goal === 'term') return t('installments.goalTermShort');
+    if (goal === 'payment') return t('installments.goalPaymentShort');
+    if (goal === 'mixed') return t('installments.goalMixedShort');
+    return '';
+  }
+
+  function installmentApplicationItems(row) {
+    const applications = Array.isArray(row.extraApplications) ? row.extraApplications : [];
+    const source = applications.length > 0
+      ? applications
+      : row.extraGoal && row.extraPaymentCents > 0
+        ? [{
+          goal: row.extraGoal,
+          requestedCents: row.extraPaymentCents,
+          appliedCents: row.extraPaymentCents,
+        }]
+        : [];
+    return source.map((application, index) => {
+      const appliedCents = Number.isFinite(application.appliedCents) ? Math.max(0, Math.round(application.appliedCents)) : 0;
+      const requestedCents = Number.isFinite(application.requestedCents)
+        ? Math.max(0, Math.round(application.requestedCents))
+        : appliedCents;
+      const goal = ['term', 'payment', 'mixed'].includes(application.goal) ? application.goal : 'mixed';
+      return {
+        order: index + 1,
+        goal,
+        goalLabel: extraGoalLabel(goal),
+        requestedCents,
+        appliedCents,
+      };
+    });
+  }
+
+  function installmentApplicationText(item) {
+    const params = {
+      goal: item.goalLabel,
+      applied: formatCurrency(item.appliedCents),
+      requested: formatCurrency(item.requestedCents),
+    };
+    return t(
+      item.requestedCents === item.appliedCents
+        ? 'installments.applicationValue'
+        : 'installments.applicationRequestedValue',
+      params,
+    );
+  }
+
+  function installmentApplicationsText(row) {
+    return installmentApplicationItems(row)
+      .map((item) => `${item.order}. ${installmentApplicationText(item)}`)
+      .join(' | ');
+  }
+
+  function installmentApplicationsRaw(row) {
+    return installmentApplicationItems(row)
+      .map((item) => `${item.goal}:${rawCurrencyValue(item.appliedCents)}`)
+      .join('|');
+  }
+
+  function installmentApplicationsHtml(row) {
+    const items = installmentApplicationItems(row);
+    if (items.length === 0) return '';
+    return `<ol class="extra-applications-list">${items.map((item) => `<li>${escapeHtml(installmentApplicationText(item))}</li>`).join('')}</ol>`;
+  }
+
   function renderInstallments() {
     const rows = filteredRows();
     const pageSize = pageSizeSelect.value === 'all' ? Math.max(1, rows.length) : Number(pageSizeSelect.value);
@@ -1910,8 +2033,7 @@
       installmentsBody.innerHTML = `<tr><td colspan="14" class="text-center text-secondary py-4">${t('installments.noRows')}</td></tr>`;
     } else {
       installmentsBody.innerHTML = pageRows.map((row) => {
-        const goal = row.extraGoal === 'term' ? t('installments.goalTermShort') : row.extraGoal === 'payment' ? t('installments.goalPaymentShort') : '';
-        return `<tr class="${row.extraPaymentCents > 0 ? 'has-extra' : ''}" data-installment="${row.number}"><th scope="row">${row.number}</th><td>${formatDate(row.dueDate)}</td><td>${formatCurrency(row.openingBalanceCents)}</td><td>${formatPercent(row.correctionRate)}</td><td>${formatCurrency(row.correctionCents)}</td><td>${formatCurrency(row.correctedBalanceCents)}</td><td>${formatCurrency(row.interestCents)}</td><td>${formatCurrency(row.regularAmortizationCents)}</td><td>${formatCurrency(row.regularPaymentCents)}</td><td>${formatCurrency(row.extraPaymentCents)}</td><td>${formatCurrency(row.monthlyExtraCostCents)}</td><td><strong>${formatCurrency(row.totalPaymentCents)}</strong></td><td>${formatCurrency(row.closingBalanceCents)}</td><td>${goal ? `<span class="badge goal-badge">${goal}</span>` : ''}</td></tr>`;
+        return `<tr class="${row.extraPaymentCents > 0 ? 'has-extra' : ''}" data-installment="${row.number}"><th scope="row">${row.number}</th><td>${formatDate(row.dueDate)}</td><td>${formatCurrency(row.openingBalanceCents)}</td><td>${formatPercent(row.correctionRate)}</td><td>${formatCurrency(row.correctionCents)}</td><td>${formatCurrency(row.correctedBalanceCents)}</td><td>${formatCurrency(row.interestCents)}</td><td>${formatCurrency(row.regularAmortizationCents)}</td><td>${formatCurrency(row.regularPaymentCents)}</td><td>${formatCurrency(row.extraPaymentCents)}</td><td>${formatCurrency(row.monthlyExtraCostCents)}</td><td><strong>${formatCurrency(row.totalPaymentCents)}</strong></td><td>${formatCurrency(row.closingBalanceCents)}</td><td>${installmentApplicationsHtml(row)}</td></tr>`;
       }).join('');
     }
 
@@ -1920,12 +2042,6 @@
     pageStatus.textContent = t('installments.pageStatus', { start: shownStart, end: shownEnd, total: rows.length });
     previousPage.disabled = currentPage === 1;
     nextPage.disabled = currentPage === totalPages;
-  }
-
-  function installmentGoalLabel(row) {
-    if (row.extraGoal === 'term') return t('installments.goalTermShort');
-    if (row.extraGoal === 'payment') return t('installments.goalPaymentShort');
-    return '';
   }
 
   function installmentFormattedCsvRow(row) {
@@ -1943,7 +2059,7 @@
       formatCurrency(row.monthlyExtraCostCents),
       formatCurrency(row.totalPaymentCents),
       formatCurrency(row.closingBalanceCents),
-      installmentGoalLabel(row),
+      installmentApplicationsText(row),
     ];
   }
 
@@ -1971,7 +2087,7 @@
       rawCurrencyValue(row.monthlyExtraCostCents),
       rawCurrencyValue(row.totalPaymentCents),
       rawCurrencyValue(row.closingBalanceCents),
-      installmentGoalLabel(row),
+      installmentApplicationsRaw(row),
     ];
   }
 
@@ -2040,7 +2156,6 @@
   }
 
   function installmentRowHtml(row) {
-    const goal = installmentGoalLabel(row);
     const cells = [
       row.number,
       formatDate(row.dueDate),
@@ -2055,9 +2170,8 @@
       formatCurrency(row.monthlyExtraCostCents),
       formatCurrency(row.totalPaymentCents),
       formatCurrency(row.closingBalanceCents),
-      goal,
     ];
-    return `<tr class="${row.extraPaymentCents > 0 ? 'has-extra' : ''}"><th scope="row">${escapeHtml(cells[0])}</th>${cells.slice(1).map((cell, index) => (index === 10 ? `<td><strong>${escapeHtml(cell)}</strong></td>` : `<td>${escapeHtml(cell)}</td>`)).join('')}</tr>`;
+    return `<tr class="${row.extraPaymentCents > 0 ? 'has-extra' : ''}"><th scope="row">${escapeHtml(cells[0])}</th>${cells.slice(1).map((cell, index) => (index === 10 ? `<td><strong>${escapeHtml(cell)}</strong></td>` : `<td>${escapeHtml(cell)}</td>`)).join('')}<td>${installmentApplicationsHtml(row)}</td></tr>`;
   }
 
   function installmentHeaderHtml() {
@@ -2303,9 +2417,7 @@
         hideSimulation();
         return;
       }
-      showGeneralError(error.code === 'EXTRA_GOAL_CONFLICT'
-        ? t('validation.extraGoalConflictWithMonth', { month: error.month })
-        : t('validation.calculationFailed'));
+      showGeneralError(t('validation.calculationFailed'));
       formAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   }
@@ -2536,7 +2648,7 @@
 
     updateRatePeriod();
     updateCorrectionFields();
-    updateExtrasEmptyState();
+    updateExtraOrderUi();
     hideSimulation();
 
     const [trLoaded, bcbLoaded] = await Promise.all([
@@ -2564,7 +2676,11 @@
     reformatFormValuesForCurrentLanguage();
     updateRatePeriod();
     updateCorrectionFields();
-    updateExtrasEmptyState();
+    updateExtraOrderUi();
+    const restoredCards = extrasList.querySelectorAll('[data-extra-card]');
+    const restoredFocusTarget = restoredCards[0]?.querySelector('[data-field="value"]') || financedValueInput;
+    restoredFocusTarget?.focus();
+    announceExtraOrder('extras.restoredAnnouncement', { count: restoredCards.length });
     scheduleAutomaticCalculation();
   });
   languageSelect.addEventListener('change', handleLanguageChange);
@@ -2619,11 +2735,45 @@
   });
 
   extrasList.addEventListener('click', (event) => {
-    const removeButton = event.target.closest('[data-action="remove-extra"]');
-    if (!removeButton) return;
+    const actionButton = event.target.closest('[data-action]');
+    const card = actionButton?.closest('[data-extra-card]');
+    if (!actionButton || !card) return;
+    const action = actionButton.dataset.action;
+    if (!['move-extra-up', 'move-extra-down', 'remove-extra'].includes(action)) return;
     leaveUrlSimulationMode();
-    removeButton.closest('[data-extra-card]').remove();
-    updateExtrasEmptyState();
+
+    const cards = [...extrasList.querySelectorAll('[data-extra-card]')];
+    const previousPosition = cards.indexOf(card) + 1;
+    if (action === 'remove-extra') {
+      const focusCard = card.nextElementSibling || card.previousElementSibling;
+      card.remove();
+      updateExtraOrderUi();
+      announceExtraOrder('extras.removedAnnouncement', { number: previousPosition });
+      const focusTarget = focusCard?.querySelector('[data-field="value"]') || document.querySelector('#add-extra');
+      focusTarget?.focus();
+      scheduleAutomaticCalculation();
+      return;
+    }
+
+    if (action === 'move-extra-up' && card.previousElementSibling) {
+      card.previousElementSibling.before(card);
+    } else if (action === 'move-extra-down' && card.nextElementSibling) {
+      card.nextElementSibling.after(card);
+    } else {
+      return;
+    }
+    updateExtraOrderUi();
+    const nextPosition = [...extrasList.querySelectorAll('[data-extra-card]')].indexOf(card) + 1;
+    announceExtraOrder('extras.movedAnnouncement', { number: nextPosition });
+    const sameControl = card.querySelector(`[data-action="${action}"]`);
+    const oppositeAction = action === 'move-extra-up' ? 'move-extra-down' : 'move-extra-up';
+    const oppositeControl = card.querySelector(`[data-action="${oppositeAction}"]`);
+    const focusTarget = sameControl && !sameControl.disabled
+      ? sameControl
+      : oppositeControl && !oppositeControl.disabled
+        ? oppositeControl
+        : card.querySelector('[data-action="remove-extra"]');
+    focusTarget?.focus();
     scheduleAutomaticCalculation();
   });
 
@@ -2675,7 +2825,7 @@
   reformatFormValuesForCurrentLanguage();
   updateRatePeriod();
   updateCorrectionFields();
-  updateExtrasEmptyState();
+  updateExtraOrderUi();
   if (loadedFromUrl) {
     scheduleAutomaticCalculation();
   } else if (restoredState) {

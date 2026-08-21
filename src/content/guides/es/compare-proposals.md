@@ -3,7 +3,7 @@ layout: layouts/guide.njk
 contentKind: guide
 contentId: compare-proposals
 locale: es
-order: 10
+order: 11
 category: contracts
 title: "Cómo comparar dos propuestas de financiación inmobiliaria"
 description: "Cree un cuadro para tasa, CET, índice, costos, primera cuota y total estimado de dos propuestas."

@@ -3,7 +3,7 @@ layout: layouts/guide.njk
 contentKind: guide
 contentId: annual-to-monthly-rate
 locale: en
-order: 6
+order: 7
 category: rates
 title: "Convert nominal and effective annual rates to monthly rates"
 description: "Distinguish nominal from effective rates and correctly convert annual percentages to a monthly period."

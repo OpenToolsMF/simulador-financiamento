@@ -97,11 +97,11 @@ function baseState({
   };
 }
 
-function oneTimeExtra(goal = 'term') {
+function oneTimeExtra(goal = 'term', month = 60, valueCents = 2_000_000) {
   return {
     type: 'single',
-    valueCents: 2_000_000,
-    month: 60,
+    valueCents,
+    month,
     startMonth: null,
     endMonth: null,
     frequencyMonths: null,
@@ -180,6 +180,14 @@ const sacBaseState = baseState({ system: 'sac' });
 const priceBaseState = baseState({ system: 'price' });
 const extraTermState = baseState({ system: 'sac', extraPayments: [oneTimeExtra('term')] });
 const extraPaymentState = baseState({ system: 'sac', extraPayments: [oneTimeExtra('payment')] });
+const amortizeMonth60State = baseState({
+  system: 'sac',
+  extraPayments: [oneTimeExtra('payment', 60)],
+});
+const amortizeMonth61State = baseState({
+  system: 'sac',
+  extraPayments: [oneTimeExtra('payment', 61)],
+});
 const monthlyExtraState = baseState({ system: 'sac', extraPayments: [recurringExtra()] });
 const marketTrBaseState = baseState({ system: 'sac', rate: marketTrRate });
 const marketTrCorrectedState = baseState({
@@ -216,6 +224,15 @@ const scenarios = {
     variant('reduce-term', extraTermState),
     variant('reduce-payment', extraPaymentState),
   ], 'reduce-term'),
+  'amortization-timing': {
+    ...scenario('amortization-timing', [
+      variant('amortize-month-60', amortizeMonth60State),
+      variant('amortize-month-61', amortizeMonth61State),
+    ], 'amortize-month-60'),
+    renderType: 'timing-comparison',
+    comparisonMonths: [59, 60, 61, 62],
+    zoomMonths: [58, 59, 60, 61, 62],
+  },
   'with-without-tr': scenario('with-without-tr', [
     variant('without-tr', marketTrBaseState),
     variant('with-tr', marketTrCorrectedState),

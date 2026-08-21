@@ -3,7 +3,7 @@ layout: layouts/guide.njk
 contentKind: guide
 contentId: annual-to-monthly-rate
 locale: es
-order: 6
+order: 7
 category: rates
 title: "Convertir tasa anual nominal y efectiva en tasa mensual"
 description: "Diferencie tasa nominal y efectiva y convierta correctamente porcentajes anuales a periodicidad mensual."

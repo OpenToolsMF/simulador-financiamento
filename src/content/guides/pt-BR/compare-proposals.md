@@ -3,7 +3,7 @@ layout: layouts/guide.njk
 contentKind: guide
 contentId: compare-proposals
 locale: pt-BR
-order: 10
+order: 11
 category: contracts
 title: "Como comparar duas propostas de financiamento imobiliário"
 description: "Monte um quadro único para comparar taxa, CET, indexador, custos, parcela inicial e total estimado de duas propostas."

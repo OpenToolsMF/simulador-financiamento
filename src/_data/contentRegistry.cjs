@@ -60,9 +60,19 @@ const guides = [
     },
   },
   {
+    id: 'best-amortization-day',
+    category: 'amortization',
+    order: 6,
+    slugs: {
+      'pt-BR': 'melhor-dia-amortizar-financiamento',
+      en: 'best-day-to-make-an-extra-payment',
+      es: 'mejor-dia-para-amortizar-financiacion',
+    },
+  },
+  {
     id: 'annual-to-monthly-rate',
     category: 'rates',
-    order: 6,
+    order: 7,
     slugs: {
       'pt-BR': 'converter-taxa-anual-em-mensal',
       en: 'convert-annual-rate-to-monthly',
@@ -72,7 +82,7 @@ const guides = [
   {
     id: 'cet',
     category: 'rates',
-    order: 7,
+    order: 8,
     slugs: {
       'pt-BR': 'custo-efetivo-total-cet',
       en: 'total-effective-cost-cet',
@@ -82,7 +92,7 @@ const guides = [
   {
     id: 'tr-balance',
     category: 'rates',
-    order: 8,
+    order: 9,
     slugs: {
       'pt-BR': 'tr-no-saldo-devedor',
       en: 'tr-on-outstanding-balance',
@@ -92,7 +102,7 @@ const guides = [
   {
     id: 'bank-payment-difference',
     category: 'contracts',
-    order: 9,
+    order: 10,
     slugs: {
       'pt-BR': 'parcela-do-banco-diferente',
       en: 'why-bank-payment-differs',
@@ -102,7 +112,7 @@ const guides = [
   {
     id: 'compare-proposals',
     category: 'contracts',
-    order: 10,
+    order: 11,
     slugs: {
       'pt-BR': 'comparar-propostas-financiamento-imobiliario',
       en: 'compare-mortgage-proposals',
@@ -112,7 +122,7 @@ const guides = [
   {
     id: 'fgts-amortization',
     category: 'amortization',
-    order: 11,
+    order: 12,
     slugs: {
       'pt-BR': 'simular-amortizacao-fgts',
       en: 'simulate-fgts-amortization',
@@ -122,7 +132,7 @@ const guides = [
   {
     id: 'simulator-mistakes',
     category: 'contracts',
-    order: 12,
+    order: 13,
     slugs: {
       'pt-BR': 'erros-comuns-simulador-financiamento',
       en: 'common-financing-simulator-mistakes',

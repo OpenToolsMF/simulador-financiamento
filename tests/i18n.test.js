@@ -68,6 +68,11 @@ for (const language of languages) {
   assert.notEqual(i18n.t('results.exportCsv'), 'results.exportCsv', `${language}: traduz exportação CSV`);
   assert.notEqual(i18n.t('results.exportCsvFormatted'), 'results.exportCsvFormatted', `${language}: traduz opção de CSV formatado`);
   assert.notEqual(i18n.t('results.exportCsvRaw'), 'results.exportCsvRaw', `${language}: traduz opção de CSV raw`);
+  assert.notEqual(i18n.t('extras.orderHelp'), 'extras.orderHelp', `${language}: explica a ordem das amortizações`);
+  assert.notEqual(i18n.t('extras.moveUpAria', { number: 2 }), 'extras.moveUpAria', `${language}: traduz controle de ordenação`);
+  assert.ok(i18n.t('extras.mixedWarning', { months: '12, 24' }).includes('12, 24'), `${language}: lista meses com objetivos mistos`);
+  assert.ok(i18n.t('extras.restoredAnnouncement', { count: 2 }).includes('2'), `${language}: anuncia quantidade de regras restauradas`);
+  assert.ok(i18n.t('faq.14.answer').includes(language === 'en' ? 'current horizon' : language === 'es' ? 'horizonte vigente' : 'horizonte vigente'), `${language}: redução de parcela preserva o horizonte vigente`);
   assert.notEqual(i18n.t('bcb.title'), 'bcb.title', `${language}: traduz modal de taxas médias BCB`);
   assert.notEqual(i18n.t('bcb.openComparison'), 'bcb.openComparison', `${language}: traduz atalho para comparação no modal BCB`);
   assert.notEqual(i18n.t('footer.simulator'), 'footer.simulator', `${language}: traduz link do simulador no footer`);

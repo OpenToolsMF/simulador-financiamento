@@ -34,10 +34,11 @@ async function collectHtmlFiles(directory) {
 }
 
 (async () => {
+  assert.equal(expectedHtmlFiles.length, 75, 'o registro público contém exatamente 75 páginas');
   assert.deepEqual(
     (await collectHtmlFiles(siteRoot)).sort(),
     expectedHtmlFiles,
-    'o build gera exatamente as 72 páginas públicas registradas',
+    'o build gera exatamente as 75 páginas públicas registradas',
   );
 
   for (const file of ['CNAME', 'ads.txt', 'robots.txt', 'sitemap.xml']) {
@@ -91,13 +92,23 @@ async function collectHtmlFiles(directory) {
     2,
     'valores padrão são usados na primeira visita e ao limpar os dados',
   );
+  assert.doesNotMatch(appScript, /findGoalConflict|EXTRA_GOAL_CONFLICT/, 'interface não bloqueia objetivos mistos');
+  assert.match(appScript, /extraApplications/, 'interface detalha aplicações ordenadas');
+  assert.match(appScript, /item\.goal}:\$\{rawCurrencyValue\(item\.appliedCents\)}/, 'CSV bruto preserva goal:valor na ordem');
+  assert.match(appScript, /restoredFocusTarget = restoredCards\[0\]\?\.querySelector/, 'restauração move o foco para a primeira regra');
+  assert.match(appScript, /announceExtraOrder\('extras\.restoredAnnouncement'/, 'restauração anuncia quantidade e ordem das regras');
 
   for (const page of site.pages.filter((item) => item.pageKey === 'simulator')) {
     const html = await readFile(join(siteRoot, page.outputPath), 'utf8');
     const chartDataPosition = html.indexOf('assets/js/chart-data.js?v=20260811-shared-chart-axis');
-    const appPosition = html.indexOf('assets/js/app.js?v=20260811-shared-chart-axis');
+    const appPosition = html.indexOf('assets/js/app.js?v=20260821-ordered-extras');
     assert.ok(chartDataPosition >= 0, `${page.locale}: carrega o preparador de dados dos gráficos`);
     assert.ok(appPosition > chartDataPosition, `${page.locale}: carrega os dados dos gráficos antes do aplicativo`);
+    assert.match(html, /id="extras-order-help"/, `${page.locale}: explica a ordem dos cartões`);
+    assert.match(html, /id="extras-mixed-warning"[^>]*role="status"[^>]*aria-live="polite"/, `${page.locale}: reserva aviso não bloqueante`);
+    assert.match(html, /id="extras-order-status"[^>]*role="status"[^>]*aria-live="polite"/, `${page.locale}: anuncia reordenação`);
+    assert.match(html, /data-action="move-extra-up"/, `${page.locale}: oferece mover para cima`);
+    assert.match(html, /data-action="move-extra-down"/, `${page.locale}: oferece mover para baixo`);
   }
 
   console.log('Testes do site gerado concluídos com sucesso.');

@@ -3,7 +3,7 @@ layout: layouts/guide.njk
 contentKind: guide
 contentId: bank-payment-difference
 locale: pt-BR
-order: 9
+order: 10
 category: contracts
 title: "Por que a parcela calculada pelo banco pode ser diferente"
 description: "Reconcilie taxa, datas, seguros, tarifas, correção e arredondamento quando a prestação do contrato não coincide com a simulação."

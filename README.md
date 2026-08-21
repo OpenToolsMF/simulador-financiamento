@@ -1,6 +1,6 @@
 # Mapa das Parcelas
 
-Mapa das Parcelas é um simulador e uma biblioteca educativa estática para GitHub Pages. O site reúne SAC, Price, amortizações extras, correção monetária, custos mensais, gráficos, exportação em PDF, 12 guias e 6 simulações prontas em três idiomas.
+Mapa das Parcelas é um simulador e uma biblioteca educativa estática para GitHub Pages. O site reúne SAC, Price, amortizações extras, correção monetária, custos mensais, gráficos, exportação em PDF, 13 guias e 6 simulações prontas em três idiomas.
 
 O projeto usa HTML, CSS e JavaScript simples, com Eleventy apenas na etapa de geração estática. Não há framework de interface nem dependências externas via CDN. Todos os assets permanecem locais e com caminhos relativos.
 
@@ -17,7 +17,7 @@ O projeto usa HTML, CSS e JavaScript simples, com Eleventy apenas na etapa de ge
 - Taxas médias BCB por instituição para modalidades imobiliárias e veicular a partir do JSON local `assets/data/bcb-credit-rates.json`.
 - Comparação financeira por banco usando as taxas médias BCB salvas localmente.
 - Taxa de juros padrão anual efetiva baseada na mediana das taxas imobiliárias de mercado pós-fixadas em TR do BCB, com cache diário em `localStorage`.
-- Amortizações extras pontuais ou recorrentes, com objetivo de reduzir prazo ou reduzir parcelas.
+- Amortizações extras pontuais ou recorrentes, com objetivo de reduzir prazo ou reduzir parcelas. Regras que coincidem no mesmo mês podem combinar os dois objetivos e são aplicadas na ordem visual dos cartões, ajustável por botões de subir e descer.
 - Recálculo automático ao alterar campos.
 - Persistência dos últimos valores preenchidos em `localStorage`.
 - Reset do formulário preservando caches diários de TR/taxas médias BCB.
@@ -27,6 +27,7 @@ O projeto usa HTML, CSS e JavaScript simples, com Eleventy apenas na etapa de ge
   - pagamento mensal;
   - custos acumulados.
 - Exportação do relatório em PDF usando impressão nativa do navegador.
+- Exportação do cronograma em CSV formatado ou bruto; no modo bruto, a sequência mensal usa o contrato estável `term:valor|payment:valor` com os valores efetivamente aplicados.
 - Internacionalização em `pt-BR`, `en` e `es`, mantendo moeda em BRL.
 - URLs públicas próprias por idioma, com `canonical`, `hreflang` e sitemap.
 - Páginas institucionais de privacidade, sobre e contato para transparência e requisitos de publicação.
@@ -38,7 +39,7 @@ O projeto usa HTML, CSS e JavaScript simples, com Eleventy apenas na etapa de ge
 ## Estrutura
 
 - `src/pages/`: templates dos hubs e das páginas funcionais/institucionais.
-- `src/content/guides/`: 36 Markdown localizados, organizados por idioma.
+- `src/content/guides/`: 39 Markdown localizados, organizados por idioma.
 - `src/content/simulations/`: 18 Markdown de exemplos localizados.
 - `src/_includes/`: layout HTML e componentes compartilhados de cabeçalho e rodapé.
 - `src/_data/site.cjs`: domínio, idiomas, rotas, metadados, datas e dados estruturados.
@@ -115,7 +116,9 @@ O idioma é definido pela URL quando a rota é explícita. A preferência salva 
 
 As páginas localizadas mantêm no próprio HTML o corpo pré-renderizado no idioma da rota. `assets/js/i18n.js` continua sendo a fonte canônica das traduções e atualiza os textos dinâmicos; o build usa os mesmos dicionários para que crawlers, previews e navegadores sem JavaScript não recebam fallbacks em português nas rotas `/en/` e `/es/`.
 
-Os guias e exemplos são escritos em Markdown. Cada tradução compartilha um `contentId` e declara no front matter título, descrição, categoria ou cenário, revisão editorial, dependências de dados, limitações, fontes e relacionamentos. Não coloque números derivados na prosa: use o shortcode `scenarioModule`, que recalcula indicadores, tabelas, gráfico e link para o simulador.
+A ordem do array `extraPayments` é parte do contrato da simulação v1 e define a precedência das regras que coincidem no mesmo mês. Cada parcela calculada mantém `extraPaymentCents` como total efetivamente aplicado, resume os objetivos em `extraGoal` (`term`, `payment`, `mixed` ou `null`) e expõe a sequência em `extraApplications`, com `goal`, `requestedCents` e `appliedCents` por aplicação.
+
+Os guias e exemplos são escritos em Markdown. Cada tradução compartilha um `contentId` e declara no front matter título, descrição, categoria ou cenário, revisão editorial, dependências de dados, limitações, fontes e relacionamentos. Os campos opcionais `seoTitle`, `cardDescription` e `socialImage` permitem separar o título de busca, o resumo do hub e a arte social; quando ausentes, o gerador preserva os metadados padrão. Não coloque números derivados na prosa: use o shortcode `scenarioModule`, que recalcula indicadores, tabelas, gráfico e link para o simulador.
 
 ## Validação
 
@@ -131,8 +134,8 @@ git diff --check
 Os testes automatizados cobrem principalmente:
 
 - motor financeiro SAC/Price;
-- amortizações extras pontuais e recorrentes;
-- redução de prazo e redução de parcela;
+- amortizações extras pontuais, recorrentes, mistas e ordenadas;
+- redução de prazo e redução de parcela, inclusive em sequência no mesmo mês;
 - correção monetária fixa e personalizada;
 - repetição do último índice de correção quando a série é menor que o prazo;
 - custos extras mensais;
@@ -144,10 +147,10 @@ Os testes automatizados cobrem principalmente:
 - parser e geração dos JSONs locais da TR e das taxas médias BCB;
 - comparação financeira por banco, incluindo ordenação por total pago e uso das taxas anuais BCB.
 - coerência entre páginas públicas, URLs canônicas, sitemap e robots.
-- catálogo exato de 12 guias e 6 exemplos por idioma, metadados editoriais e relacionamentos;
+- catálogo exato de 13 guias e 6 exemplos por idioma, metadados editoriais e relacionamentos;
 - correspondência entre os números publicados, o `FinanceSimulator` e o cenário decodificado de cada CTA;
-- round-trip e rejeição integral de versões, Base64, tipos, tamanhos, séries e amortizações inválidas;
-- 72 páginas, canonicals, `hreflang`, JSON-LD `CollectionPage`/`ItemList`/`Article`/`BreadcrumbList` e sitemap.
+- round-trip preservando a ordem das regras e rejeição integral de versões, Base64, tipos, tamanhos, séries e amortizações inválidas;
+- 75 páginas, canonicals, `hreflang`, JSON-LD `CollectionPage`/`ItemList`/`Article`/`BreadcrumbList` e sitemap.
 
 Layout, impressão, Chart.js, foco, `localStorage` e comportamento visual em 390 px devem ser confirmados pelo smoke test no navegador antes da publicação.
 
@@ -177,4 +180,4 @@ O GitHub Pages usa o workflow `.github/workflows/deploy-pages.yml`:
 
 Pull requests executam build e testes sem publicar. Nas configurações do repositório, a fonte do GitHub Pages deve ser **GitHub Actions**. O domínio personalizado continua definido por `CNAME` e pela configuração do Pages.
 
-O artifact contém exatamente 72 páginas HTML, além de `sitemap.xml`, `robots.txt`, `CNAME`, `ads.txt` e assets locais. `_site/` é gerado e não deve ser versionado.
+O artifact contém exatamente 75 páginas HTML, além de `sitemap.xml`, `robots.txt`, `CNAME`, `ads.txt` e assets locais. `_site/` é gerado e não deve ser versionado.

@@ -3,7 +3,7 @@ layout: layouts/guide.njk
 contentKind: guide
 contentId: simulator-mistakes
 locale: pt-BR
-order: 12
+order: 13
 category: contracts
 title: "Erros comuns ao usar um simulador de financiamento"
 description: "Evite confundir taxa mensal e anual, ignorar TR e custos ou escolher o objetivo errado de uma amortização."

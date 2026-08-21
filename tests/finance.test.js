@@ -17,6 +17,50 @@ function config(system, extraPayments = [], overrides = {}) {
   };
 }
 
+function financialSchedule(result) {
+  return result.installments.map(({ extraApplications, ...row }) => row);
+}
+
+function assertApplicationTotals(result, message) {
+  for (const row of result.installments) {
+    assert.equal(
+      row.extraApplications.reduce((total, application) => total + application.appliedCents, 0),
+      row.extraPaymentCents,
+      `${message}: aplicações fecham no mês ${row.number}`,
+    );
+    assert.equal(
+      row.correctedBalanceCents - row.regularAmortizationCents - row.extraPaymentCents,
+      row.closingBalanceCents,
+      `${message}: saldo fecha no mês ${row.number}`,
+    );
+    assert.equal(
+      row.regularPaymentCents + row.extraPaymentCents + row.monthlyExtraCostCents,
+      row.totalPaymentCents,
+      `${message}: pagamento total fecha no mês ${row.number}`,
+    );
+    assert.ok(row.closingBalanceCents >= 0, `${message}: saldo não fica negativo no mês ${row.number}`);
+  }
+  const sum = (field) => result.installments.reduce((total, row) => total + row[field], 0);
+  assert.equal(
+    sum('extraPaymentCents'),
+    result.stats.totalExtraCents,
+    `${message}: estatística totaliza as aplicações`,
+  );
+  assert.equal(sum('totalPaymentCents'), result.stats.totalPaidCents, `${message}: estatística totaliza pagamentos`);
+  assert.equal(sum('interestCents'), result.stats.totalInterestCents, `${message}: estatística totaliza juros`);
+  assert.equal(sum('correctionCents'), result.stats.totalCorrectionCents, `${message}: estatística totaliza correção`);
+  assert.equal(
+    sum('monthlyExtraCostCents'),
+    result.stats.totalMonthlyExtraCostsCents,
+    `${message}: estatística totaliza custos mensais`,
+  );
+  assert.equal(
+    sum('regularAmortizationCents') + sum('extraPaymentCents'),
+    result.stats.totalAmortizedCents,
+    `${message}: estatística totaliza amortização regular e extra`,
+  );
+}
+
 for (const system of ['sac', 'price']) {
   const comparison = finance.simulateComparison(config(system));
   assert.equal(comparison.current.installments.length, 120, `${system}: mantém o prazo sem extras`);
@@ -88,13 +132,115 @@ const combinedExtras = [
   { type: 'single', month: 1, valueCents: 20000, goal: 'term' },
 ];
 assert.equal(finance.simulate(config('sac', combinedExtras)).installments[0].extraPaymentCents, 30000, 'soma extras compatíveis no mesmo mês');
-assert.throws(
-  () => finance.simulate(config('sac', [combinedExtras[0], { ...combinedExtras[1], goal: 'payment' }])),
-  (error) => error.code === 'EXTRA_GOAL_CONFLICT' && error.month === 1,
-  'rejeita objetivos diferentes no mesmo mês por código de erro traduzível',
+
+for (const system of ['sac', 'price']) {
+  for (const goal of ['term', 'payment']) {
+    const splitRules = combinedExtras.map((rule) => ({ ...rule, month: 12, goal }));
+    const summedRule = [{ type: 'single', month: 12, valueCents: 30000, goal }];
+    const splitResult = finance.simulate(config(system, splitRules));
+    const summedResult = finance.simulate(config(system, summedRule));
+    assert.deepEqual(
+      financialSchedule(splitResult),
+      financialSchedule(summedResult),
+      `${system}/${goal}: regras consecutivas recalculam uma vez e preservam os valores anteriores`,
+    );
+    assert.deepEqual(splitResult.stats, summedResult.stats, `${system}/${goal}: agregação preserva estatísticas`);
+    assert.deepEqual(
+      splitResult.installments[11].extraApplications,
+      [
+        { goal, requestedCents: 10000, appliedCents: 10000 },
+        { goal, requestedCents: 20000, appliedCents: 20000 },
+      ],
+      `${system}/${goal}: mantém o detalhamento individual após agregar o recálculo`,
+    );
+  }
+}
+
+const mixedTermThenPayment = [
+  { type: 'single', month: 12, valueCents: 10000, goal: 'term' },
+  { type: 'single', month: 12, valueCents: 10000, goal: 'payment' },
+];
+const mixedPaymentThenTerm = [...mixedTermThenPayment].reverse();
+
+for (const system of ['sac', 'price']) {
+  const termThenPayment = finance.simulate(config(system, mixedTermThenPayment));
+  const paymentThenTerm = finance.simulate(config(system, mixedPaymentThenTerm));
+  const termThenPaymentRow = termThenPayment.installments[11];
+  const paymentThenTermRow = paymentThenTerm.installments[11];
+
+  assert.equal(termThenPaymentRow.extraGoal, 'mixed', `${system}: identifica objetivos efetivamente mistos`);
+  assert.deepEqual(
+    termThenPaymentRow.extraApplications.map((application) => application.goal),
+    ['term', 'payment'],
+    `${system}: aplica prazo e depois parcela na ordem das regras`,
+  );
+  assert.deepEqual(
+    paymentThenTermRow.extraApplications.map((application) => application.goal),
+    ['payment', 'term'],
+    `${system}: aplica parcela e depois prazo na ordem inversa`,
+  );
+  assert.notDeepEqual(
+    {
+      effectiveTerm: termThenPayment.stats.effectiveTerm,
+      nextPaymentCents: termThenPayment.installments[12].regularPaymentCents,
+      totalInterestCents: termThenPayment.stats.totalInterestCents,
+    },
+    {
+      effectiveTerm: paymentThenTerm.stats.effectiveTerm,
+      nextPaymentCents: paymentThenTerm.installments[12].regularPaymentCents,
+      totalInterestCents: paymentThenTerm.stats.totalInterestCents,
+    },
+    `${system}: a ordem produz cronogramas determinísticos e distintos`,
+  );
+  assertApplicationTotals(termThenPayment, `${system}: prazo seguido de parcela`);
+  assertApplicationTotals(paymentThenTerm, `${system}: parcela seguida de prazo`);
+}
+
+const recurringMixedRules = [
+  { type: 'recurring', startMonth: 1, endMonth: 13, frequency: 6, valueCents: 10000, goal: 'term' },
+  { type: 'recurring', startMonth: 1, endMonth: 13, frequency: 6, valueCents: 20000, goal: 'payment' },
+];
+assert.deepEqual(finance.findMixedGoalMonths(recurringMixedRules, 24), [1, 7, 13], 'lista todos os cruzamentos recorrentes');
+assert.equal(finance.findGoalConflict(recurringMixedRules, 24), 1, 'mantém o detector do primeiro cruzamento para aviso não bloqueante');
+const recurringMixed = finance.simulate(config('price', recurringMixedRules));
+for (const month of [1, 7, 13]) {
+  assert.deepEqual(
+    recurringMixed.installments[month - 1].extraApplications.map((application) => application.goal),
+    ['term', 'payment'],
+    `recorrências preservam a ordem no mês ${month}`,
+  );
+}
+
+const payoffApplications = [
+  { type: 'single', month: 1, valueCents: 4000000, goal: 'term' },
+  { type: 'single', month: 1, valueCents: 999999999, goal: 'payment' },
+  { type: 'single', month: 1, valueCents: 1000000, goal: 'term' },
+];
+const payoffResult = finance.simulate(config('price', payoffApplications));
+const payoffRow = payoffResult.installments[0];
+assert.equal(payoffRow.closingBalanceCents, 0, 'limita cada aplicação ao saldo e quita sem saldo negativo');
+assert.equal(payoffRow.extraApplications[0].appliedCents, 4000000, 'aplica integralmente o primeiro aporte');
+assert.equal(
+  payoffRow.extraApplications[1].appliedCents,
+  payoffRow.correctedBalanceCents - payoffRow.regularAmortizationCents - 4000000,
+  'limita o segundo aporte ao saldo disponível',
 );
+assert.equal(payoffRow.extraApplications[2].appliedCents, 0, 'registra com zero a aplicação posterior à quitação');
+assert.equal(payoffRow.extraGoal, 'mixed', 'resume apenas os dois objetivos efetivamente aplicados');
+assertApplicationTotals(payoffResult, 'quitação com aplicações ordenadas');
+
+const termPayoff = finance.simulate(config('sac', [
+  { type: 'single', month: 1, valueCents: 999999999, goal: 'term' },
+  { type: 'single', month: 1, valueCents: 10000, goal: 'payment' },
+]));
+assert.equal(termPayoff.installments[0].extraApplications[1].appliedCents, 0, 'mantém a aplicação mista posterior à quitação');
+assert.equal(termPayoff.installments[0].extraGoal, 'term', 'não marca como misto o objetivo que aplicou valor zero');
 
 assert.equal(finance.simulate(config('price', [], { monthlyRate: 0 })).stats.totalInterestCents, 0, 'aceita taxa zero');
+const zeroRateMixed = finance.simulate(config('price', mixedTermThenPayment, { monthlyRate: 0 }));
+assert.equal(zeroRateMixed.stats.totalInterestCents, 0, 'taxa zero permanece válida com objetivos mistos');
+assert.equal(zeroRateMixed.installments.at(-1).closingBalanceCents, 0, 'taxa zero mista quita o saldo');
+assertApplicationTotals(zeroRateMixed, 'taxa zero com objetivos mistos');
 assert.equal(
   finance.simulate(config('price', [{ type: 'single', month: 1, valueCents: 999999999, goal: 'term' }])).installments.length,
   1,
@@ -181,6 +327,69 @@ for (const system of ['sac', 'price']) {
   assert.equal(correctedPaymentExtra.stats.effectiveTerm, correctedBase.stats.effectiveTerm, `${system}: extra com correção preserva o prazo quando reduz parcela`);
   assert.ok(correctedPaymentExtra.installments[1].regularPaymentCents < correctedBase.installments[1].regularPaymentCents, `${system}: extra com correção reduz a parcela seguinte quando esse é o objetivo`);
 }
+
+const mixedCorrectionCases = [
+  ['fixa', { correctionMode: 'fixed', monthlyCorrectionRate: 0.002 }],
+  ['personalizada', { correctionMode: 'custom', monthlyCorrectionRates: [0.001, 0.002, 0.0015] }],
+];
+for (const system of ['sac', 'price']) {
+  for (const [correctionLabel, overrides] of mixedCorrectionCases) {
+    for (const [orderLabel, rules] of [
+      ['prazo-parcela', mixedTermThenPayment],
+      ['parcela-prazo', mixedPaymentThenTerm],
+    ]) {
+      const result = finance.simulate(config(system, rules, overrides));
+      assert.equal(result.installments[11].extraGoal, 'mixed', `${system}/${correctionLabel}/${orderLabel}: mantém objetivos mistos`);
+      assert.equal(result.installments.at(-1).closingBalanceCents, 0, `${system}/${correctionLabel}/${orderLabel}: quita o saldo corrigido`);
+      assertApplicationTotals(result, `${system}/${correctionLabel}/${orderLabel}`);
+    }
+  }
+}
+
+const termRule = [{ type: 'single', month: 12, valueCents: 1000000, goal: 'term' }];
+const termThenLaterPaymentRules = [
+  ...termRule,
+  { type: 'single', month: 24, valueCents: 500000, goal: 'payment' },
+];
+const horizonCases = [
+  ['sem correção', {}],
+  ['com correção fixa', { correctionMode: 'fixed', monthlyCorrectionRate: 0.002 }],
+  ['com correção personalizada', {
+    correctionMode: 'custom',
+    monthlyCorrectionRates: Array.from({ length: 120 }, (_, index) => 0.001 + (index % 3) * 0.0002),
+  }],
+];
+
+for (const system of ['sac', 'price']) {
+  for (const [label, overrides] of horizonCases) {
+    const termOnly = finance.simulate(config(system, termRule, overrides));
+    const termThenLaterPayment = finance.simulate(config(system, termThenLaterPaymentRules, overrides));
+    assert.ok(termOnly.stats.effectiveTerm < 120, `${system}/${label}: primeiro aporte reduz o horizonte`);
+    assert.equal(
+      termThenLaterPayment.stats.effectiveTerm,
+      termOnly.stats.effectiveTerm,
+      `${system}/${label}: redução posterior de parcela preserva o horizonte já encurtado`,
+    );
+    assert.ok(
+      termThenLaterPayment.installments[24].regularPaymentCents < termOnly.installments[24].regularPaymentCents,
+      `${system}/${label}: aporte posterior reduz a parcela dentro do horizonte encurtado`,
+    );
+    assert.equal(
+      termThenLaterPayment.installments.at(-1).closingBalanceCents,
+      0,
+      `${system}/${label}: quita no horizonte preservado`,
+    );
+    assertApplicationTotals(termThenLaterPayment, `${system}/${label}: objetivos em meses distintos`);
+  }
+}
+
+const tinySacTerm = [{ type: 'single', month: 12, valueCents: 1, goal: 'term' }];
+const tinySacMixed = [...tinySacTerm, { type: 'single', month: 24, valueCents: 1, goal: 'payment' }];
+assert.equal(
+  finance.simulate(config('sac', tinySacMixed)).stats.effectiveTerm,
+  finance.simulate(config('sac', tinySacTerm)).stats.effectiveTerm,
+  'SAC preserva o horizonte efetivo mesmo quando o arredondamento adiciona um mês ao horizonte estimado',
+);
 
 const reportedCorrectionScenario = finance.simulateComparison({
   financedCents: 40000000,

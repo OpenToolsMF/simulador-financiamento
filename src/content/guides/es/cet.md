@@ -3,7 +3,7 @@ layout: layouts/guide.njk
 contentKind: guide
 contentId: cet
 locale: es
-order: 7
+order: 8
 category: rates
 title: "Qué es el CET y por qué importa más que la tasa anunciada"
 description: "Entienda el Costo Efectivo Total, qué flujos incluye y por qué este simulador no calcula el CET regulatorio."

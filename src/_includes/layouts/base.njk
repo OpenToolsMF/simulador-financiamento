@@ -27,16 +27,21 @@
     <meta property="og:title" content="{{ generatedPage.title }}">
     <meta property="og:description" content="{{ generatedPage.description }}">
     <meta property="og:url" content="{{ generatedPage.publicPath | canonicalUrl }}">
-    <meta property="og:image" content="{{ site.origin }}/assets/image/logo.png">
-    <meta property="og:image:type" content="image/png">
-    <meta property="og:image:width" content="600">
-    <meta property="og:image:height" content="600">
-    <meta property="og:image:alt" content="{{ site.localizedSchema[generatedPage.locale].imageAlt }}">
-    <meta name="twitter:card" content="summary">
+    {% set socialImagePath = generatedPage.socialImage.path if generatedPage.socialImage else 'assets/image/logo.png' %}
+    {% set socialImageType = generatedPage.socialImage.type if generatedPage.socialImage else 'image/png' %}
+    {% set socialImageWidth = generatedPage.socialImage.width if generatedPage.socialImage else 600 %}
+    {% set socialImageHeight = generatedPage.socialImage.height if generatedPage.socialImage else 600 %}
+    {% set socialImageAlt = generatedPage.socialImage.alt if generatedPage.socialImage else site.localizedSchema[generatedPage.locale].imageAlt %}
+    <meta property="og:image" content="{{ site.origin }}/{{ socialImagePath }}">
+    <meta property="og:image:type" content="{{ socialImageType }}">
+    <meta property="og:image:width" content="{{ socialImageWidth }}">
+    <meta property="og:image:height" content="{{ socialImageHeight }}">
+    <meta property="og:image:alt" content="{{ socialImageAlt }}">
+    <meta name="twitter:card" content="{{ 'summary_large_image' if generatedPage.socialImage else 'summary' }}">
     <meta name="twitter:title" content="{{ generatedPage.title }}">
     <meta name="twitter:description" content="{{ generatedPage.description }}">
-    <meta name="twitter:image" content="{{ site.origin }}/assets/image/logo.png">
-    <meta name="twitter:image:alt" content="{{ site.localizedSchema[generatedPage.locale].imageAlt }}">
+    <meta name="twitter:image" content="{{ site.origin }}/{{ socialImagePath }}">
+    <meta name="twitter:image:alt" content="{{ socialImageAlt }}">
     <script type="application/ld+json">
 {{ generatedPage | structuredData | json | safe }}
     </script>

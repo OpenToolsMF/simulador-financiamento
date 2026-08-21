@@ -3,7 +3,7 @@ layout: layouts/guide.njk
 contentKind: guide
 contentId: bank-payment-difference
 locale: es
-order: 9
+order: 10
 category: contracts
 title: "Por qué la cuota del banco puede ser diferente"
 description: "Concilie tasa, fechas, seguros, tarifas, corrección y redondeo cuando la cuota contractual no coincide con la simulación."

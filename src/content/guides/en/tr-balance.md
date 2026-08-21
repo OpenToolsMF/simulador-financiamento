@@ -3,7 +3,7 @@ layout: layouts/guide.njk
 contentKind: guide
 contentId: tr-balance
 locale: en
-order: 8
+order: 9
 category: rates
 title: "How TR changes a mortgage's outstanding balance"
 description: "Compare the same financing with and without TR adjustment and understand the simulator's conservative assumption."

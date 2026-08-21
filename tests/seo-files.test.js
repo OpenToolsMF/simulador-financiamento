@@ -149,6 +149,7 @@ function assetReferences(html) {
     }))),
   ];
   const publicPages = [...fixedPages, ...contentPages];
+  assert.equal(publicPages.length, 75, 'SEO cobre exatamente as 75 páginas públicas');
 
   const canonicalUrls = [];
   const manifestUrls = [];
@@ -271,7 +272,7 @@ function assetReferences(html) {
     assert.equal(collection.url, page.url, `${page.file}: CollectionPage usa a canonical`);
     assert.equal(collection.inLanguage, page.language, `${page.file}: CollectionPage possui idioma localizado`);
     assert.equal(collection.mainEntity?.['@type'], 'ItemList', `${page.file}: possui ItemList`);
-    assert.equal(collection.mainEntity.itemListElement.length, 18, `${page.file}: lista os 12 guias e 6 exemplos`);
+    assert.equal(collection.mainEntity.itemListElement.length, 19, `${page.file}: lista os 13 guias e 6 exemplos`);
   }
 
   for (const page of publicPages.filter(({ page: pageType }) => ['guide', 'simulation'].includes(pageType))) {
@@ -419,6 +420,7 @@ function assetReferences(html) {
   const sitemap = await readFile(join(projectRoot, 'sitemap.xml'), 'utf8');
   assert.match(sitemap, /<urlset\b[^>]*xmlns=["']http:\/\/www\.sitemaps\.org\/schemas\/sitemap\/0\.9["']/i);
   const urlBlocks = sitemap.match(/<url>\s*[\s\S]*?<\/url>/gi) ?? [];
+  assert.equal(urlBlocks.length, 75, 'sitemap contém exatamente 75 URLs');
   assert.equal(urlBlocks.length, publicPages.length, 'sitemap tem uma entrada para cada página pública');
 
   const sitemapUrls = [];

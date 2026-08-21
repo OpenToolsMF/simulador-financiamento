@@ -3,7 +3,7 @@ layout: layouts/guide.njk
 contentKind: guide
 contentId: bank-payment-difference
 locale: en
-order: 9
+order: 10
 category: contracts
 title: "Why a lender's payment may differ from the simulator"
 description: "Reconcile rates, dates, insurance, fees, indexation and rounding when a contract payment does not match an estimate."

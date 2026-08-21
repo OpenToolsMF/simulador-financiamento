@@ -3,7 +3,7 @@ layout: layouts/guide.njk
 contentKind: guide
 contentId: simulator-mistakes
 locale: en
-order: 12
+order: 13
 category: contracts
 title: "Common mistakes when using a financing simulator"
 description: "Avoid mixing monthly and annual rates, ignoring TR and costs, or selecting the wrong extra-amortization goal."

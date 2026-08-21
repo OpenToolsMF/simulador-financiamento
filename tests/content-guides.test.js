@@ -32,7 +32,9 @@ async function readContent(file) {
 (async () => {
   const guideFiles = await markdownFiles(join(root, 'src/content/guides'));
   const simulationFiles = await markdownFiles(join(root, 'src/content/simulations'));
-  assert.equal(guideFiles.length, 36, 'existem 12 guias em cada um dos três idiomas');
+  assert.equal(registry.guides.length, 13, 'registro contém exatamente 13 guias');
+  assert.equal(registry.simulations.length, 6, 'registro mantém exatamente 6 simulações públicas');
+  assert.equal(guideFiles.length, 39, 'existem 13 guias em cada um dos três idiomas');
   assert.equal(simulationFiles.length, 18, 'existem 6 exemplos em cada um dos três idiomas');
 
   const seen = new Set();
@@ -103,7 +105,7 @@ async function readContent(file) {
   for (const locale of registry.locales) {
     const hubFile = `${registry.roots.hub[locale].slice(1)}index.html`;
     const html = await readFile(join(root, '_site', hubFile), 'utf8');
-    assert.equal((html.match(/data-guide-card/g) || []).length, 12, `${hubFile}: exibe os 12 guias sem JavaScript`);
+    assert.equal((html.match(/data-guide-card/g) || []).length, 13, `${hubFile}: exibe os 13 guias sem JavaScript`);
     assert.equal((html.match(/data-simulation-card/g) || []).length, 6, `${hubFile}: exibe as 6 simulações`);
     assert.match(html, /assets\/js\/content-index\.js/, `${hubFile}: carrega busca progressiva`);
   }

@@ -3,7 +3,7 @@ layout: layouts/guide.njk
 contentKind: guide
 contentId: tr-balance
 locale: es
-order: 8
+order: 9
 category: rates
 title: "Cómo la TR modifica el saldo pendiente"
 description: "Compare la misma financiación con y sin corrección por TR y entienda la hipótesis conservadora del simulador."

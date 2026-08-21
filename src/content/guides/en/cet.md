@@ -3,7 +3,7 @@ layout: layouts/guide.njk
 contentKind: guide
 contentId: cet
 locale: en
-order: 7
+order: 8
 category: rates
 title: "What CET is and why it matters more than the advertised rate"
 description: "Understand Total Effective Cost, which cash flows enter it and why this simulator does not calculate regulatory CET."

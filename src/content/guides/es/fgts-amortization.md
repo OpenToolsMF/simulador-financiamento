@@ -3,7 +3,7 @@ layout: layouts/guide.njk
 contentKind: guide
 contentId: fgts-amortization
 locale: es
-order: 11
+order: 12
 category: amortization
 title: "Cómo simular una amortización con FGTS"
 description: "Modele FGTS como amortización extraordinaria y compare plazo y cuota sin confundir simulación con elegibilidad."

@@ -5,6 +5,26 @@ const simulationState = require('../assets/js/simulation-state.js');
 const scenarios = require('../src/_data/scenarios.cjs');
 
 const base = scenarios.scenarios['term-vs-payment'].state;
+const clone = (value) => JSON.parse(JSON.stringify(value));
+const singleExtra = (goal, month, valueCents = 100_000) => ({
+  type: 'single',
+  valueCents,
+  month,
+  startMonth: null,
+  endMonth: null,
+  frequencyMonths: null,
+  goal,
+});
+const recurringExtra = (goal, startMonth, endMonth, frequencyMonths, valueCents = 100_000) => ({
+  type: 'recurring',
+  valueCents,
+  month: null,
+  startMonth,
+  endMonth,
+  frequencyMonths,
+  goal,
+});
+
 const encoded = simulationState.encodeSimulationState(base);
 assert.ok(encoded.startsWith('1.'), 'payload usa versão 1');
 assert.deepEqual(
@@ -23,8 +43,47 @@ assert.deepEqual(
   'distingue ausência de payload',
 );
 
+const mixedSameMonth = clone(base);
+mixedSameMonth.extraPayments = [
+  singleExtra('term', 12, 1_000_000),
+  singleExtra('payment', 12, 500_000),
+];
+const mixedSameMonthEncoded = simulationState.encodeSimulationState(mixedSameMonth);
+assert.deepEqual(
+  simulationState.decodeSimulationParam(mixedSameMonthEncoded),
+  mixedSameMonth,
+  'aceita objetivos mistos no mesmo mês e preserva a ordem no round-trip v1',
+);
+
+const mixedSameMonthReversed = clone(mixedSameMonth);
+mixedSameMonthReversed.extraPayments.reverse();
+const mixedSameMonthReversedEncoded = simulationState.encodeSimulationState(mixedSameMonthReversed);
+assert.notEqual(
+  mixedSameMonthReversedEncoded,
+  mixedSameMonthEncoded,
+  'ordens diferentes geram payloads distintos',
+);
+assert.deepEqual(
+  simulationState.decodeSimulationParam(mixedSameMonthReversedEncoded).extraPayments,
+  mixedSameMonthReversed.extraPayments,
+  'a ordem inversa também é preservada na decodificação',
+);
+
+const mixedRecurringAndSingle = clone(base);
+mixedRecurringAndSingle.extraPayments = [
+  recurringExtra('payment', 6, 30, 6, 250_000),
+  singleExtra('term', 12, 750_000),
+];
+assert.deepEqual(
+  simulationState.decodeSimulationParam(
+    simulationState.encodeSimulationState(mixedRecurringAndSingle),
+  ),
+  mixedRecurringAndSingle,
+  'aceita regra recorrente e pontual de objetivos distintos que coincidem no mesmo mês',
+);
+
 function invalidParam(mutator) {
-  const value = JSON.parse(JSON.stringify(base));
+  const value = clone(base);
   mutator(value);
   return `1.${Buffer.from(JSON.stringify(value), 'utf8').toString('base64url')}`;
 }
@@ -54,27 +113,17 @@ for (const [label, payload] of [
       goal: 'term',
     }));
   })],
-  ['conflito de objetivos', invalidParam((value) => {
+  ['objetivo de amortização inválido', invalidParam((value) => {
+    value.extraPayments = [singleExtra('mixed', 10)];
+  })],
+  ['campo desconhecido em amortização mista', invalidParam((value) => {
     value.extraPayments = [
-      {
-        type: 'single',
-        valueCents: 100,
-        month: 10,
-        startMonth: null,
-        endMonth: null,
-        frequencyMonths: null,
-        goal: 'term',
-      },
-      {
-        type: 'single',
-        valueCents: 100,
-        month: 10,
-        startMonth: null,
-        endMonth: null,
-        frequencyMonths: null,
-        goal: 'payment',
-      },
+      { ...singleExtra('term', 10), order: 1 },
+      singleExtra('payment', 10),
     ];
+  })],
+  ['frequência recorrente inválida', invalidParam((value) => {
+    value.extraPayments = [recurringExtra('payment', 1, 12, 0)];
   })],
 ]) {
   const decoded = simulationState.readSimulationStateFromSearch(`?sim=${encodeURIComponent(payload)}`);

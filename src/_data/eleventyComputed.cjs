@@ -14,6 +14,19 @@ function dependencyDate(dependency) {
   return null;
 }
 
+function normalizedSocialImage(value) {
+  if (!value) return null;
+  const image = typeof value === 'string' ? { path: value } : value;
+  if (!image.path) throw new Error('socialImage requires a path.');
+  return {
+    path: String(image.path).replace(/^\//, ''),
+    alt: image.alt || '',
+    type: image.type || 'image/png',
+    width: Number(image.width) || 1200,
+    height: Number(image.height) || 630,
+  };
+}
+
 function contentGeneratedPage(data) {
   if (!data.contentId || !['guide', 'simulation'].includes(data.contentKind)) {
     return data.generatedPage;
@@ -28,6 +41,7 @@ function contentGeneratedPage(data) {
   const eyebrowKey = data.contentKind === 'guide'
     ? 'guides.articleEyebrow'
     : 'guides.simulationEyebrow';
+  const socialImage = normalizedSocialImage(data.socialImage);
 
   return {
     pageKey: 'guides',
@@ -38,7 +52,7 @@ function contentGeneratedPage(data) {
     ogLocale: site.languageConfig[data.locale].locale.replace('-', '_'),
     publicPath,
     outputPath: contentRegistry.outputPathFor(data.contentKind, data.contentId, data.locale),
-    title: `${data.title} | ${site.dictionaries[data.locale]['header.title']}`,
+    title: `${data.seoTitle || data.title} | ${site.dictionaries[data.locale]['header.title']}`,
     description: data.description,
     headerEyebrow: site.dictionaries[data.locale][eyebrowKey],
     headerTitle: data.title,
@@ -47,12 +61,13 @@ function contentGeneratedPage(data) {
     bodyClass: 'content-page-body',
     footerClass: '',
     scripts: [
-      'assets/js/i18n.js?v=20260727-guides',
-      'assets/js/static-content.js?v=20260727-guides',
+      'assets/js/i18n.js?v=20260812-amortization-timing',
+      'assets/js/static-content.js?v=20260812-amortization-timing',
     ],
-    styleVersion: '20260727-guides',
+    styleVersion: '20260812-amortization-timing',
     adsense: true,
     ogType: 'article',
+    socialImage,
     alternates: contentRegistry.alternatesFor(data.contentKind, data.contentId),
     datePublished: data.published,
     dateModified,

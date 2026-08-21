@@ -3,7 +3,7 @@ layout: layouts/guide.njk
 contentKind: guide
 contentId: fgts-amortization
 locale: en
-order: 11
+order: 12
 category: amortization
 title: "How to simulate an FGTS amortization"
 description: "Model FGTS as an extra amortization and compare term and payment reduction without confusing simulation with eligibility."

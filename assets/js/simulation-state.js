@@ -119,21 +119,6 @@
     return normalized;
   }
 
-  function ruleApplies(rule, month) {
-    if (rule.type === 'single') return rule.month === month;
-    const endMonth = rule.endMonth ?? Number.MAX_SAFE_INTEGER;
-    return month >= rule.startMonth
-      && month <= endMonth
-      && (month - rule.startMonth) % rule.frequencyMonths === 0;
-  }
-
-  function assertNoGoalConflict(rules, term) {
-    for (let month = 1; month <= term; month += 1) {
-      const goals = new Set(rules.filter((rule) => ruleApplies(rule, month)).map((rule) => rule.goal));
-      if (goals.size > 1) throw new Error('EXTRA_GOAL_CONFLICT');
-    }
-  }
-
   function normalizeSimulationState(value) {
     assertExactKeys(value, ROOT_KEYS, 'STATE');
     const term = safeInteger(value.term, { min: 1, max: MAX_TERM, label: 'TERM' });
@@ -154,7 +139,6 @@
     }
 
     const extraPayments = value.extraPayments.map((rule) => normalizeExtraPayment(rule, term));
-    assertNoGoalConflict(extraPayments, term);
 
     return {
       amountCents: safeInteger(value.amountCents, { min: 1, label: 'AMOUNT' }),

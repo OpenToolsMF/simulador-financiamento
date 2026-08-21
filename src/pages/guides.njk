@@ -23,7 +23,7 @@ permalink: "{{ generatedPage.outputPath }}"
               <article class="content-card">
                 <span class="content-card-category">{{ ('guides.category.' + guide.data.category) | t(generatedPage.locale) }}</span>
                 <h3><a href="{{ guide.data.contentId | contentHref('guide', generatedPage) }}">{{ guide.data.title }}</a></h3>
-                <p>{{ guide.data.description }}</p>
+                <p>{{ guide.data.cardDescription or guide.data.description }}</p>
                 <a class="content-card-action" href="{{ guide.data.contentId | contentHref('guide', generatedPage) }}">{{ 'guides.readGuide' | t(generatedPage.locale) }} →</a>
               </article>
             {% endif %}
@@ -51,10 +51,10 @@ permalink: "{{ generatedPage.outputPath }}"
 
         <div class="content-card-grid" id="guide-card-grid">
           {% for guide in localizedGuides %}
-            <article class="content-card" data-guide-card data-category="{{ guide.data.category }}" data-search="{{ guide.data.title }} {{ guide.data.description }} {{ guide.data.tags | join(' ') }}">
+            <article class="content-card" data-guide-card data-category="{{ guide.data.category }}" data-search="{{ guide.data.title }} {{ guide.data.cardDescription or guide.data.description }} {{ guide.data.description }} {{ guide.data.tags | join(' ') }}">
               <span class="content-card-category">{{ ('guides.category.' + guide.data.category) | t(generatedPage.locale) }}</span>
               <h3><a href="{{ guide.data.contentId | contentHref('guide', generatedPage) }}">{{ guide.data.title }}</a></h3>
-              <p>{{ guide.data.description }}</p>
+              <p>{{ guide.data.cardDescription or guide.data.description }}</p>
               <a class="content-card-action" href="{{ guide.data.contentId | contentHref('guide', generatedPage) }}">{{ 'guides.readGuide' | t(generatedPage.locale) }} →</a>
             </article>
           {% endfor %}

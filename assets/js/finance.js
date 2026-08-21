@@ -3,6 +3,7 @@
 
   const GOAL_TERM = 'term';
   const GOAL_PAYMENT = 'payment';
+  const GOAL_MIXED = 'mixed';
 
   function roundCents(value) {
     return Math.max(0, Math.round(value + Number.EPSILON));
@@ -34,18 +35,17 @@
   }
 
   function extraForMonth(rules, month) {
-    const applicable = rules.filter((rule) => ruleApplies(rule, month));
-    if (applicable.length === 0) return { requestedCents: 0, goal: null };
-    const goals = new Set(applicable.map((rule) => rule.goal));
-    if (goals.size > 1) {
-      const error = new Error('EXTRA_GOAL_CONFLICT');
-      error.code = 'EXTRA_GOAL_CONFLICT';
-      error.month = month;
-      throw error;
-    }
+    const applications = rules
+      .filter((rule) => ruleApplies(rule, month))
+      .map((rule) => ({
+        goal: rule.goal,
+        requestedCents: Math.max(0, rule.valueCents || 0),
+      }));
+    const goals = new Set(applications.filter((application) => application.requestedCents > 0).map((application) => application.goal));
     return {
-      requestedCents: applicable.reduce((total, rule) => total + rule.valueCents, 0),
-      goal: applicable[0].goal,
+      requestedCents: applications.reduce((total, application) => total + application.requestedCents, 0),
+      goal: goals.size > 1 ? GOAL_MIXED : goals.values().next().value || null,
+      applications,
     };
   }
 
@@ -73,16 +73,118 @@
     return Math.max(1, Math.min(contractualRemaining, recalculatedRemaining));
   }
 
-  function findGoalConflict(rules, originalTerm) {
+  function findMixedGoalMonths(rules, originalTerm) {
+    const months = [];
     for (let month = 1; month <= originalTerm; month += 1) {
-      try {
-        extraForMonth(rules, month);
-      } catch (error) {
-        if (error.code === 'EXTRA_GOAL_CONFLICT') return month;
-        throw error;
-      }
+      if (extraForMonth(rules, month).goal === GOAL_MIXED) months.push(month);
     }
-    return null;
+    return months;
+  }
+
+  function findGoalConflict(rules, originalTerm) {
+    return findMixedGoalMonths(rules, originalTerm)[0] || null;
+  }
+
+  function projectPriceRemainingTerm(
+    config,
+    balanceCents,
+    scheduleBalanceCents,
+    scheduleRemaining,
+    scheduledPaymentCents,
+    nextMonth,
+  ) {
+    if (balanceCents <= 0) return 0;
+    if (scheduleRemaining <= 0 || scheduledPaymentCents <= 0) return scheduleRemaining;
+
+    let projectedBalanceCents = balanceCents;
+    let projectedScheduleBalanceCents = scheduleBalanceCents;
+    let projectedScheduleRemaining = scheduleRemaining;
+    let projectedPaymentCents = scheduledPaymentCents;
+
+    for (let offset = 0; offset < scheduleRemaining; offset += 1) {
+      const correctionRate = correctionRateForMonth(config, nextMonth + offset);
+      const correctedBalanceCents = projectedBalanceCents + roundCents(projectedBalanceCents * correctionRate);
+      const interestCents = roundCents(correctedBalanceCents * config.monthlyRate);
+      const scheduleCorrectedBalanceCents = projectedScheduleBalanceCents
+        + roundCents(projectedScheduleBalanceCents * correctionRate);
+
+      if (hasMonetaryCorrection(config)) {
+        projectedPaymentCents = pricePaymentCents(
+          scheduleCorrectedBalanceCents,
+          config.monthlyRate,
+          projectedScheduleRemaining,
+        );
+      }
+
+      const regularPaymentCents = Math.min(projectedPaymentCents, correctedBalanceCents + interestCents);
+      const regularAmortizationCents = Math.min(
+        correctedBalanceCents,
+        Math.max(0, regularPaymentCents - interestCents),
+      );
+      projectedBalanceCents = Math.max(0, correctedBalanceCents - regularAmortizationCents);
+
+      const scheduleInterestCents = roundCents(scheduleCorrectedBalanceCents * config.monthlyRate);
+      const scheduledAmortizationCents = Math.min(
+        scheduleCorrectedBalanceCents,
+        Math.max(0, projectedPaymentCents - scheduleInterestCents),
+      );
+      projectedScheduleBalanceCents = Math.max(0, scheduleCorrectedBalanceCents - scheduledAmortizationCents);
+      projectedScheduleRemaining = Math.max(0, projectedScheduleRemaining - 1);
+
+      if (projectedBalanceCents === 0) return offset + 1;
+    }
+
+    return scheduleRemaining;
+  }
+
+  function sacPaymentForNextMonth(config, balanceCents, remaining, amortizationCents, nextMonth) {
+    if (balanceCents <= 0 || remaining <= 0) return 0;
+    const correctionRate = correctionRateForMonth(config, nextMonth);
+    const correctedBalanceCents = balanceCents + roundCents(balanceCents * correctionRate);
+    const scheduledAmortizationCents = hasMonetaryCorrection(config)
+      ? roundCents(correctedBalanceCents / remaining)
+      : amortizationCents;
+    return roundCents(correctedBalanceCents * config.monthlyRate)
+      + Math.min(scheduledAmortizationCents, correctedBalanceCents);
+  }
+
+  function projectSacRemainingTerm(
+    config,
+    balanceCents,
+    scheduleBalanceCents,
+    scheduleRemaining,
+    amortizationCents,
+    nextMonth,
+    maximumPeriods,
+  ) {
+    if (balanceCents <= 0) return 0;
+    if (maximumPeriods <= 0 || amortizationCents <= 0) return maximumPeriods;
+
+    let projectedBalanceCents = balanceCents;
+    let projectedScheduleBalanceCents = scheduleBalanceCents;
+    let projectedScheduleRemaining = scheduleRemaining;
+
+    for (let offset = 0; offset < maximumPeriods; offset += 1) {
+      const correctionRate = correctionRateForMonth(config, nextMonth + offset);
+      const correctedBalanceCents = projectedBalanceCents + roundCents(projectedBalanceCents * correctionRate);
+      const scheduleCorrectedBalanceCents = projectedScheduleBalanceCents
+        + roundCents(projectedScheduleBalanceCents * correctionRate);
+      const baseAmortizationCents = hasMonetaryCorrection(config)
+        ? (projectedScheduleRemaining > 0
+          ? roundCents(scheduleCorrectedBalanceCents / projectedScheduleRemaining)
+          : scheduleCorrectedBalanceCents)
+        : amortizationCents;
+      const scheduledAmortizationCents = Math.min(baseAmortizationCents, scheduleCorrectedBalanceCents);
+      const regularAmortizationCents = Math.min(scheduledAmortizationCents, correctedBalanceCents);
+
+      projectedBalanceCents = Math.max(0, correctedBalanceCents - regularAmortizationCents);
+      projectedScheduleBalanceCents = Math.max(0, scheduleCorrectedBalanceCents - scheduledAmortizationCents);
+      projectedScheduleRemaining = Math.max(0, projectedScheduleRemaining - 1);
+
+      if (projectedBalanceCents === 0) return offset + 1;
+    }
+
+    return maximumPeriods;
   }
 
   function addMonthsClamped(isoDate, offset) {
@@ -128,17 +230,13 @@
   }
 
   function simulate(config, rules = config.extraPayments || []) {
-    const conflictMonth = findGoalConflict(rules, config.term);
-    if (conflictMonth) {
-      const error = new Error('EXTRA_GOAL_CONFLICT');
-      error.code = 'EXTRA_GOAL_CONFLICT';
-      error.month = conflictMonth;
-      throw error;
-    }
-
     let balanceCents = config.financedCents;
     let scheduleBalanceCents = config.financedCents;
-    let contractualRemaining = config.term;
+    let targetRemaining = config.term;
+    let scheduleRemaining = config.term;
+    let hasAppliedTermGoal = false;
+    let hasAppliedPaymentGoal = false;
+    let enforceSacTargetPayoff = false;
     let sacAmortizationCents = roundCents(balanceCents / config.term);
     let priceRegularPaymentCents = pricePaymentCents(balanceCents, config.monthlyRate, config.term);
     const monthlyExtraCostCents = Math.max(0, config.monthlyExtraCostCents || 0);
@@ -160,7 +258,7 @@
 
       if (config.system === 'sac') {
         const sacBaseAmortizationCents = hasMonetaryCorrection(config)
-          ? roundCents(scheduleCorrectedBalanceCents / contractualRemaining)
+          ? roundCents(scheduleCorrectedBalanceCents / scheduleRemaining)
           : sacAmortizationCents;
         scheduledAmortizationCents = Math.min(sacBaseAmortizationCents, scheduleCorrectedBalanceCents);
         const scheduleInterestCents = roundCents(scheduleCorrectedBalanceCents * config.monthlyRate);
@@ -169,7 +267,7 @@
         regularPaymentCents = interestCents + regularAmortizationCents;
       } else {
         if (hasMonetaryCorrection(config)) {
-          priceRegularPaymentCents = pricePaymentCents(scheduleCorrectedBalanceCents, config.monthlyRate, contractualRemaining);
+          priceRegularPaymentCents = pricePaymentCents(scheduleCorrectedBalanceCents, config.monthlyRate, scheduleRemaining);
         }
         regularPaymentCents = Math.min(priceRegularPaymentCents, correctedBalanceCents + interestCents);
         regularAmortizationCents = Math.min(correctedBalanceCents, Math.max(0, regularPaymentCents - interestCents));
@@ -180,18 +278,126 @@
 
       let balanceAfterRegularCents = correctedBalanceCents - regularAmortizationCents;
       let scheduleBalanceAfterRegularCents = Math.max(0, scheduleCorrectedBalanceCents - scheduledAmortizationCents);
-      if (month === config.term && balanceAfterRegularCents > 0) {
+      const reachesPriceTarget = config.system === 'price' && targetRemaining === 1;
+      const reachesReanchoredSacTarget = config.system === 'sac'
+        && enforceSacTargetPayoff
+        && targetRemaining === 1;
+      if ((month === config.term || reachesPriceTarget || reachesReanchoredSacTarget) && balanceAfterRegularCents > 0) {
         regularAmortizationCents += balanceAfterRegularCents;
         regularPaymentCents += balanceAfterRegularCents;
         balanceAfterRegularCents = 0;
         scheduleBalanceAfterRegularCents = 0;
       }
 
-      contractualRemaining = Math.max(0, contractualRemaining - 1);
+      targetRemaining = Math.max(0, targetRemaining - 1);
+      scheduleRemaining = Math.max(0, scheduleRemaining - 1);
       const extra = extraForMonth(rules, month);
-      const extraPaymentCents = Math.min(extra.requestedCents, balanceAfterRegularCents);
-      balanceCents = Math.max(0, balanceAfterRegularCents - extraPaymentCents);
+      const extraApplications = [];
+      let extraPaymentCents = 0;
+      balanceCents = balanceAfterRegularCents;
       scheduleBalanceCents = scheduleBalanceAfterRegularCents;
+
+      for (let applicationIndex = 0; applicationIndex < extra.applications.length;) {
+        const groupGoal = extra.applications[applicationIndex].goal;
+        const groupOpeningBalanceCents = balanceCents;
+        let groupAppliedCents = 0;
+        let nextApplicationIndex = applicationIndex;
+
+        while (
+          nextApplicationIndex < extra.applications.length
+          && extra.applications[nextApplicationIndex].goal === groupGoal
+        ) {
+          const application = extra.applications[nextApplicationIndex];
+          const appliedCents = Math.min(application.requestedCents, balanceCents);
+          balanceCents = Math.max(0, balanceCents - appliedCents);
+          groupAppliedCents += appliedCents;
+          extraPaymentCents += appliedCents;
+          extraApplications.push({
+            goal: application.goal,
+            requestedCents: application.requestedCents,
+            appliedCents,
+          });
+          nextApplicationIndex += 1;
+        }
+
+        if (groupAppliedCents > 0 && groupGoal === GOAL_TERM) {
+          hasAppliedTermGoal = true;
+          if (hasAppliedPaymentGoal && config.system === 'sac') enforceSacTargetPayoff = true;
+        }
+
+        if (groupAppliedCents > 0 && balanceCents > 0 && targetRemaining > 0) {
+          if (groupGoal === GOAL_PAYMENT) {
+            if (config.system === 'sac' && hasAppliedTermGoal) {
+              targetRemaining = projectSacRemainingTerm(
+                config,
+                groupOpeningBalanceCents,
+                scheduleBalanceCents,
+                scheduleRemaining,
+                sacAmortizationCents,
+                month + 1,
+                config.term - month,
+              );
+              enforceSacTargetPayoff = true;
+            }
+            scheduleBalanceCents = balanceCents;
+            scheduleRemaining = targetRemaining;
+            if (config.system === 'sac') {
+              sacAmortizationCents = roundCents(balanceCents / targetRemaining);
+              scheduledPaymentCents = sacPaymentForNextMonth(
+                config,
+                balanceCents,
+                targetRemaining,
+                sacAmortizationCents,
+                month + 1,
+              );
+            } else {
+              priceRegularPaymentCents = pricePaymentCents(balanceCents, config.monthlyRate, targetRemaining);
+            }
+          } else if (groupGoal === GOAL_TERM && config.system === 'sac') {
+            const recalculatedRemaining = recalculateSacRemainingTerm(
+              config,
+              balanceCents,
+              targetRemaining,
+              scheduledPaymentCents,
+              month + 1,
+            );
+            if (recalculatedRemaining < targetRemaining) {
+              targetRemaining = recalculatedRemaining;
+              scheduleRemaining = recalculatedRemaining;
+              scheduleBalanceCents = balanceCents;
+              sacAmortizationCents = roundCents(balanceCents / targetRemaining);
+              scheduledPaymentCents = sacPaymentForNextMonth(
+                config,
+                balanceCents,
+                targetRemaining,
+                sacAmortizationCents,
+                month + 1,
+              );
+            }
+          } else if (groupGoal === GOAL_TERM && config.system === 'price') {
+            targetRemaining = Math.min(
+              targetRemaining,
+              projectPriceRemainingTerm(
+                config,
+                balanceCents,
+                scheduleBalanceCents,
+                scheduleRemaining,
+                priceRegularPaymentCents,
+                month + 1,
+              ),
+            );
+          }
+        }
+
+        if (groupAppliedCents > 0 && groupGoal === GOAL_PAYMENT) hasAppliedPaymentGoal = true;
+
+        applicationIndex = nextApplicationIndex;
+      }
+
+      const appliedGoals = new Set(
+        extraApplications.filter((application) => application.appliedCents > 0).map((application) => application.goal),
+      );
+      const extraGoal = appliedGoals.size > 1 ? GOAL_MIXED : appliedGoals.values().next().value || null;
 
       installments.push({
         number: month,
@@ -207,32 +413,11 @@
         monthlyExtraCostCents,
         totalPaymentCents: regularPaymentCents + extraPaymentCents + monthlyExtraCostCents,
         closingBalanceCents: balanceCents,
-        extraGoal: extraPaymentCents > 0 ? extra.goal : null,
+        extraGoal,
+        extraApplications,
       });
 
       if (balanceCents === 0) break;
-
-      if (extraPaymentCents > 0 && extra.goal === GOAL_PAYMENT && contractualRemaining > 0) {
-        scheduleBalanceCents = balanceCents;
-        if (config.system === 'sac') {
-          sacAmortizationCents = roundCents(balanceCents / contractualRemaining);
-        } else {
-          priceRegularPaymentCents = pricePaymentCents(balanceCents, config.monthlyRate, contractualRemaining);
-        }
-      } else if (extraPaymentCents > 0 && extra.goal === GOAL_TERM && config.system === 'sac' && contractualRemaining > 0) {
-        const recalculatedRemaining = recalculateSacRemainingTerm(
-          config,
-          balanceCents,
-          contractualRemaining,
-          scheduledPaymentCents,
-          month + 1,
-        );
-        if (recalculatedRemaining < contractualRemaining) {
-          contractualRemaining = recalculatedRemaining;
-          scheduleBalanceCents = balanceCents;
-          sacAmortizationCents = roundCents(balanceCents / contractualRemaining);
-        }
-      }
     }
 
     return {
@@ -252,6 +437,7 @@
   const api = {
     GOAL_TERM,
     GOAL_PAYMENT,
+    GOAL_MIXED,
     roundCents,
     hasMonetaryCorrection,
     monthlyRateFromPercent,
@@ -259,8 +445,11 @@
     ruleApplies,
     extraForMonth,
     findGoalConflict,
+    findMixedGoalMonths,
     correctionRateForMonth,
     recalculateSacRemainingTerm,
+    projectPriceRemainingTerm,
+    projectSacRemainingTerm,
     addMonthsClamped,
     simulate,
     simulateComparison,

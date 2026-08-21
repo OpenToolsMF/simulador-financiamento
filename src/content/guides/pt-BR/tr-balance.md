@@ -3,7 +3,7 @@ layout: layouts/guide.njk
 contentKind: guide
 contentId: tr-balance
 locale: pt-BR
-order: 8
+order: 9
 category: rates
 title: "Como a TR altera o saldo devedor do financiamento"
 description: "Compare o mesmo financiamento com e sem correção pela TR e entenda a hipótese conservadora usada pelo simulador."

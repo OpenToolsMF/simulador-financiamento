@@ -3,7 +3,7 @@ layout: layouts/guide.njk
 contentKind: guide
 contentId: compare-proposals
 locale: en
-order: 10
+order: 11
 category: contracts
 title: "How to compare two mortgage proposals"
 description: "Build one table for rate, CET, index, costs, initial payment and estimated total across two proposals."

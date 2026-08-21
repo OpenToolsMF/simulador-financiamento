@@ -13,7 +13,7 @@ const publicRoutes = i18n.publicRoutes;
 const dictionaries = i18n.dictionaries;
 const languageConfig = i18n.languageConfig;
 const guidesLastmod = [
-  '2026-07-27',
+  '2026-08-12',
   scenariosData.references.bcb.generatedAt.slice(0, 10),
   scenariosData.references.tr.generatedAt.slice(0, 10),
 ].sort().at(-1);
@@ -24,16 +24,16 @@ const pageDefinitions = {
     headerKeys: ['header.eyebrow', 'header.title', 'header.lead'],
     headerPadding: 'py-4 py-lg-5',
     metadataPrefix: 'metadata',
-    lastmod: '2026-07-27',
-    styleVersion: '20260727-guides',
+    lastmod: '2026-08-21',
+    styleVersion: '20260821-ordered-extras',
     footerClass: ' no-print',
     scripts: [
       'assets/vendor/bootstrap/js/bootstrap.bundle.min.js',
-      'assets/js/i18n.js?v=20260727-guides',
-      'assets/js/finance.js?v=20260717-privacy-page',
-      'assets/js/simulation-state.js?v=20260727-guides',
+      'assets/js/i18n.js?v=20260821-ordered-extras',
+      'assets/js/finance.js?v=20260821-ordered-extras',
+      'assets/js/simulation-state.js?v=20260821-ordered-extras',
       'assets/js/chart-data.js?v=20260811-shared-chart-axis',
-      'assets/js/app.js?v=20260811-shared-chart-axis',
+      'assets/js/app.js?v=20260821-ordered-extras',
     ],
     adsense: true,
     footerInContent: true,
@@ -48,8 +48,8 @@ const pageDefinitions = {
     footerClass: '',
     scripts: [
       'assets/vendor/bootstrap/js/bootstrap.bundle.min.js',
-      'assets/js/i18n.js?v=20260727-guides',
-      'assets/js/finance.js?v=20260717-privacy-page',
+      'assets/js/i18n.js?v=20260821-ordered-extras',
+      'assets/js/finance.js?v=20260821-ordered-extras',
       'assets/js/comparison.js?v=20260724-comparison-charts',
     ],
     adsense: true,
@@ -60,7 +60,7 @@ const pageDefinitions = {
     headerPadding: 'py-4 py-lg-5',
     metadataPrefix: 'guides.metadata',
     lastmod: guidesLastmod,
-    styleVersion: '20260727-guides',
+    styleVersion: '20260812-amortization-timing',
     footerClass: '',
     scripts: [
       'assets/js/i18n.js?v=20260727-guides',
@@ -362,7 +362,15 @@ function contentStructuredData(page) {
         url: pageUrl,
       headline: page.headerTitle || page.title,
         description: page.description,
-        image: `${origin}/assets/image/logo.png`,
+        image: page.socialImage
+          ? {
+            '@type': 'ImageObject',
+            url: `${origin}/${page.socialImage.path}`,
+            width: page.socialImage.width,
+            height: page.socialImage.height,
+            caption: page.socialImage.alt,
+          }
+          : `${origin}/assets/image/logo.png`,
         inLanguage: page.locale,
         datePublished: page.datePublished,
         dateModified: page.dateModified,
