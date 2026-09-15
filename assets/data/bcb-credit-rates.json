@@ -4,22 +4,22 @@
     "realEstate": "https://olinda.bcb.gov.br/olinda/servico/taxaJuros/versao/v2/odata/TaxasJurosMensalPorMes?$format=json",
     "vehicle": "https://olinda.bcb.gov.br/olinda/servico/taxaJuros/versao/v2/odata/TaxasJurosDiariaPorInicioPeriodo?$format=json&$top=500&$filter=Modalidade%20eq%20'Aquisi%C3%A7%C3%A3o%20de%20ve%C3%ADculos%20-%20Prefixado'"
   },
-  "generatedAt": "2026-09-11T13:55:23.831Z",
-  "referencePeriod": "2026-07",
+  "generatedAt": "2026-09-15T14:31:59.939Z",
+  "referencePeriod": "2026-08",
   "defaultInterestRate": {
     "creditType": "realEstate",
     "modalityKey": "marketTr",
     "method": "median-market-tr-annual",
-    "referencePeriod": "2026-07",
-    "institutionCount": 13,
-    "monthlyRatePercent": 0.94963,
-    "annualEquivalentRatePercent": 12.01
+    "referencePeriod": "2026-08",
+    "institutionCount": 9,
+    "monthlyRatePercent": 0.953385,
+    "annualEquivalentRatePercent": 12.06
   },
   "creditTypes": {
     "realEstate": {
       "key": "realEstate",
       "label": "Financiamento imobiliário",
-      "referencePeriod": "2026-07",
+      "referencePeriod": "2026-08",
       "modalities": [
         {
           "key": "marketFixed",
@@ -28,25 +28,18 @@
           "sourceName": "Financiamento imobiliário com taxas de mercado - Prefixado",
           "institutions": [
             {
-              "institution": "BCO SANTANDER (BRASIL) S.A.",
-              "cnpj8": "90400888",
+              "institution": "CAIXA ECONOMICA FEDERAL",
+              "cnpj8": "00360305",
               "position": 1,
-              "monthlyRatePercent": 1.14,
-              "annualRatePercent": 14.61
-            },
-            {
-              "institution": "BCO XP S.A.",
-              "cnpj8": "33264668",
-              "position": 2,
-              "monthlyRatePercent": 1.17,
-              "annualRatePercent": 15
+              "monthlyRatePercent": 0.86,
+              "annualRatePercent": 10.76
             },
             {
               "institution": "APE POUPEX",
               "cnpj8": "00655522",
-              "position": 3,
-              "monthlyRatePercent": 1.4,
-              "annualRatePercent": 18.15
+              "position": 2,
+              "monthlyRatePercent": 1.31,
+              "annualRatePercent": 16.95
             }
           ]
         },
@@ -57,95 +50,67 @@
           "sourceName": "Financiamento imobiliário com taxas de mercado - Pós-fixado referenciado em TR",
           "institutions": [
             {
-              "institution": "BANCO BARI S.A.",
-              "cnpj8": "00556603",
-              "position": 1,
-              "monthlyRatePercent": 0.69,
-              "annualRatePercent": 8.59
-            },
-            {
-              "institution": "BCO DO ESTADO DO RS S.A.",
-              "cnpj8": "92702067",
-              "position": 2,
-              "monthlyRatePercent": 0.75,
-              "annualRatePercent": 9.37
-            },
-            {
               "institution": "BCO BANESTES S.A.",
               "cnpj8": "28127603",
-              "position": 3,
+              "position": 1,
               "monthlyRatePercent": 0.85,
-              "annualRatePercent": 10.74
+              "annualRatePercent": 10.75
             },
             {
               "institution": "BANCO SICOOB S.A.",
               "cnpj8": "02038232",
-              "position": 4,
-              "monthlyRatePercent": 0.86,
-              "annualRatePercent": 10.84
+              "position": 2,
+              "monthlyRatePercent": 0.87,
+              "annualRatePercent": 10.89
             },
             {
               "institution": "BCO DO EST. DE SE S.A.",
               "cnpj8": "13009717",
-              "position": 5,
-              "monthlyRatePercent": 0.87,
-              "annualRatePercent": 10.97
+              "position": 3,
+              "monthlyRatePercent": 0.89,
+              "annualRatePercent": 11.25
             },
             {
               "institution": "BANCO COOPERATIVO SICREDI",
               "cnpj8": "01181521",
-              "position": 6,
-              "monthlyRatePercent": 0.88,
-              "annualRatePercent": 11.13
+              "position": 4,
+              "monthlyRatePercent": 0.91,
+              "annualRatePercent": 11.45
             },
             {
               "institution": "ITAÚ UNIBANCO S.A.",
               "cnpj8": "60701190",
-              "position": 7,
+              "position": 5,
               "monthlyRatePercent": 0.95,
-              "annualRatePercent": 12.01
+              "annualRatePercent": 12.06
             },
             {
               "institution": "CAIXA ECONOMICA FEDERAL",
               "cnpj8": "00360305",
-              "position": 8,
+              "position": 6,
               "monthlyRatePercent": 0.96,
               "annualRatePercent": 12.12
             },
             {
               "institution": "BCO BRADESCO S.A.",
               "cnpj8": "60746948",
-              "position": 10,
+              "position": 7,
               "monthlyRatePercent": 0.97,
-              "annualRatePercent": 12.29
-            },
-            {
-              "institution": "BCO SANTANDER (BRASIL) S.A.",
-              "cnpj8": "90400888",
-              "position": 9,
-              "monthlyRatePercent": 0.97,
-              "annualRatePercent": 12.29
+              "annualRatePercent": 12.3
             },
             {
               "institution": "BANCO INTER",
               "cnpj8": "00416968",
-              "position": 11,
-              "monthlyRatePercent": 0.99,
-              "annualRatePercent": 12.5
+              "position": 8,
+              "monthlyRatePercent": 0.98,
+              "annualRatePercent": 12.47
             },
             {
               "institution": "BCO DO BRASIL S.A.",
               "cnpj8": "00000000",
-              "position": 12,
-              "monthlyRatePercent": 1.13,
-              "annualRatePercent": 14.42
-            },
-            {
-              "institution": "BCO DO EST. DO PA S.A.",
-              "cnpj8": "04913711",
-              "position": 13,
-              "monthlyRatePercent": 1.45,
-              "annualRatePercent": 18.91
+              "position": 9,
+              "monthlyRatePercent": 1.14,
+              "annualRatePercent": 14.51
             }
           ]
         },
@@ -156,32 +121,18 @@
           "sourceName": "Financiamento imobiliário com taxas de mercado - Pós-fixado referenciado em IPCA",
           "institutions": [
             {
-              "institution": "OXY CH",
-              "cnpj8": "18282093",
-              "position": 2,
-              "monthlyRatePercent": 1.05,
-              "annualRatePercent": 13.33
-            },
-            {
               "institution": "BCO DAYCOVAL S.A",
               "cnpj8": "62232889",
-              "position": 3,
-              "monthlyRatePercent": 1.1,
-              "annualRatePercent": 14.03
+              "position": 4,
+              "monthlyRatePercent": 1.09,
+              "annualRatePercent": 13.93
             },
             {
               "institution": "BANCO BARI S.A.",
               "cnpj8": "00556603",
-              "position": 4,
-              "monthlyRatePercent": 1.26,
-              "annualRatePercent": 16.24
-            },
-            {
-              "institution": "BARI CIA HIPOTECÁRIA",
-              "cnpj8": "14511781",
               "position": 5,
-              "monthlyRatePercent": 1.32,
-              "annualRatePercent": 16.98
+              "monthlyRatePercent": 1.37,
+              "annualRatePercent": 17.68
             }
           ]
         }
