@@ -41,8 +41,9 @@ const { join } = require('node:path');
   const outputDirectory = await mkdtemp(join(tmpdir(), 'tr-sgs-test-'));
   const outputPath = join(outputDirectory, 'tr-bacen.json');
   const now = new Date('2026-07-27T12:00:00.000Z');
-  const fetchImpl = async (url) => {
+  const fetchImpl = async (url, options) => {
     assert.equal(url, sourceUrlForDate(now), 'baixa a janela anual da série SGS configurada');
+    assert.ok(options.signal instanceof AbortSignal, 'envia signal para timeout da TR');
     return { ok: true, json: async () => payload };
   };
 
@@ -56,6 +57,42 @@ const { join } = require('node:path');
   const second = await updateTrBacen({ outputPath, fetchImpl, now });
   assert.equal(second.changed, false, 'não regrava dados semanticamente iguais');
   assert.equal(second.data.generatedAt, '2026-07-27T00:00:00.000Z', 'preserva generatedAt quando não há mudança');
+
+  const previousBytes = await readFile(outputPath);
+  const transportOptions = { outputPath, now, sleepImpl: async () => {}, logger: { info() {} } };
+  let recoveryAttempts = 0;
+  const recovered = await updateTrBacen({
+    ...transportOptions,
+    fetchImpl: async () => (++recoveryAttempts === 1
+      ? { ok: false, status: 502 }
+      : { ok: true, json: async () => payload }),
+  });
+  assert.equal(recoveryAttempts, 2, 'recupera a TR após HTTP 502');
+  assert.equal(recovered.changed, false, 'recuperação não altera dados semanticamente iguais');
+
+  let failedAttempts = 0;
+  const failFetch = async () => {
+    failedAttempts += 1;
+    return { ok: false, status: 502 };
+  };
+  await assert.rejects(updateTrBacen({ ...transportOptions, fetchImpl: failFetch }), /TR após 3 tentativas.*HTTP 502/);
+  assert.equal(failedAttempts, 3);
+  assert.deepEqual(await readFile(outputPath), previousBytes, 'falha definitiva preserva cada byte da TR anterior');
+
+  const missingOutputPath = join(outputDirectory, 'missing-tr.json');
+  await assert.rejects(updateTrBacen({ ...transportOptions, outputPath: missingOutputPath, fetchImpl: failFetch }), /após 3 tentativas/);
+  await assert.rejects(readFile(missingOutputPath), { code: 'ENOENT' }, 'falha inicial não cria arquivo');
+
+  let validationAttempts = 0;
+  await assert.rejects(updateTrBacen({
+    ...transportOptions,
+    fetchImpl: async () => {
+      validationAttempts += 1;
+      return { ok: true, json: async () => [] };
+    },
+  }), /Nenhuma observação válida/);
+  assert.equal(validationAttempts, 1, 'JSON sem dados financeiros válidos não repete a consulta');
+  assert.deepEqual(await readFile(outputPath), previousBytes, 'falha de validação preserva cada byte anterior');
 
   console.log('Testes da TR SGS 226 concluídos com sucesso.');
 })();

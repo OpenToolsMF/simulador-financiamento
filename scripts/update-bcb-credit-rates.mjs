@@ -1,6 +1,9 @@
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { appendFile, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { fetchBcbJson } from './fetch-bcb-json.mjs';
+
+export { FETCH_TIMEOUT_MS, FETCH_ATTEMPTS } from './fetch-bcb-json.mjs';
 
 const OLINDA_TAXA_JUROS_BASE_URL = 'https://olinda.bcb.gov.br/olinda/servico/taxaJuros/versao/v2/odata';
 const VEHICLE_MODALITY_FILTER = encodeURIComponent("Modalidade eq 'Aquisição de veículos - Prefixado'");
@@ -13,8 +16,6 @@ export const SOURCE_URLS = {
   vehicle: VEHICLE_SOURCE_URL,
 };
 export const OUTPUT_PATH = 'assets/data/bcb-credit-rates.json';
-export const FETCH_TIMEOUT_MS = 10_000;
-export const FETCH_ATTEMPTS = 3;
 
 export const REAL_ESTATE_MARKET_MODALITIES = [
   {
@@ -325,56 +326,6 @@ export function buildBcbCreditRatesData(realEstatePayload, vehiclePayload, gener
   );
 }
 
-function formatTimeoutSeconds(milliseconds) {
-  return `${Math.round(milliseconds / 1000)}s`;
-}
-
-function normalizeFetchError(error) {
-  if (error?.name === 'AbortError') {
-    return `tempo limite de ${formatTimeoutSeconds(FETCH_TIMEOUT_MS)} excedido`;
-  }
-
-  return error?.message || String(error);
-}
-
-async function fetchBcbJsonAttempt(fetchImpl, url, label, attempt) {
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
-
-  try {
-    const response = await fetchImpl(url, {
-      signal: controller.signal,
-      headers: {
-        'user-agent': 'mapa-das-parcelas/1.0 (+https://mapadasparcelas.com.br/)',
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
-    }
-
-    return response.json();
-  } catch (error) {
-    throw new Error(`Falha ao baixar taxas médias BCB (${label}) na tentativa ${attempt}/${FETCH_ATTEMPTS}: ${normalizeFetchError(error)}.`);
-  } finally {
-    clearTimeout(timeoutId);
-  }
-}
-
-async function fetchBcbJson(fetchImpl, url, label) {
-  let lastError = null;
-
-  for (let attempt = 1; attempt <= FETCH_ATTEMPTS; attempt += 1) {
-    try {
-      return await fetchBcbJsonAttempt(fetchImpl, url, label, attempt);
-    } catch (error) {
-      lastError = error;
-    }
-  }
-
-  throw new Error(`Falha ao baixar taxas médias BCB (${label}) após ${FETCH_ATTEMPTS} tentativas. Última causa: ${lastError.message}`);
-}
-
 function isValidVehicleCreditType(vehicle) {
   if (
     vehicle?.key !== 'vehicle'
@@ -433,11 +384,19 @@ function vehicleReferencePeriodLabel(vehicle) {
   return `${vehicle.referencePeriod.startDate} a ${vehicle.referencePeriod.endDate}`;
 }
 
-export async function updateBcbCreditRates({ fetchImpl = fetch, outputPath = OUTPUT_PATH, logger = console } = {}) {
+export async function updateBcbCreditRates({
+  fetchImpl = fetch,
+  outputPath = OUTPUT_PATH,
+  logger = console,
+  sleepImpl,
+  timeoutMs,
+  onVehicleFallback = () => {},
+} = {}) {
   const absoluteOutputPath = resolve(outputPath);
+  const fetchOptions = { fetchImpl, sleepImpl, timeoutMs, logger };
   const [realEstateResult, vehicleResult] = await Promise.allSettled([
-    fetchBcbJson(fetchImpl, REAL_ESTATE_SOURCE_URL, 'imobiliário'),
-    fetchBcbJson(fetchImpl, VEHICLE_SOURCE_URL, 'veicular'),
+    fetchBcbJson(REAL_ESTATE_SOURCE_URL, { ...fetchOptions, label: 'taxas médias BCB (imobiliário)' }),
+    fetchBcbJson(VEHICLE_SOURCE_URL, { ...fetchOptions, label: 'taxas médias BCB (veicular)' }),
   ]);
 
   if (realEstateResult.status === 'rejected') {
@@ -457,6 +416,7 @@ export async function updateBcbCreditRates({ fetchImpl = fetch, outputPath = OUT
     }
 
     logger.warn(`Taxas veiculares BCB preservadas do JSON anterior (${vehicleReferencePeriodLabel(vehicle)}). Motivo: ${vehicleResult.reason.message}`);
+    onVehicleFallback({ referencePeriod: { ...vehicle.referencePeriod }, reason: vehicleResult.reason.message });
   }
 
   const previous = await readPreviousData(absoluteOutputPath);
@@ -476,10 +436,14 @@ export async function updateBcbCreditRates({ fetchImpl = fetch, outputPath = OUT
 const isCli = process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1]);
 
 if (isCli) {
-  updateBcbCreditRates()
-    .then((data) => {
+  let vehiclePreserved = false;
+  updateBcbCreditRates({ onVehicleFallback: () => { vehiclePreserved = true; } })
+    .then(async (data) => {
+      if (process.env.GITHUB_OUTPUT) {
+        await appendFile(process.env.GITHUB_OUTPUT, `vehicle_preserved=${vehiclePreserved}\n`);
+      }
       const vehicleCount = data.creditTypes.vehicle.modalities.reduce((sum, modality) => sum + modality.institutions.length, 0);
-      console.log(`Taxas médias BCB atualizadas: imobiliário ${data.referencePeriod}, veicular ${data.creditTypes.vehicle.referencePeriod.startDate} a ${data.creditTypes.vehicle.referencePeriod.endDate}, ${vehicleCount} taxas veiculares.`);
+      console.log(`Taxas médias BCB processadas: imobiliário ${data.referencePeriod}, veicular ${vehiclePreserved ? 'preservado do JSON anterior' : 'consultado'} ${data.creditTypes.vehicle.referencePeriod.startDate} a ${data.creditTypes.vehicle.referencePeriod.endDate}, ${vehicleCount} taxas veiculares.`);
     })
     .catch((error) => {
       console.error(error.message);

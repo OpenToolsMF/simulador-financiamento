@@ -1,6 +1,7 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { fetchBcbJson } from './fetch-bcb-json.mjs';
 
 export const SERIES_CODE = 226;
 export const SOURCE_URL = `https://api.bcb.gov.br/dados/serie/bcdata.sgs.${SERIES_CODE}/dados`;
@@ -97,21 +98,22 @@ export async function updateTrBacen({
   fetchImpl = fetch,
   outputPath = OUTPUT_PATH,
   now = new Date(),
+  sleepImpl,
+  timeoutMs,
+  logger = console,
 } = {}) {
   const requestUrl = sourceUrlForDate(now);
-  const response = await fetchImpl(requestUrl, {
-    headers: {
-      'user-agent': 'mapa-das-parcelas/1.0 (+https://mapadasparcelas.com.br/)',
-    },
+  const payload = await fetchBcbJson(requestUrl, {
+    label: 'a série SGS 226 da TR',
+    fetchImpl,
+    sleepImpl,
+    timeoutMs,
+    logger,
   });
-
-  if (!response.ok) {
-    throw new Error(`Falha ao baixar a série SGS 226 da TR: HTTP ${response.status}.`);
-  }
 
   const absoluteOutputPath = resolve(outputPath);
   const previous = await readPreviousData(absoluteOutputPath);
-  const generated = buildTrData(await response.json());
+  const generated = buildTrData(payload);
   const unchanged = previous
     && JSON.stringify(semanticData(previous)) === JSON.stringify(semanticData(generated));
   const data = unchanged ? previous : generated;

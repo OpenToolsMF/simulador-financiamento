@@ -3,7 +3,7 @@ name: Update reference rates data
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 10 * * 1-5'
+    - cron: '0 10 * * 1'
 
 permissions:
   contents: write
@@ -11,6 +11,10 @@ permissions:
 jobs:
   update-reference-rates:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    concurrency:
+      group: reference-rates-${{ github.ref }}
+      cancel-in-progress: false
     outputs:
       changed: ${{ steps.commit.outputs.changed }}
       commit_sha: ${{ steps.commit.outputs.commit_sha }}
@@ -24,9 +28,11 @@ jobs:
           node-version: '20'
 
       - name: Update TR Bacen JSON
+        id: tr
         run: node scripts/update-tr-bacen.mjs
 
       - name: Update BCB credit rates JSON
+        id: credit
         run: node scripts/update-bcb-credit-rates.mjs
 
       - name: Commit changes
@@ -46,6 +52,21 @@ jobs:
           git push
           echo "changed=true" >> "$GITHUB_OUTPUT"
           echo "commit_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Summarize reference rates update
+        if: ${{ always() }}
+        env:
+          TR_OUTCOME: ${{ steps.tr.outcome }}
+          CREDIT_OUTCOME: ${{ steps.credit.outcome }}
+          COMMIT_OUTCOME: ${{ steps.commit.outcome }}
+          COMMIT_CHANGED: ${{ steps.commit.outputs.changed }}
+          VEHICLE_PRESERVED: ${{ steps.credit.outputs.vehicle_preserved }}
+        run: |
+          if [ -f scripts/reference-rates-summary.mjs ]; then
+            node scripts/reference-rates-summary.mjs
+          else
+            echo "Resumo indisponível: o checkout dos scripts não foi concluído." >> "$GITHUB_STEP_SUMMARY"
+          fi
 
   deploy-updated-site:
     needs: update-reference-rates

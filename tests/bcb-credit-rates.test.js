@@ -286,6 +286,9 @@ const { join } = require('node:path');
   const retryAttempts = { realEstate: 0, vehicle: 0 };
   await updateBcbCreditRates({
     outputPath: retryOutputPath,
+    sleepImpl: async () => {},
+    logger: { info() {} },
+    onVehicleFallback: () => assert.fail('fonte recuperada não deve acionar fallback'),
     fetchImpl: async (url) => {
       if (url === REAL_ESTATE_SOURCE_URL) {
         retryAttempts.realEstate += 1;
@@ -316,6 +319,8 @@ const { join } = require('node:path');
   await assert.rejects(
     () => updateBcbCreditRates({
       outputPath: requiredRealEstateOutputPath,
+      sleepImpl: async () => {},
+      logger: { info() {} },
       fetchImpl: async (url) => {
         if (url === REAL_ESTATE_SOURCE_URL) {
           realEstateFailures += 1;
@@ -334,15 +339,20 @@ const { join } = require('node:path');
   );
 
   assert.equal(realEstateFailures, FETCH_ATTEMPTS, 'tenta baixar o endpoint imobiliário três vezes antes de falhar');
+  await assert.rejects(readFile(requiredRealEstateOutputPath), { code: 'ENOENT' }, 'falha obrigatória inicial não cria arquivo');
 
   const fallbackOutputDirectory = await mkdtemp(join(tmpdir(), 'bcb-credit-rates-fallback-test-'));
   const fallbackOutputPath = join(fallbackOutputDirectory, 'bcb-credit-rates.json');
   const previousData = buildBcbCreditRatesData(realEstatePayload, vehiclePayload, '2026-07-20T12:00:00.000Z');
   await writeFile(fallbackOutputPath, `${JSON.stringify(previousData, null, 2)}\n`);
   const fallbackWarnings = [];
+  const fallbackEvents = [];
+  const previousBytes = await readFile(fallbackOutputPath);
 
   const fallbackData = await updateBcbCreditRates({
     outputPath: fallbackOutputPath,
+    sleepImpl: async () => {},
+    onVehicleFallback: (event) => fallbackEvents.push(event),
     logger: {
       warn: (message) => fallbackWarnings.push(message),
     },
@@ -369,6 +379,79 @@ const { join } = require('node:path');
     /Taxas veiculares BCB preservadas.*2026-07-01 a 2026-07-07.*HTTP 504/,
     'registra aviso com período preservado e causa do fallback veicular',
   );
+  assert.equal(fallbackEvents.length, 1, 'informa o fallback exatamente uma vez');
+  assert.deepEqual(fallbackEvents[0].referencePeriod, previousData.creditTypes.vehicle.referencePeriod);
+  assert.match(fallbackEvents[0].reason, /HTTP 504/);
+  assert.deepEqual(await readFile(fallbackOutputPath), previousBytes, 'fallback com dados iguais mantém bytes e generatedAt');
+
+  const changedFallbackPath = join(fallbackOutputDirectory, 'changed-real-estate.json');
+  await writeFile(changedFallbackPath, previousBytes);
+  const changedRealEstatePayload = {
+    value: realEstatePayload.value.map((row) => ({ ...row, TaxaJurosAoAno: row.TaxaJurosAoAno + 1 })),
+  };
+  const changedFallback = await updateBcbCreditRates({
+    outputPath: changedFallbackPath,
+    sleepImpl: async () => {},
+    logger: { info() {}, warn() {} },
+    fetchImpl: async (url) => (url === REAL_ESTATE_SOURCE_URL
+      ? successfulResponse(changedRealEstatePayload)
+      : failedResponse(504)),
+  });
+  assert.deepEqual(changedFallback.creditTypes.vehicle, previousData.creditTypes.vehicle, 'atualização imobiliária não substitui o bloco veicular preservado');
+  assert.notDeepEqual(changedFallback.creditTypes.realEstate, previousData.creditTypes.realEstate, 'taxas imobiliárias novas são publicáveis junto ao bloco veicular anterior');
+  assert.deepEqual(JSON.parse(await readFile(changedFallbackPath, 'utf8')), changedFallback);
+
+  let invalidAttempts = 0;
+  await assert.rejects(updateBcbCreditRates({
+    outputPath: fallbackOutputPath,
+    sleepImpl: async () => assert.fail('dados financeiros inválidos não devem gerar espera'),
+    logger: { info() {}, warn() {} },
+    onVehicleFallback: () => assert.fail('JSON veicular inválido não aciona fallback'),
+    fetchImpl: async (url) => {
+      invalidAttempts += 1;
+      return successfulResponse(url === REAL_ESTATE_SOURCE_URL ? realEstatePayload : { value: [] });
+    },
+  }), /Nenhuma taxa veicular válida/);
+  assert.equal(invalidAttempts, 2, 'consulta cada fonte uma vez quando a validação financeira falha');
+  assert.deepEqual(await readFile(fallbackOutputPath), previousBytes, 'validação inválida não sobrescreve dados anteriores');
+
+  let invalidRealEstateAttempts = 0;
+  await assert.rejects(updateBcbCreditRates({
+    outputPath: fallbackOutputPath,
+    sleepImpl: async () => assert.fail('validação imobiliária não deve gerar espera'),
+    logger: { info() {} },
+    fetchImpl: async (url) => {
+      invalidRealEstateAttempts += 1;
+      return successfulResponse(url === REAL_ESTATE_SOURCE_URL ? { value: [] } : vehiclePayload);
+    },
+  }), /Nenhuma taxa imobiliária de mercado válida/);
+  assert.equal(invalidRealEstateAttempts, 2);
+  assert.deepEqual(await readFile(fallbackOutputPath), previousBytes);
+
+  await assert.rejects(updateBcbCreditRates({
+    outputPath: fallbackOutputPath,
+    sleepImpl: async () => {},
+    logger: { info() {} },
+    fetchImpl: async (url) => (url === REAL_ESTATE_SOURCE_URL
+      ? failedResponse(502)
+      : successfulResponse(vehiclePayload)),
+  }), /imobiliário.*após 3 tentativas.*HTTP 502/);
+  assert.deepEqual(await readFile(fallbackOutputPath), previousBytes, 'falha imobiliária preserva o arquivo anterior byte a byte');
+
+  const invalidFallbackPath = join(fallbackOutputDirectory, 'invalid-vehicle.json');
+  const invalidPrevious = { ...previousData, creditTypes: { ...previousData.creditTypes, vehicle: {} } };
+  await writeFile(invalidFallbackPath, JSON.stringify(invalidPrevious));
+  const invalidPreviousBytes = await readFile(invalidFallbackPath);
+  await assert.rejects(updateBcbCreditRates({
+    outputPath: invalidFallbackPath,
+    sleepImpl: async () => {},
+    logger: { info() {} },
+    onVehicleFallback: () => assert.fail('bloco anterior inválido não pode ser preservado'),
+    fetchImpl: async (url) => (url === REAL_ESTATE_SOURCE_URL
+      ? successfulResponse(realEstatePayload)
+      : failedResponse(504)),
+  }), /Não há bloco veicular anterior válido/);
+  assert.deepEqual(await readFile(invalidFallbackPath), invalidPreviousBytes);
 
   const missingFallbackOutputDirectory = await mkdtemp(join(tmpdir(), 'bcb-credit-rates-missing-fallback-test-'));
   const missingFallbackOutputPath = join(missingFallbackOutputDirectory, 'bcb-credit-rates.json');
@@ -376,6 +459,8 @@ const { join } = require('node:path');
   await assert.rejects(
     () => updateBcbCreditRates({
       outputPath: missingFallbackOutputPath,
+      sleepImpl: async () => {},
+      logger: { info() {} },
       fetchImpl: async (url) => {
         if (url === REAL_ESTATE_SOURCE_URL) {
           return successfulResponse(realEstatePayload);

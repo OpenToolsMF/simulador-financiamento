@@ -165,7 +165,13 @@ node scripts/update-tr-bacen.mjs
 node scripts/update-bcb-credit-rates.mjs
 ```
 
-O workflow `.github/workflows/update-reference-rates.yml` executa as duas atualizações em dias úteis e também pode ser disparado manualmente pelo GitHub Actions. Se houver alteração em `assets/data/tr-bacen.json` ou `assets/data/bcb-credit-rates.json`, ele cria um commit automático e chama o workflow reutilizável de publicação para o SHA recém-criado.
+O workflow `.github/workflows/update-reference-rates.yml` executa as duas atualizações uma vez por semana, às segundas-feiras, com horário agendado para 10h UTC (7h de Brasília), e também pode ser disparado manualmente pelo GitHub Actions. Se houver alteração em `assets/data/tr-bacen.json` ou `assets/data/bcb-credit-rates.json`, ele cria um commit automático e chama o workflow reutilizável de publicação para o SHA recém-criado.
+
+As três fontes (TR, taxas imobiliárias e veiculares) usam até três tentativas, com limite de 10 segundos por tentativa, incluindo a leitura do JSON. Erros de rede, timeout, HTTP 408/429/5xx e respostas vazias ou incompatíveis com JSON permitem nova tentativa; os demais erros HTTP encerram a consulta. As esperas padrão são de 1 e 2 segundos. Para HTTP 429/503, um `Retry-After` válido pode ampliar a espera até 30 segundos. JSON válido sem dados financeiros compatíveis falha na validação, sem repetir a consulta.
+
+TR e taxas imobiliárias são obrigatórias: uma falha definitiva impede o commit e o deploy. Se apenas a API veicular falhar, o atualizador pode preservar o bloco veicular anterior, desde que ele seja válido, e registra o período preservado e a causa nos logs. Sem esse bloco, a atualização também falha. Falhas de consulta ou validação não sobrescrevem o arquivo anterior.
+
+O job de atualização tem limite de cinco minutos e permite somente uma execução por branch por vez, sem cancelar a execução ativa. Um resumo é produzido mesmo em falhas, com o resultado de cada etapa, as referências disponíveis nos arquivos locais e a indicação explícita de preservação veicular. As datas de dados anteriores não são apresentadas como uma nova atualização.
 
 Os atualizadores comparam o conteúdo semântico e preservam `generatedAt` quando as observações não mudam. Assim, não produzem commits ou datas editoriais artificiais.
 
