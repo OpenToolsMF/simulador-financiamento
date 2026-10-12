@@ -339,19 +339,40 @@
               );
               enforceSacTargetPayoff = true;
             }
-            scheduleBalanceCents = balanceCents;
-            scheduleRemaining = targetRemaining;
-            if (config.system === 'sac') {
-              sacAmortizationCents = roundCents(balanceCents / targetRemaining);
-              scheduledPaymentCents = sacPaymentForNextMonth(
-                config,
-                balanceCents,
-                targetRemaining,
-                sacAmortizationCents,
-                month + 1,
-              );
+            if (hasAppliedTermGoal) {
+              // Scale the existing reference instead of replacing it with the actual
+              // balance: their difference also carries term gains below one month.
+              // Both balances then follow the same proportionally smaller payments,
+              // preserving the payoff horizon, including its fractional remainder.
+              const paymentRatio = balanceCents / groupOpeningBalanceCents;
+              scheduleBalanceCents = roundCents(scheduleBalanceCents * paymentRatio);
+              if (config.system === 'sac') {
+                sacAmortizationCents = roundCents(sacAmortizationCents * paymentRatio);
+                scheduledPaymentCents = sacPaymentForNextMonth(
+                  config,
+                  scheduleBalanceCents,
+                  scheduleRemaining,
+                  sacAmortizationCents,
+                  month + 1,
+                );
+              } else {
+                priceRegularPaymentCents = roundCents(priceRegularPaymentCents * paymentRatio);
+              }
             } else {
-              priceRegularPaymentCents = pricePaymentCents(balanceCents, config.monthlyRate, targetRemaining);
+              scheduleBalanceCents = balanceCents;
+              scheduleRemaining = targetRemaining;
+              if (config.system === 'sac') {
+                sacAmortizationCents = roundCents(balanceCents / targetRemaining);
+                scheduledPaymentCents = sacPaymentForNextMonth(
+                  config,
+                  balanceCents,
+                  targetRemaining,
+                  sacAmortizationCents,
+                  month + 1,
+                );
+              } else {
+                priceRegularPaymentCents = pricePaymentCents(balanceCents, config.monthlyRate, targetRemaining);
+              }
             }
           } else if (groupGoal === GOAL_TERM && config.system === 'sac') {
             const recalculatedRemaining = recalculateSacRemainingTerm(

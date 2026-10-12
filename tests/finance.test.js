@@ -157,8 +157,9 @@ for (const system of ['sac', 'price']) {
 }
 
 const mixedTermThenPayment = [
-  { type: 'single', month: 12, valueCents: 10000, goal: 'term' },
-  { type: 'single', month: 12, valueCents: 10000, goal: 'payment' },
+  // Use amounts whose order remains distinguishable after rounding to cents.
+  { type: 'single', month: 12, valueCents: 100000, goal: 'term' },
+  { type: 'single', month: 12, valueCents: 200000, goal: 'payment' },
 ];
 const mixedPaymentThenTerm = [...mixedTermThenPayment].reverse();
 

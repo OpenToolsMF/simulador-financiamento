@@ -30,7 +30,7 @@ const pageDefinitions = {
     scripts: [
       'assets/vendor/bootstrap/js/bootstrap.bundle.min.js',
       'assets/js/i18n.js?v=20260821-compact-warning-tooltip',
-      'assets/js/finance.js?v=20260821-ordered-extras',
+      'assets/js/finance.js?v=20261012-preserve-term-gains',
       'assets/js/simulation-state.js?v=20260821-ordered-extras',
       'assets/js/chart-data.js?v=20260821-composition-tooltip',
       'assets/js/app.js?v=20260821-compact-warning-tooltip',
@@ -49,7 +49,7 @@ const pageDefinitions = {
     scripts: [
       'assets/vendor/bootstrap/js/bootstrap.bundle.min.js',
       'assets/js/i18n.js?v=20260821-ordered-extras',
-      'assets/js/finance.js?v=20260821-ordered-extras',
+      'assets/js/finance.js?v=20261012-preserve-term-gains',
       'assets/js/comparison.js?v=20260724-comparison-charts',
     ],
     adsense: true,

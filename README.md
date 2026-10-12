@@ -118,6 +118,8 @@ As páginas localizadas mantêm no próprio HTML o corpo pré-renderizado no idi
 
 A ordem do array `extraPayments` é parte do contrato da simulação v1 e define a precedência das regras que coincidem no mesmo mês. Cada parcela calculada mantém `extraPaymentCents` como total efetivamente aplicado, resume os objetivos em `extraGoal` (`term`, `payment`, `mixed` ou `null`) e expõe a sequência em `extraApplications`, com `goal`, `requestedCents` e `appliedCents` por aplicação.
 
+Uma redução de parcela posterior preserva o ganho acumulado das aplicações para prazo, inclusive quando ele ainda não elimina um mês inteiro. Para isso, o motor reduz proporcionalmente o cronograma de referência, sem substituir seu saldo pelo saldo efetivo nem apagar essa diferença. Aportes pequenos recorrentes para prazo continuam acumulando efeito em SAC e Price, com ou sem correção monetária; o prazo efetivo permanece expresso em meses inteiros. Estratégias mistas não têm garantia universal de custo menor que estratégias exclusivamente para prazo, pois também reduzem pagamentos regulares.
+
 Os guias e exemplos são escritos em Markdown. Cada tradução compartilha um `contentId` e declara no front matter título, descrição, categoria ou cenário, revisão editorial, dependências de dados, limitações, fontes e relacionamentos. Os campos opcionais `seoTitle`, `cardDescription` e `socialImage` permitem separar o título de busca, o resumo do hub e a arte social; quando ausentes, o gerador preserva os metadados padrão. Não coloque números derivados na prosa: use o shortcode `scenarioModule`, que recalcula indicadores, tabelas, gráfico e link para o simulador.
 
 ## Validação
