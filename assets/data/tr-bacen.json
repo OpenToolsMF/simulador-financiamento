@@ -2,48 +2,13 @@
   "version": 2,
   "seriesCode": 226,
   "sourceUrl": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.226/dados",
-  "generatedAt": "2026-10-26T16:20:35.683Z",
+  "generatedAt": "2026-11-02T19:51:01.932Z",
   "latest": {
-    "startDate": "2026-10-23",
-    "endDate": "2026-11-23",
-    "ratePercent": 0.0959
+    "startDate": "2026-10-29",
+    "endDate": "2026-11-29",
+    "ratePercent": 0.15
   },
   "rates": [
-    {
-      "startDate": "2025-10-26",
-      "endDate": "2025-11-26",
-      "ratePercent": 0.1721
-    },
-    {
-      "startDate": "2025-10-27",
-      "endDate": "2025-11-27",
-      "ratePercent": 0.174
-    },
-    {
-      "startDate": "2025-10-28",
-      "endDate": "2025-11-28",
-      "ratePercent": 0.1741
-    },
-    {
-      "startDate": "2025-10-29",
-      "endDate": "2025-11-29",
-      "ratePercent": 0.1741
-    },
-    {
-      "startDate": "2025-10-30",
-      "endDate": "2025-11-30",
-      "ratePercent": 0.1721
-    },
-    {
-      "startDate": "2025-10-31",
-      "endDate": "2025-12-01",
-      "ratePercent": 0.1702
-    },
-    {
-      "startDate": "2025-11-01",
-      "endDate": "2025-12-01",
-      "ratePercent": 0.1634
-    },
     {
       "startDate": "2025-11-02",
       "endDate": "2025-12-02",
@@ -1823,6 +1788,36 @@
       "startDate": "2026-10-23",
       "endDate": "2026-11-23",
       "ratePercent": 0.0959
+    },
+    {
+      "startDate": "2026-10-24",
+      "endDate": "2026-11-24",
+      "ratePercent": 0.0973
+    },
+    {
+      "startDate": "2026-10-25",
+      "endDate": "2026-11-25",
+      "ratePercent": 0.1286
+    },
+    {
+      "startDate": "2026-10-26",
+      "endDate": "2026-11-26",
+      "ratePercent": 0.1599
+    },
+    {
+      "startDate": "2026-10-27",
+      "endDate": "2026-11-27",
+      "ratePercent": 0.1692
+    },
+    {
+      "startDate": "2026-10-28",
+      "endDate": "2026-11-28",
+      "ratePercent": 0.1692
+    },
+    {
+      "startDate": "2026-10-29",
+      "endDate": "2026-11-29",
+      "ratePercent": 0.15
     }
   ]
 }
