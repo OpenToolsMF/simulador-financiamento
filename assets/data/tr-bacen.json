@@ -2,48 +2,13 @@
   "version": 2,
   "seriesCode": 226,
   "sourceUrl": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.226/dados",
-  "generatedAt": "2026-11-02T19:51:01.932Z",
+  "generatedAt": "2026-11-09T20:13:45.190Z",
   "latest": {
-    "startDate": "2026-10-29",
-    "endDate": "2026-11-29",
-    "ratePercent": 0.15
+    "startDate": "2026-11-06",
+    "endDate": "2026-12-06",
+    "ratePercent": 0.1487
   },
   "rates": [
-    {
-      "startDate": "2025-11-02",
-      "endDate": "2025-12-02",
-      "ratePercent": 0.1702
-    },
-    {
-      "startDate": "2025-11-03",
-      "endDate": "2025-12-03",
-      "ratePercent": 0.1722
-    },
-    {
-      "startDate": "2025-11-04",
-      "endDate": "2025-12-04",
-      "ratePercent": 0.1722
-    },
-    {
-      "startDate": "2025-11-05",
-      "endDate": "2025-12-05",
-      "ratePercent": 0.1722
-    },
-    {
-      "startDate": "2025-11-06",
-      "endDate": "2025-12-06",
-      "ratePercent": 0.1722
-    },
-    {
-      "startDate": "2025-11-07",
-      "endDate": "2025-12-07",
-      "ratePercent": 0.1703
-    },
-    {
-      "startDate": "2025-11-08",
-      "endDate": "2025-12-08",
-      "ratePercent": 0.1641
-    },
     {
       "startDate": "2025-11-09",
       "endDate": "2025-12-09",
@@ -1818,6 +1783,46 @@
       "startDate": "2026-10-29",
       "endDate": "2026-11-29",
       "ratePercent": 0.15
+    },
+    {
+      "startDate": "2026-10-30",
+      "endDate": "2026-11-30",
+      "ratePercent": 0.1183
+    },
+    {
+      "startDate": "2026-10-31",
+      "endDate": "2026-12-01",
+      "ratePercent": 0.1196
+    },
+    {
+      "startDate": "2026-11-01",
+      "endDate": "2026-12-01",
+      "ratePercent": 0.1196
+    },
+    {
+      "startDate": "2026-11-02",
+      "endDate": "2026-12-02",
+      "ratePercent": 0.1521
+    },
+    {
+      "startDate": "2026-11-03",
+      "endDate": "2026-12-03",
+      "ratePercent": 0.1695
+    },
+    {
+      "startDate": "2026-11-04",
+      "endDate": "2026-12-04",
+      "ratePercent": 0.1696
+    },
+    {
+      "startDate": "2026-11-05",
+      "endDate": "2026-12-05",
+      "ratePercent": 0.1695
+    },
+    {
+      "startDate": "2026-11-06",
+      "endDate": "2026-12-06",
+      "ratePercent": 0.1487
     }
   ]
 }
